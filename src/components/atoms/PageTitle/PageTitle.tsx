@@ -1,5 +1,5 @@
-import { cn } from '../../../lib/utils';
-import type { UIComponentProps } from '../../ui/type';
+import type { UIComponentProps } from '@/components/ui/type';
+import { cn } from '@/lib/utils';
 
 const PageTitle = ({ children, className }: UIComponentProps) => {
   return (

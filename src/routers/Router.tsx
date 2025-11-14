@@ -1,10 +1,10 @@
 import React, { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
-import SpinderCustom from '../components/atoms/SpinderCustom/SpinderCustom';
-import BlankLayOut from '../components/templates/BlankLayout/BlankLayOut';
-import MainLayout from '../components/templates/MainLayout/MainLayout';
-import PublicLayOut from '../components/templates/PublicLayout/PublicLayOut';
+import SpinderCustom from '@/components/atoms/SpinderCustom/SpinderCustom';
+import BlankLayOut from '@/components/templates/BlankLayout/BlankLayOut';
+import MainLayout from '@/components/templates/MainLayout/MainLayout';
+import PublicLayOut from '@/components/templates/PublicLayout/PublicLayOut';
 
 import { LOGIN_PATH, PRODUCT_MANAGEMENT_PATH } from './route.constants';
 import { LandingPage, PRIVATE_ROUTES, PUBLIC_ROUTES } from './route.definitions';

@@ -1,13 +1,13 @@
 import type { PropsWithChildren } from 'react';
 
-import Footer from '../../organisms/Footer/Footer';
-import Nav from '../../organisms/Nav/Nav';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
+import Footer from '@/components/organisms/Footer/Footer';
+import NavHeader from '@/components/organisms/NavHeader/NavHeader';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
 
 const PublicLayOut: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <Nav />
+      <NavHeader />
       <PageLayout>{children}</PageLayout>
       <Footer />
     </div>

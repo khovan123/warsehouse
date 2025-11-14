@@ -1,13 +1,13 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import { FilterSelect } from '../../molecules/FilterSelect';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { Button } from '../../ui/button';
-import { DataTable } from '../../ui/data-table';
-import type { DataTableProps } from '../../ui/type';
+import { FilterSelect } from '@/components/molecules/FilterSelect';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type CostRun = {
   jobNo: string;
@@ -84,7 +84,7 @@ const columns: ColumnDef<CostRun>[] = [
       return (
         <span
           className={
-            'inline-flex rounded-full px-2 py-0.5 text-[10px] ' +
+            'inline-flex rounded-full px-2 py-0.5 text-xs ' +
             (status === 'Completed'
               ? 'bg-primary/15 text-primary'
               : status === 'Failed'
@@ -115,7 +115,7 @@ const GenerateAverageCostsPage: React.FC = () => {
     <div
       className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
     >
-      <Button className="rounded bg-primary text-primary-foreground px-4 py-1.5 hover:bg-primary/80 transition">
+      <Button className="rounded-full" size={'sm'}>
         Run cost calculation
       </Button>
       <FilterSelect
@@ -153,7 +153,7 @@ const GenerateAverageCostsPage: React.FC = () => {
               key={metric.label}
               className="rounded-xl border border-border bg-card px-4 py-3 text-xs"
             >
-              <p className="text-muted-foreground uppercase tracking-wide text-[10px]">
+              <p className="text-muted-foreground uppercase tracking-wide text-xs">
                 {metric.label}
               </p>
               <p className="mt-2 text-lg font-semibold">{metric.value}</p>

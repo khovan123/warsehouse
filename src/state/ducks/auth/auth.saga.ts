@@ -1,9 +1,9 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 
-import type { LoginCredentials, LoginResponse } from '../../../@types/auth';
-import { loginApi } from '../../../apis/auth/auth';
-import { showToast } from '../toast/slice';
+import type { LoginCredentials, LoginResponse } from '@/@types/auth';
+import { loginApi } from '@/apis/auth/auth';
+import { showToast } from '@/state/ducks/toast/slice';
 
 import { loginFailure, loginRequest, loginSuccess } from './slice';
 

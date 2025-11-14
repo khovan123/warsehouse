@@ -2,16 +2,16 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router';
 
-import { LANDING_PATH, PRODUCT_MANAGEMENT_PATH } from '../../../routers/route.constants';
-import { useAuthSelector } from '../../../state/ducks/auth/selectors';
-import { loginRequest } from '../../../state/ducks/auth/slice';
-import type { LoginData } from '../../../state/ducks/auth/type';
-import TextBox from '../../atoms/TextBox/TextBox';
-import InputForm from '../../organisms/InputForm/InputForm';
-import { Avatar, AvatarFallback, AvatarImage } from '../../ui/avatar';
-import { Button } from '../../ui/button';
-import { Checkbox } from '../../ui/checkbox';
-import { Label } from '../../ui/label';
+import TextBox from '@/components/atoms/TextBox/TextBox';
+import InputForm from '@/components/organisms/InputForm/InputForm';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { LANDING_PATH, PRODUCT_MANAGEMENT_PATH } from '@/routers/route.constants';
+import { useAuthSelector } from '@/state/ducks/auth/selectors';
+import { loginRequest } from '@/state/ducks/auth/slice';
+import type { LoginData } from '@/state/ducks/auth/type';
 
 const LoginPage: React.FC = () => {
   const dispatch = useDispatch();

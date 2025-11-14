@@ -1,6 +1,6 @@
 import type { JSX } from 'react';
 
-import { Spinner } from '../../ui/spinner';
+import { Spinner } from '@/components/ui/spinner';
 
 const SpinnerCustom = (): JSX.Element => {
   return (
