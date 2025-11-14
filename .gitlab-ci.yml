@@ -1,0 +1,70 @@
+image: node:22.17.1
+
+stages:
+  - lint
+  - build
+  - test
+  - secret-detection
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+before_script:
+  - node -v
+  - npm -v
+  - if [ ! -d node_modules ]; then npm ci || npm install; fi
+
+# -----------------------------
+# LINT: ESLint + Prettier
+# -----------------------------
+lint:
+  stage: lint
+  script:
+    - npm run lint
+  artifacts:
+    when: always
+  allow_failure: false
+  only:
+    - merge_requests
+    - main
+    - master
+
+# -----------------------------
+# BUILD: tsc + Vite build
+# -----------------------------
+build:
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist
+    expire_in: 1 week
+  only:
+    - merge_requests
+    - main
+    - master
+
+# -----------------------------
+# SECURITY: SAST + Secret Detection
+# -----------------------------
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECRET_DETECTION_ENABLED: 'true'
+
+sast:
+  stage: test
+  needs:
+    - job: build
+      optional: true
+  before_script: []
+
+secret_detection:
+  stage: secret-detection
+  before_script: []

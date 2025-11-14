@@ -1,0 +1,17 @@
+{
+  "user": [
+    {
+      "username": "admin",
+      "password": "abc123",
+      "id": "1"
+    }
+  ],
+  "profile": [
+    {
+      "id": "1",
+      "name": "ADMIN",
+      "createdAt": "21/09/2025",
+      "role": "ADMIN"
+    }
+  ]
+}
