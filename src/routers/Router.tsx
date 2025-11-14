@@ -1,14 +1,13 @@
 import React, { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
-import Spinner from '../components/atoms/Spinder/Spinder';
+import SpinderCustom from '../components/atoms/SpinderCustom/SpinderCustom';
 import BlankLayOut from '../components/templates/BlankLayout/BlankLayOut';
 import MainLayout from '../components/templates/MainLayout/MainLayout';
-import PrivateLayout from '../components/templates/PrivateLayout/PrivateLayout';
 import PublicLayOut from '../components/templates/PublicLayout/PublicLayOut';
 
-import { LOGIN_PATH } from './route.constants';
-import { LandingPage, PRIVATE_ROUTES, PUBLIC_ROUTES, TopPage } from './route.definitions';
+import { LOGIN_PATH, PRODUCT_MANAGEMENT_PATH } from './route.constants';
+import { LandingPage, PRIVATE_ROUTES, PUBLIC_ROUTES } from './route.definitions';
 import type { RouterType, SwitchRouterProps } from './type';
 
 const NotFoundPage = React.lazy(() =>
@@ -39,7 +38,7 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
             key={path}
             path={path}
             element={
-              <Suspense fallback={<Spinner />}>
+              <Suspense fallback={<SpinderCustom />}>
                 {path !== LOGIN_PATH ? (
                   <PublicLayOut>
                     <Component />
@@ -55,28 +54,36 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
         ))}
         {loginedIn ? (
           <>
-            {PRIVATE_ROUTES.map(({ id, routes, template: LayoutTemplate }) =>
-              routes.map(({ component: Component, path }) => (
-                <Route
-                  key={`${id}-${path}`}
-                  path={path}
-                  element={
-                    <Suspense fallback={<Spinner />}>
-                      <LayoutTemplate>
-                        <Component />
-                      </LayoutTemplate>
-                    </Suspense>
-                  }
-                />
-              ))
-            )}
+            {PRIVATE_ROUTES.map(({ id, routes, template: LayoutTemplate }) => (
+              <Route
+                element={
+                  <Suspense fallback={<SpinderCustom />}>
+                    <LayoutTemplate />
+                  </Suspense>
+                }
+              >
+                <>
+                  {routes.map(({ component: Component, path }) => (
+                    <Route
+                      key={`${id}-${path}`}
+                      path={path}
+                      element={
+                        <Suspense fallback={<SpinderCustom />}>
+                          {/* <LayoutTemplate> */}
+                          <Component />
+                          {/* </LayoutTemplate> */}
+                        </Suspense>
+                      }
+                    />
+                  ))}
+                </>
+              </Route>
+            ))}
             <Route
               path="/"
               element={
-                <Suspense fallback={<Spinner />}>
-                  <PrivateLayout>
-                    <TopPage />
-                  </PrivateLayout>
+                <Suspense fallback={<SpinderCustom />}>
+                  <Navigate to={PRODUCT_MANAGEMENT_PATH} replace />
                 </Suspense>
               }
             />
@@ -84,7 +91,7 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
             <Route
               path="/error"
               element={
-                <Suspense fallback={<Spinner />}>
+                <Suspense fallback={<SpinderCustom />}>
                   <ErrorPage />
                 </Suspense>
               }
@@ -104,7 +111,7 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
             <Route
               path="/"
               element={
-                <Suspense fallback={<Spinner />}>
+                <Suspense fallback={<SpinderCustom />}>
                   <PublicLayOut>
                     <LandingPage />
                   </PublicLayOut>

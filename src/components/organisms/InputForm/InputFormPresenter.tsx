@@ -11,7 +11,7 @@ const InputFormPresenter: React.FC<InputFormPresenterProps & PropsWithChildren> 
   return (
     <form
       onSubmit={onSubmit}
-      className="w-full max-w-md rounded-3xl bg-surface border border-border shadow-2xl px-8 py-10 space-y-6 backdrop-blur"
+      className="w-full max-w-md rounded-3xl bg-card border border-border shadow-2xl px-8 py-10 space-y-6 backdrop-blur"
     >
       {children}
     </form>
