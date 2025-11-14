@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
 import { cn } from '../../../lib/utils';
 import type { GlobalState } from '../../../state/store';
 import PageHeader from '../../molecules/PageHeader/PageHeader';
@@ -24,6 +25,8 @@ const PageLayout = ({
   ...headerProps
 }: PageLayoutProps) => {
   const authSelector = useSelector((state: GlobalState) => state.auth);
+  const isMobile = useIsMobile();
+
   return authSelector.logined ? (
     <div className="min-h-full flex flex-col bg-background text-foreground">
       <PageHeader {...headerProps} />
@@ -32,7 +35,9 @@ const PageLayout = ({
       {footer}
     </div>
   ) : (
-    <div className="bg-background max-w-6xl mx-auto">{children}</div>
+    <div className={cn('bg-background mx-auto', isMobile ? 'w-full px-4' : 'max-w-6xl')}>
+      {children}
+    </div>
   );
 };
 

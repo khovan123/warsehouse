@@ -2,6 +2,8 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -90,18 +92,22 @@ const columns: ColumnDef<Inventory>[] = [
 ];
 
 const PhysicalInventoryPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<Inventory, unknown> = {
     columns,
     data: inventories,
   };
   const toolbar = (
-    <>
-      <Button size={'sm'} className="rounded-full bg-primary px-4 py-1.5">
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
+      <Button size={isMobile ? 'default' : 'sm'} className="rounded-full bg-primary px-4 py-1.5">
         + New Inventory
       </Button>
       <Button
         variant={'outline'}
-        size={'sm'}
+        size={isMobile ? 'default' : 'sm'}
         type="button"
         disabled
         className="rounded-full border border-border cursor-not-allowed"
@@ -110,18 +116,23 @@ const PhysicalInventoryPage: React.FC = () => {
       </Button>
       <Button
         variant={'outline'}
-        size={'sm'}
+        size={isMobile ? 'default' : 'sm'}
         type="button"
         disabled
         className="rounded-full border border-border cursor-not-allowed"
       >
         Process Inventory
       </Button>
-    </>
+    </div>
   );
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 text-[11px] flex justify-between">
+    <div
+      className={cn(
+        'border-t border-border bg-card text-[11px] flex',
+        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>
         1 - {inventories.length} of {inventories.length} documents
       </span>
@@ -136,7 +147,7 @@ const PhysicalInventoryPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3">
+      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
         <DataTable {...tableProps} />
       </div>
     </PageLayout>
