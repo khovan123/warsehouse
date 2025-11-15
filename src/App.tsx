@@ -1,17 +1,20 @@
 import { useSelector } from 'react-redux';
 import { BrowserRouter } from 'react-router';
 import { ToastContainer } from 'react-toastify';
+import { PersistGate } from 'redux-persist/integration/react';
 
 import Router from './routers/Router';
-import type { GlobalState } from './state/store';
+import { persistor, type GlobalState } from './state/store';
 
 function App() {
   const { logined } = useSelector((state: GlobalState) => state.auth);
   return (
-    <BrowserRouter>
-      <Router loginedIn={!!logined} />
-      <ToastContainer />
-    </BrowserRouter>
+    <PersistGate loading={null} persistor={persistor}>
+      <BrowserRouter>
+        <Router loginedIn={!!logined} />
+        <ToastContainer />
+      </BrowserRouter>
+    </PersistGate>
   );
 }
 

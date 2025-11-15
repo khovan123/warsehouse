@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router';
 
 const MainLayout = () => (
-  <div>
+  <div className="min-h-screen flex flex-col">
     <Outlet />
   </div>
 );
