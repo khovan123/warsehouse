@@ -1,15 +1,8 @@
 import React from 'react';
 
-type TextInputProps = {
-  label?: string;
-  name: string;
-  type?: string;
-  value: string;
-  placeholder?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+import type { TextBoxPresenterProps } from './type';
 
-const TextInput: React.FC<TextInputProps> = ({
+const TextBoxPresenter: React.FC<TextBoxPresenterProps> = ({
   label,
   name,
   type = 'text',
@@ -37,5 +30,4 @@ const TextInput: React.FC<TextInputProps> = ({
     </div>
   );
 };
-
-export default TextInput;
+export default TextBoxPresenter;

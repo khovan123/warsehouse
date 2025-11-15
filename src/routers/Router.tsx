@@ -1,12 +1,11 @@
 import React, { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
-import { LandingPage } from '../components/pages/LandingPage';
 import MainLayout from '../components/templates/MainLayout/MainLayout';
 import PrivateLayout from '../components/templates/PrivateLayout/PrivateLayout';
 
 import { LOGIN_PATH } from './route.constants';
-import { PRIVATE_ROUTES, PUBLIC_ROUTES, TopPage } from './route.definitions';
+import { LandingPage, PRIVATE_ROUTES, PUBLIC_ROUTES, TopPage } from './route.definitions';
 import type { RouterType, SwitchRouterProps } from './type';
 
 const NotFoundPage = React.lazy(() =>
