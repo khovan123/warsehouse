@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
 import Spinner from '../components/atoms/Spinder/Spinder';
+import BlankLayOut from '../components/templates/BlankLayout/BlankLayOut';
 import MainLayout from '../components/templates/MainLayout/MainLayout';
 import PrivateLayout from '../components/templates/PrivateLayout/PrivateLayout';
 import PublicLayOut from '../components/templates/PublicLayout/PublicLayOut';
@@ -25,63 +26,60 @@ const ErrorPage = React.lazy(() =>
 const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
   return (
     <Routes>
-      <Route path="/">
-        <Route
-          element={
-            <Suspense>
-              <PublicLayOut />
-            </Suspense>
-          }
-        >
-          {PUBLIC_ROUTES.map(({ path, component: Component }) => (
+      <Route
+        path="/"
+        element={
+          <Suspense>
+            <MainLayout />
+          </Suspense>
+        }
+      >
+        {PUBLIC_ROUTES.map(({ path, component: Component }) => (
+          <Route
+            key={path}
+            path={path}
+            element={
+              <Suspense fallback={<Spinner />}>
+                {path !== LOGIN_PATH ? (
+                  <PublicLayOut>
+                    <Component />
+                  </PublicLayOut>
+                ) : (
+                  <BlankLayOut>
+                    <Component />
+                  </BlankLayOut>
+                )}
+              </Suspense>
+            }
+          />
+        ))}
+        {loginedIn ? (
+          <>
+            {PRIVATE_ROUTES.map(({ id, routes, template: LayoutTemplate }) =>
+              routes.map(({ component: Component, path }) => (
+                <Route
+                  key={`${id}-${path}`}
+                  path={path}
+                  element={
+                    <Suspense fallback={<Spinner />}>
+                      <LayoutTemplate>
+                        <Component />
+                      </LayoutTemplate>
+                    </Suspense>
+                  }
+                />
+              ))
+            )}
             <Route
-              key={path}
-              path={path}
+              path="/"
               element={
                 <Suspense fallback={<Spinner />}>
-                  <Component />
+                  <PrivateLayout>
+                    <TopPage />
+                  </PrivateLayout>
                 </Suspense>
               }
             />
-          ))}
-        </Route>
-
-        {loginedIn ? (
-          <>
-            <Route
-              path=""
-              element={
-                <Suspense fallback={<Spinner />}>
-                  <MainLayout />
-                </Suspense>
-              }
-            >
-              {PRIVATE_ROUTES.map(({ id, routes, template: LayoutTemplate }) => {
-                return routes.map(({ component: Component, path }) => (
-                  <Route
-                    key={`${id}-${path}`}
-                    path={path}
-                    element={
-                      <Suspense fallback={<Spinner />}>
-                        <LayoutTemplate>
-                          <Component />
-                        </LayoutTemplate>
-                      </Suspense>
-                    }
-                  />
-                ));
-              })}
-              <Route
-                path="/"
-                element={
-                  <Suspense fallback={<Spinner />}>
-                    <PrivateLayout>
-                      <TopPage />
-                    </PrivateLayout>
-                  </Suspense>
-                }
-              />
-            </Route>
 
             <Route
               path="/error"
@@ -107,7 +105,9 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
               path="/"
               element={
                 <Suspense fallback={<Spinner />}>
-                  <LandingPage />
+                  <PublicLayOut>
+                    <LandingPage />
+                  </PublicLayOut>
                 </Suspense>
               }
             />
