@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen flex bg-background text-secondary-foreground">
+    <main className="min-h-screen flex text-secondary-foreground">
       <section className="hidden lg:flex lg:flex-1 flex-col justify-between px-12 py-10 bg-linear-to-br from-secondary via-dark to-black">
         <header className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-secondary font-semibold">

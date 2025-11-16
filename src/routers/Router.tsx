@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from 'react-router';
 import Spinner from '../components/atoms/Spinder/Spinder';
 import MainLayout from '../components/templates/MainLayout/MainLayout';
 import PrivateLayout from '../components/templates/PrivateLayout/PrivateLayout';
+import PublicLayOut from '../components/templates/PublicLayout/PublicLayOut';
 
 import { LOGIN_PATH } from './route.constants';
 import { LandingPage, PRIVATE_ROUTES, PUBLIC_ROUTES, TopPage } from './route.definitions';
@@ -25,17 +26,25 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
   return (
     <Routes>
       <Route path="/">
-        {PUBLIC_ROUTES.map(({ path, component: Component }) => (
-          <Route
-            key={path}
-            path={path}
-            element={
-              <Suspense fallback={<Spinner />}>
-                <Component />
-              </Suspense>
-            }
-          />
-        ))}
+        <Route
+          element={
+            <Suspense>
+              <PublicLayOut />
+            </Suspense>
+          }
+        >
+          {PUBLIC_ROUTES.map(({ path, component: Component }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <Suspense fallback={<Spinner />}>
+                  <Component />
+                </Suspense>
+              }
+            />
+          ))}
+        </Route>
 
         {loginedIn ? (
           <>
