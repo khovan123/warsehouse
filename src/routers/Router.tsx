@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import { Navigate, Route, Routes } from 'react-router';
 
+import Spinner from '../components/atoms/Spinder/Spinder';
 import MainLayout from '../components/templates/MainLayout/MainLayout';
 import PrivateLayout from '../components/templates/PrivateLayout/PrivateLayout';
 
@@ -19,10 +20,6 @@ const ErrorPage = React.lazy(() =>
     default: ErrorPage,
   }))
 );
-
-const Spinner = (): React.ReactElement => {
-  return <p>Spinder</p>;
-};
 
 const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
   return (
