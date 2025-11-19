@@ -5,9 +5,9 @@ import { BrowserRouter } from 'react-router';
 import { toast, ToastContainer } from 'react-toastify';
 import { PersistGate } from 'redux-persist/integration/react';
 
-import { ErrorFallback } from './components/organisms/ErrorFallBack/ErrorFallBack';
-import Router from './routers/Router';
-import { persistor, type GlobalState } from './state/store';
+import { ErrorFallback } from '@/components/organisms/ErrorFallBack/ErrorFallBack';
+import Router from '@/routers/Router';
+import { persistor, type GlobalState } from '@/state/store';
 
 function App() {
   const { logined } = useSelector((state: GlobalState) => state.auth);

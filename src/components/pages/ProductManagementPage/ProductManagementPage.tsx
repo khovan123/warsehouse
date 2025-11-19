@@ -2,15 +2,15 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Download, X } from 'lucide-react';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import { FilterSelect } from '../../molecules/FilterSelect';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { Badge } from '../../ui/badge';
-import { Button } from '../../ui/button';
-import { Checkbox } from '../../ui/checkbox';
-import { DataTable } from '../../ui/data-table';
-import type { DataTableProps } from '../../ui/type';
+import { FilterSelect } from '@/components/molecules/FilterSelect';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DataTable } from '@/components/ui/data-table';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type Product = {
   account: string;
@@ -61,6 +61,7 @@ const columns: ColumnDef<Product>[] = [
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
         className="h-3 w-3"
+        size={12}
       />
     ),
     cell: ({ row }) => (
@@ -69,6 +70,7 @@ const columns: ColumnDef<Product>[] = [
         onCheckedChange={(value) => row.toggleSelected(!!value)}
         aria-label="Select row"
         className="h-3 w-3"
+        size={12}
       />
     ),
     enableSorting: false,
@@ -129,11 +131,11 @@ const ProductManagementPage: React.FC = () => {
         type="button"
         variant={'outline'}
         size={isMobile ? 'default' : 'sm'}
-        className="rounded px-3 py-1.5 cursor-not-allowed border border-border hover:bg-muted-foreground"
+        className="rounded-full cursor-not-allowed"
       >
         Details
       </Button>
-      <Button type="button" size={isMobile ? 'default' : 'sm'} className="rounded px-4 py-1.5 ">
+      <Button type="button" size={isMobile ? 'default' : 'sm'} className="rounded-full">
         Export
         <Download size={isMobile ? 16 : 12} className="text-primary-foreground" />
       </Button>
@@ -148,19 +150,19 @@ const ProductManagementPage: React.FC = () => {
       )}
     >
       <div className="flex items-center gap-2">
-        <span>Result for:</span>
-        <div className="inline-flex items-center rounded bg-card border border-border px-2 py-1">
+        <div className="inline-flex items-center rounded-md bg-card border border-border px-1 py-1 gap-0.5">
+          <span>Result for:</span>
           <Button
             type="button"
             size={'sm'}
             variant={'ghost'}
-            className="hover:bg-primary/20 text-[10px]"
+            className="rounded-full hover:text-destructive"
           >
             Empty <X size={0} />
           </Button>
         </div>
       </div>
-      <Button type="button" variant={'secondary'} className="text-[11px]">
+      <Button type="button" variant={'secondary'} size={'sm'}>
         Clear All Tags
       </Button>
     </div>
@@ -216,7 +218,7 @@ const ProductManagementPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+      <div className={cn('w-full h-full', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
         <DataTable {...tableProps} />
       </div>
     </PageLayout>

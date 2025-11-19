@@ -1,6 +1,6 @@
 import React from 'react';
 
-import PrivateLayout from '../components/templates/PrivateLayout/PrivateLayout';
+import PrivateLayout from '@/components/templates/PrivateLayout/PrivateLayout';
 
 import {
   GENERATE_AVG_COSTS_PATH,

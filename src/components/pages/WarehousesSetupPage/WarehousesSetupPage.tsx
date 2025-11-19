@@ -3,13 +3,13 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { Badge } from '../../ui/badge';
-import { Button } from '../../ui/button';
-import { DataTable } from '../../ui/data-table';
-import type { DataTableProps } from '../../ui/type';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type Warehouse = {
   code: string;
@@ -88,10 +88,10 @@ const WarehousesSetupPage: React.FC = () => {
 
   const toolbar = (
     <div className={isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2'}>
-      <Button className="rounded" size={isMobile ? 'default' : 'sm'}>
+      <Button className="rounded-full" size={isMobile ? 'default' : 'sm'}>
         <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New warehouse
       </Button>
-      <Button className="rounded" size={isMobile ? 'default' : 'sm'}>
+      <Button className="rounded-full" size={isMobile ? 'default' : 'sm'}>
         <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New bin
       </Button>
     </div>

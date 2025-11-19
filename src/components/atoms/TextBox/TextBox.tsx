@@ -1,4 +1,4 @@
-import { withFormController, type FormController } from '../../../hocs/withFormController';
+import { withFormController, type FormController } from '@/hocs/withFormController';
 
 import TextBoxContainer from './TextBoxContainer';
 import type { TextBoxPresenterProps } from './type';

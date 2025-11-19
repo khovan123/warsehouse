@@ -1,6 +1,6 @@
 import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
-import { cn } from '../../lib/utils';
+import { cn } from '@/lib/utils';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table';
 import type { DataTableProps } from './type';

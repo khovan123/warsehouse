@@ -2,15 +2,21 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { Badge } from '../../ui/badge';
-import { Button } from '../../ui/button';
-import { DataTable } from '../../ui/data-table';
-import { Input } from '../../ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
-import type { DataTableProps } from '../../ui/type';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type Reservation = {
   reservationNo: string;
@@ -98,7 +104,7 @@ const StockReservationPage: React.FC = () => {
     <div
       className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
     >
-      <Button size={isMobile ? 'default' : 'sm'}>
+      <Button className="rounded-full" size={isMobile ? 'default' : 'sm'}>
         <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New Reservation
       </Button>
 
@@ -129,9 +135,9 @@ const StockReservationPage: React.FC = () => {
 
       <Input
         type="text"
-        placeholder="Search by reservation, product, order..."
+        placeholder="Search by reservation, product, order"
         className={cn(
-          'rounded-full focus:outline-none h-8',
+          'rounded-full focus:outline-none h-8 placeholder:text-xs',
           isMobile ? 'w-full' : 'flex-1 min-w-40'
         )}
       />

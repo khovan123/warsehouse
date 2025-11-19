@@ -1,6 +1,6 @@
 import axios, { AxiosError, type AxiosResponse } from 'axios';
 
-import type { HttpClientInstance, RequestConfig } from '../@types/request';
+import type { HttpClientInstance, RequestConfig } from '@/@types/request';
 
 import { ApiError, type OtherErrorInfo } from './type';
 

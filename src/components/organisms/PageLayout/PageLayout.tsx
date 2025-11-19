@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import type { GlobalState } from '../../../state/store';
-import PageHeader from '../../molecules/PageHeader/PageHeader';
-import type { PageHeaderProps } from '../../molecules/PageHeader/type';
-import PageToolbar from '../../molecules/PageToolbar/PageToolbar';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import type { PageHeaderProps } from '@/components/molecules/PageHeader/type';
+import PageToolbar from '@/components/molecules/PageToolbar/PageToolbar';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
+import type { GlobalState } from '@/state/store';
 
 type PageLayoutProps = PageHeaderProps & {
   children: ReactNode;

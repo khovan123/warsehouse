@@ -2,15 +2,15 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Download } from 'lucide-react';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import { FilterSelect } from '../../molecules/FilterSelect';
-import { MetricCard } from '../../molecules/MetricCard';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { Button } from '../../ui/button';
-import { DataTable } from '../../ui/data-table';
-import { Input } from '../../ui/input';
-import type { DataTableProps } from '../../ui/type';
+import { FilterSelect } from '@/components/molecules/FilterSelect';
+import { MetricCard } from '@/components/molecules/MetricCard';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import { Input } from '@/components/ui/input';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type ValuedStockRow = {
   product: string;
@@ -99,7 +99,10 @@ const ValuedStockReportPage: React.FC = () => {
     <div
       className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
     >
-      <Input type="date" className={cn('rounded-full h-8', isMobile ? 'w-full' : 'w-fit')} />
+      <Input
+        type="date"
+        className={cn('rounded-full text-xs h-8', isMobile ? 'w-full' : 'w-fit')}
+      />
       <FilterSelect
         defaultValue="all-warehouses"
         placeholder="Warehouse: All"
@@ -120,7 +123,7 @@ const ValuedStockReportPage: React.FC = () => {
           { value: 'footwear', label: 'Footwear' },
         ]}
       />
-      <Button className={cn('rounded-full text-xs', isMobile ? 'w-full' : '')}>
+      <Button size={'sm'} className={cn('rounded-full', isMobile ? 'w-full' : '')}>
         Export CSV <Download className={isMobile ? 'ml-2 h-4 w-4' : 'ml-1 h-3 w-3'} />
       </Button>
     </div>

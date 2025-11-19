@@ -1,13 +1,13 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import { FilterSelect } from '../../molecules/FilterSelect';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { DataTable } from '../../ui/data-table';
-import { Input } from '../../ui/input';
-import type { DataTableProps } from '../../ui/type';
+import { FilterSelect } from '@/components/molecules/FilterSelect';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { DataTable } from '@/components/ui/data-table';
+import { Input } from '@/components/ui/input';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type Transaction = {
   line: number;
@@ -164,7 +164,7 @@ const MaterialTransactionReportPage: React.FC = () => {
         type="text"
         placeholder="Product / Document / Partner"
         className={cn(
-          'rounded-full focus:outline-none h-8',
+          'rounded-full text-xs focus:outline-none h-8 placeholder:text-xs',
           isMobile ? 'w-full' : 'flex-1 min-w-40'
         )}
       />

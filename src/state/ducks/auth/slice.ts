@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import type { LoginCredentials, LoginResponse } from '../../../@types/auth';
+import type { LoginCredentials, LoginResponse } from '@/@types/auth';
 
 import { INIT_AUTH } from './type';
 
