@@ -111,10 +111,7 @@ export default defineConfig([
       'react/jsx-indent-props': [2, 2],
       'react/jsx-indent': [2, 2],
       'react/jsx-filename-extension': 0,
-      'react/jsx-props-no-spreading': [
-        2,
-        { custom: 'ignore', exceptions: ['input', 'textarea', 'button'] },
-      ],
+      'react/jsx-props-no-spreading': 0,
       'react/prop-types': 0,
       'react/require-default-props': 0,
       'react-refresh/only-export-components': 0,
