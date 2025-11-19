@@ -27,66 +27,36 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // Vendor chunk for node_modules
+          // Only chunk large vendor libraries, let Vite handle React automatically
           if (id.includes('node_modules')) {
-            // React and React DOM
-            if (id.includes('react') || id.includes('react-dom')) {
-              return 'react-vendor';
-            }
-
-            // Radix UI components
+            // Large UI component library
             if (id.includes('@radix-ui')) {
               return 'radix-ui';
             }
 
-            // Redux ecosystem
-            if (
-              id.includes('@reduxjs/toolkit') ||
-              id.includes('react-redux') ||
-              id.includes('redux-persist') ||
-              id.includes('redux-saga')
-            ) {
-              return 'redux-vendor';
-            }
-
-            // React Router
-            if (id.includes('react-router')) {
-              return 'router-vendor';
-            }
-
-            // UI libraries
-            if (id.includes('@tanstack/react-table')) {
-              return 'table-vendor';
-            }
-
+            // Large icon library
             if (id.includes('lucide-react')) {
               return 'icons-vendor';
             }
 
-            if (id.includes('react-hook-form')) {
-              return 'form-vendor';
+            // Large table library
+            if (id.includes('@tanstack/react-table')) {
+              return 'table-vendor';
             }
 
-            if (id.includes('axios')) {
-              return 'http-vendor';
-            }
-
-            if (id.includes('react-toastify')) {
-              return 'toast-vendor';
-            }
-
-            // Tailwind and styling
+            // Group smaller vendor libraries together
+            // Don't manually chunk React - let Vite handle it to avoid loading order issues
             if (
-              id.includes('tailwind') ||
-              id.includes('clsx') ||
-              id.includes('class-variance-authority') ||
-              id.includes('tailwind-merge')
+              !id.includes('react') &&
+              !id.includes('react-dom') &&
+              !id.includes('react-router') &&
+              !id.includes('react-redux') &&
+              !id.includes('react-hook-form') &&
+              !id.includes('react-toastify') &&
+              !id.includes('react-error-boundary')
             ) {
-              return 'styles-vendor';
+              return 'vendor';
             }
-
-            // Other node_modules
-            return 'vendor';
           }
         },
       },
