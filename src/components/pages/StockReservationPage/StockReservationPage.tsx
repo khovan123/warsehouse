@@ -2,6 +2,8 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -85,19 +87,28 @@ const columns: ColumnDef<Reservation>[] = [
 ];
 
 const StockReservationPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<Reservation, unknown> = {
     columns,
     data: reservations,
   };
 
   const toolbar = (
-    <>
-      <Button size={'sm'}>
-        <Plus /> New Reservation
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
+      <Button size={isMobile ? 'default' : 'sm'}>
+        <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New Reservation
       </Button>
 
       <Select>
-        <SelectTrigger className="w-32 text-xs rounded-full h-8 border border-border">
+        <SelectTrigger
+          className={cn(
+            'text-xs rounded-full h-8 border border-border',
+            isMobile ? 'w-full' : 'w-32'
+          )}
+        >
           <SelectValue placeholder="All" />
         </SelectTrigger>
         <SelectContent className="w-fit border border-border">
@@ -119,13 +130,21 @@ const StockReservationPage: React.FC = () => {
       <Input
         type="text"
         placeholder="Search by reservation, product, order..."
-        className="rounded-full flex-1 min-w-40 focus:outline-none h-8"
+        className={cn(
+          'rounded-full focus:outline-none h-8',
+          isMobile ? 'w-full' : 'flex-1 min-w-40'
+        )}
       />
-    </>
+    </div>
   );
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 text-[11px] flex justify-between">
+    <div
+      className={cn(
+        'border-t border-border bg-card text-[11px] flex',
+        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>
         1 - {reservations.length} of {reservations.length} reservations
       </span>
@@ -140,7 +159,7 @@ const StockReservationPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3">
+      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
         <DataTable {...tableProps} />
       </div>
     </PageLayout>

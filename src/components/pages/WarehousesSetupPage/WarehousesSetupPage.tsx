@@ -3,6 +3,8 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -72,6 +74,8 @@ const binColumns: ColumnDef<Bin>[] = [
 ];
 
 const WarehousesSetupPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const warehouseTableProps: DataTableProps<Warehouse, unknown> = {
     columns: warehouseColumns,
     data: warehouses,
@@ -83,14 +87,14 @@ const WarehousesSetupPage: React.FC = () => {
   };
 
   const toolbar = (
-    <>
-      <Button className="rounded" size={'sm'}>
-        <Plus /> New warehouse
+    <div className={isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2'}>
+      <Button className="rounded" size={isMobile ? 'default' : 'sm'}>
+        <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New warehouse
       </Button>
-      <Button className="rounded" size={'sm'}>
-        <Plus /> New bin
+      <Button className="rounded" size={isMobile ? 'default' : 'sm'}>
+        <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New bin
       </Button>
-    </>
+    </div>
   );
 
   return (
@@ -100,16 +104,31 @@ const WarehousesSetupPage: React.FC = () => {
       toolbar={toolbar}
     >
       <div className="flex-1 overflow-auto bg-background">
-        <div className="grid gap-4 px-6 py-3 md:grid-cols-2">
+        <div
+          className={cn(
+            'grid gap-4',
+            isMobile ? 'px-3 py-2 grid-cols-1' : 'px-6 py-3 md:grid-cols-2'
+          )}
+        >
           <div className="border border-border rounded bg-card overflow-hidden">
-            <header className="px-3 py-2 border-b border-border bg-background text-xs font-semibold">
+            <header
+              className={cn(
+                'border-b border-border bg-background text-xs font-semibold',
+                isMobile ? 'px-2 py-1.5' : 'px-3 py-2'
+              )}
+            >
               Warehouses
             </header>
             <DataTable {...warehouseTableProps} className="border-0 rounded-none" />
           </div>
 
           <div className="border border-border rounded bg-card overflow-hidden">
-            <header className="px-3 py-2 border-b border-border bg-background text-xs font-semibold">
+            <header
+              className={cn(
+                'border-b border-border bg-background text-xs font-semibold',
+                isMobile ? 'px-2 py-1.5' : 'px-3 py-2'
+              )}
+            >
               Storage Bins
             </header>
             <DataTable {...binTableProps} className="border-0 rounded-none" />

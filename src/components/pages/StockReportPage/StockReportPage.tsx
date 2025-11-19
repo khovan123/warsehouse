@@ -2,6 +2,8 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import { FilterSelect } from '../../molecules/FilterSelect';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { DataTable } from '../../ui/data-table';
@@ -74,16 +76,20 @@ const columns: ColumnDef<StockRow>[] = [
 ];
 
 const StockReportPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<StockRow, unknown> = {
     columns,
     data: rows,
   };
   const toolbar = (
-    <>
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
       <FilterSelect
         defaultValue="all-warehouses"
         placeholder="All warehouses"
-        triggerClassName="w-36"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-36')}
         options={[
           { value: 'all-warehouses', label: 'All warehouses' },
           { value: 'main-dc', label: 'Main DC' },
@@ -93,7 +99,7 @@ const StockReportPage: React.FC = () => {
       <FilterSelect
         defaultValue="all-categories"
         placeholder="All categories"
-        triggerClassName="w-36"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-36')}
         options={[
           { value: 'all-categories', label: 'All categories' },
           { value: 'apparel', label: 'Apparel' },
@@ -103,13 +109,18 @@ const StockReportPage: React.FC = () => {
       <Input
         type="text"
         placeholder="Search product..."
-        className="rounded-full flex-1 min-w-40 h-8"
+        className={cn('rounded-full h-8', isMobile ? 'w-full' : 'flex-1 min-w-40')}
       />
-    </>
+    </div>
   );
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 text-[11px] flex justify-between">
+    <div
+      className={cn(
+        'border-t border-border bg-card text-[11px] flex',
+        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>
         1 - {rows.length} of {rows.length} rows
       </span>
@@ -124,7 +135,7 @@ const StockReportPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3">
+      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
         <DataTable {...tableProps} />
       </div>
     </PageLayout>

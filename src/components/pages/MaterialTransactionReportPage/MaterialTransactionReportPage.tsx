@@ -1,6 +1,8 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import { FilterSelect } from '../../molecules/FilterSelect';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { DataTable } from '../../ui/data-table';
@@ -116,18 +118,30 @@ const columns: ColumnDef<Transaction>[] = [
 ];
 
 const MaterialTransactionReportPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<Transaction, unknown> = {
     columns,
     data: transactions,
   };
   const toolbar = (
-    <>
-      <Input type="date" className="rounded-full text-xs w-fit h-8" defaultValue="2025-11-15" />
-      <Input type="date" className="rounded-full text-xs w-fit h-8" defaultValue="2025-11-16" />
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
+      <Input
+        type="date"
+        className={cn('rounded-full text-xs h-8', isMobile ? 'w-full' : 'w-fit')}
+        defaultValue="2025-11-15"
+      />
+      <Input
+        type="date"
+        className={cn('rounded-full text-xs h-8', isMobile ? 'w-full' : 'w-fit')}
+        defaultValue="2025-11-16"
+      />
       <FilterSelect
         defaultValue="all-types"
         placeholder="All transaction types"
-        triggerClassName="w-48"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
         options={[
           { value: 'all-types', label: 'All transaction types' },
           { value: 'receipt', label: 'Receipt' },
@@ -139,7 +153,7 @@ const MaterialTransactionReportPage: React.FC = () => {
       <FilterSelect
         defaultValue="all-warehouses"
         placeholder="All warehouses"
-        triggerClassName="w-40"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
         options={[
           { value: 'all-warehouses', label: 'All warehouses' },
           { value: 'main-dc', label: 'Main DC' },
@@ -149,15 +163,23 @@ const MaterialTransactionReportPage: React.FC = () => {
       <Input
         type="text"
         placeholder="Product / Document / Partner"
-        className="rounded-full flex-1 min-w-40 focus:outline-none h-8"
+        className={cn(
+          'rounded-full focus:outline-none h-8',
+          isMobile ? 'w-full' : 'flex-1 min-w-40'
+        )}
       />
-    </>
+    </div>
   );
 
   const totalCost = transactions.reduce((sum, tx) => sum + tx.cost * tx.movementQty, 0);
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 text-[11px] flex justify-between">
+    <div
+      className={cn(
+        'border-t border-border bg-card text-[11px] flex',
+        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>
         1 - {transactions.length} of {transactions.length} lines
       </span>
@@ -172,7 +194,7 @@ const MaterialTransactionReportPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3">
+      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
         <DataTable {...tableProps} />
       </div>
     </PageLayout>

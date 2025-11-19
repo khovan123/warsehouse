@@ -1,6 +1,8 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import { FilterSelect } from '../../molecules/FilterSelect';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { Button } from '../../ui/button';
@@ -102,20 +104,24 @@ const columns: ColumnDef<CostRun>[] = [
 ];
 
 const GenerateAverageCostsPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<CostRun, unknown> = {
     columns,
     data: costRuns,
   };
 
   const toolbar = (
-    <>
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
       <Button className="rounded bg-primary text-primary-foreground px-4 py-1.5 hover:bg-primary/80 transition">
         Run cost calculation
       </Button>
       <FilterSelect
         defaultValue="org-all"
         placeholder="Organization: All"
-        triggerClassName="w-48"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
         options={[
           { value: 'org-all', label: 'Organization: All' },
           { value: 'org-1', label: 'Org 1' },
@@ -125,13 +131,13 @@ const GenerateAverageCostsPage: React.FC = () => {
       <FilterSelect
         defaultValue="rule-default"
         placeholder="Costing Rule: Default"
-        triggerClassName="w-48"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
         options={[
           { value: 'rule-default', label: 'Costing Rule: Default' },
           { value: 'rule-warehouse', label: 'Warehouse specific' },
         ]}
       />
-    </>
+    </div>
   );
 
   return (
@@ -140,8 +146,8 @@ const GenerateAverageCostsPage: React.FC = () => {
       description="Schedule and monitor the costing background process defined in Inventory Accuracy."
       toolbar={toolbar}
     >
-      <div className="px-6 py-3 space-y-4">
-        <div className="grid gap-3 sm:grid-cols-3">
+      <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+        <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
           {metrics.map((metric) => (
             <div
               key={metric.label}
@@ -156,7 +162,12 @@ const GenerateAverageCostsPage: React.FC = () => {
         </div>
 
         <div className="border border-border rounded bg-card overflow-hidden">
-          <header className="px-4 py-2 border-b border-border text-xs font-semibold">
+          <header
+            className={cn(
+              'border-b border-border text-xs font-semibold',
+              isMobile ? 'px-2 py-1.5' : 'px-4 py-2'
+            )}
+          >
             Costing Jobs
           </header>
           <DataTable {...tableProps} className="border-0 rounded-none" />
