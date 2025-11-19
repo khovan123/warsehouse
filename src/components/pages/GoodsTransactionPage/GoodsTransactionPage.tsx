@@ -1,6 +1,8 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { DataTable } from '../../ui/data-table';
 import { Input } from '../../ui/input';
@@ -78,15 +80,24 @@ const columns: ColumnDef<Transaction>[] = [
 ];
 
 const GoodsTransactionPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<Transaction, unknown> = {
     columns,
     data: transactions,
   };
 
   const toolbar = (
-    <>
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
       <Select>
-        <SelectTrigger className="w-40 text-xs rounded-full h-8 border border-border">
+        <SelectTrigger
+          className={cn(
+            'text-xs rounded-full h-8 border border-border',
+            isMobile ? 'w-full' : 'w-40'
+          )}
+        >
           <SelectValue placeholder="All transaction types" />
         </SelectTrigger>
         <SelectContent className="w-fit border border-border">
@@ -109,7 +120,12 @@ const GoodsTransactionPage: React.FC = () => {
       </Select>
 
       <Select>
-        <SelectTrigger className="w-36 text-xs rounded-full h-8 border border-border">
+        <SelectTrigger
+          className={cn(
+            'text-xs rounded-full h-8 border border-border',
+            isMobile ? 'w-full' : 'w-36'
+          )}
+        >
           <SelectValue placeholder="All warehouses" />
         </SelectTrigger>
         <SelectContent className="w-fit border border-border">
@@ -127,13 +143,21 @@ const GoodsTransactionPage: React.FC = () => {
       <Input
         type="text"
         placeholder="Filter by product, doc, business partner..."
-        className="h-8 rounded-full flex-1 min-w-40 focus:outline-none"
+        className={cn(
+          'h-8 rounded-full focus:outline-none',
+          isMobile ? 'w-full' : 'flex-1 min-w-40'
+        )}
       />
-    </>
+    </div>
   );
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 text-[11px] flex justify-between">
+    <div
+      className={cn(
+        'border-t border-border bg-card text-[11px] flex',
+        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>
         1 - {transactions.length} of {transactions.length} transactions
       </span>
@@ -148,7 +172,7 @@ const GoodsTransactionPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3">
+      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
         <DataTable {...tableProps} />
       </div>
     </PageLayout>

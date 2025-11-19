@@ -9,6 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../components/ui/select';
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { Badge } from '../../ui/badge';
 import { Button } from '../../ui/button';
@@ -114,24 +116,36 @@ const columns: ColumnDef<Movement>[] = [
 ];
 
 const GoodsMovementPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<Movement, unknown> = {
     columns,
     data: movements,
   };
   const toolbar = (
-    <>
-      <Button size={'sm'}>
-        <Plus /> New Movement
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
+      <Button size={isMobile ? 'default' : 'sm'}>
+        <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New Movement
       </Button>
 
       <Input
         type="text"
         placeholder="Search by document, warehouse..."
-        className="h-8 rounded-full border border-border bg-background px-3 text-xs flex-1 min-w-40 focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-xs"
+        className={cn(
+          'h-8 rounded-full border border-border bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-xs',
+          isMobile ? 'w-full' : 'flex-1 min-w-40'
+        )}
       />
 
       <Select>
-        <SelectTrigger className="w-36 text-xs rounded-full h-8 border border-border">
+        <SelectTrigger
+          className={cn(
+            'text-xs rounded-full h-8 border border-border',
+            isMobile ? 'w-full' : 'w-36'
+          )}
+        >
           <SelectValue placeholder="All warehouses" />
         </SelectTrigger>
         <SelectContent className="w-fit border border-border">
@@ -146,11 +160,16 @@ const GoodsMovementPage: React.FC = () => {
           </SelectItem>
         </SelectContent>
       </Select>
-    </>
+    </div>
   );
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 text-[11px] flex justify-between">
+    <div
+      className={cn(
+        'border-t border-border bg-card text-[11px] flex',
+        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>
         1 <Minus /> {movements.length} of {movements.length} movements
       </span>
@@ -165,7 +184,7 @@ const GoodsMovementPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3">
+      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
         <DataTable {...tableProps} />
       </div>
     </PageLayout>

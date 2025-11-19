@@ -2,6 +2,8 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Download } from 'lucide-react';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import { FilterSelect } from '../../molecules/FilterSelect';
 import { MetricCard } from '../../molecules/MetricCard';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
@@ -87,17 +89,21 @@ const columns: ColumnDef<ValuedStockRow>[] = [
 ];
 
 const ValuedStockReportPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<ValuedStockRow, unknown> = {
     columns,
     data: valuedRows,
   };
   const toolbar = (
-    <>
-      <Input type="date" className="rounded-full w-fit h-8" />
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
+      <Input type="date" className={cn('rounded-full h-8', isMobile ? 'w-full' : 'w-fit')} />
       <FilterSelect
         defaultValue="all-warehouses"
         placeholder="Warehouse: All"
-        triggerClassName="w-44"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-44')}
         options={[
           { value: 'all-warehouses', label: 'Warehouse: All' },
           { value: 'main-dc', label: 'Main DC' },
@@ -107,21 +113,26 @@ const ValuedStockReportPage: React.FC = () => {
       <FilterSelect
         defaultValue="all-categories"
         placeholder="Product category: All"
-        triggerClassName="w-48"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
         options={[
           { value: 'all-categories', label: 'Product category: All' },
           { value: 'apparel', label: 'Apparel' },
           { value: 'footwear', label: 'Footwear' },
         ]}
       />
-      <Button className="rounded-full text-xs">
-        Export CSV <Download />
+      <Button className={cn('rounded-full text-xs', isMobile ? 'w-full' : '')}>
+        Export CSV <Download className={isMobile ? 'ml-2 h-4 w-4' : 'ml-1 h-3 w-3'} />
       </Button>
-    </>
+    </div>
   );
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 text-[11px] flex justify-between">
+    <div
+      className={cn(
+        'border-t border-border bg-card text-[11px] flex',
+        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>
         1 - {valuedRows.length} of {valuedRows.length} products
       </span>
@@ -136,8 +147,8 @@ const ValuedStockReportPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3 space-y-4">
-        <div className="grid gap-3 sm:grid-cols-3">
+      <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+        <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
           {valuationSummary.map((item) => (
             <MetricCard key={item.label} label={item.label} value={item.value} />
           ))}

@@ -2,6 +2,8 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Download, X } from 'lucide-react';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import { FilterSelect } from '../../molecules/FilterSelect';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { Badge } from '../../ui/badge';
@@ -113,29 +115,38 @@ const columns: ColumnDef<Product>[] = [
 ];
 
 const ProductManagementPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<Product, unknown> = {
     columns,
     data: DEMO_PRODUCTS,
   };
   const toolbar = (
-    <>
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
       <Button
         type="button"
         variant={'outline'}
-        size={'sm'}
+        size={isMobile ? 'default' : 'sm'}
         className="rounded px-3 py-1.5 cursor-not-allowed border border-border hover:bg-muted-foreground"
       >
         Details
       </Button>
-      <Button type="button" size={'sm'} className="rounded px-4 py-1.5 ">
+      <Button type="button" size={isMobile ? 'default' : 'sm'} className="rounded px-4 py-1.5 ">
         Export
-        <Download size={12} className="text-primary-foreground" />
+        <Download size={isMobile ? 16 : 12} className="text-primary-foreground" />
       </Button>
-    </>
+    </div>
   );
 
   const headerMeta = (
-    <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
+    <div
+      className={cn(
+        'flex flex-wrap items-center gap-3 text-xs',
+        isMobile ? 'flex-col' : 'justify-between'
+      )}
+    >
       <div className="flex items-center gap-2">
         <span>Result for:</span>
         <div className="inline-flex items-center rounded bg-card border border-border px-2 py-1">
@@ -156,24 +167,29 @@ const ProductManagementPage: React.FC = () => {
   );
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 flex items-center justify-between text-[11px]">
+    <div
+      className={cn(
+        'border-t border-border bg-card flex items-center text-[11px]',
+        isMobile ? 'px-3 py-2 flex-col gap-3' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>1 - {DEMO_PRODUCTS.length} of 726 items</span>
       <div className="flex items-center gap-1">
-        <Button className="size-6">
+        <Button className={isMobile ? 'size-8' : 'size-6'}>
           <ChevronsLeft />
         </Button>
-        <Button className="size-6">
+        <Button className={isMobile ? 'size-8' : 'size-6'}>
           <ChevronLeft />
         </Button>
         {[1, 2, 3, 4].map((page) => (
-          <Button key={page} className={'size-6'}>
+          <Button key={page} className={isMobile ? 'size-8' : 'size-6'}>
             {page}
           </Button>
         ))}
-        <Button className="size-6">
+        <Button className={isMobile ? 'size-8' : 'size-6'}>
           <ChevronRight />
         </Button>
-        <Button className="size-6">
+        <Button className={isMobile ? 'size-8' : 'size-6'}>
           <ChevronsRight />
         </Button>
       </div>
@@ -181,7 +197,7 @@ const ProductManagementPage: React.FC = () => {
         <span>Items per page:</span>
         <FilterSelect
           defaultValue="200"
-          triggerClassName="w-20 rounded h-8"
+          triggerClassName={cn('rounded h-8', isMobile ? 'w-full' : 'w-20')}
           options={[
             { value: '200', label: '200' },
             { value: '100', label: '100' },
@@ -200,7 +216,7 @@ const ProductManagementPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3">
+      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
         <DataTable {...tableProps} />
       </div>
     </PageLayout>
