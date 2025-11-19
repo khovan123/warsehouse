@@ -9,13 +9,9 @@ export type SwitchRouterProps = {
   loginedIn: boolean;
 };
 
-type LayoutTemplateProps = {
-  children: React.ReactNode;
-};
-
 export type PrivateRouteConfig = {
   id: string;
-  template: React.ComponentType<LayoutTemplateProps>;
+  template: React.ComponentType;
   routes: RouteConfig[];
 };
 
