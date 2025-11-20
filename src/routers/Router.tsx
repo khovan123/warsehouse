@@ -7,7 +7,7 @@ import MainLayout from '@/components/templates/MainLayout/MainLayout';
 import PublicLayOut from '@/components/templates/PublicLayout/PublicLayOut';
 
 import { LOGIN_PATH, PRODUCT_MANAGEMENT_PATH } from './route.constants';
-import { LandingPage, PRIVATE_ROUTES, PUBLIC_ROUTES } from './route.definitions';
+import { PRIVATE_ROUTES, PUBLIC_ROUTES } from './route.definitions';
 import type { RouterType, SwitchRouterProps } from './type';
 
 const NotFoundPage = React.lazy(() =>
@@ -54,6 +54,8 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
         ))}
         {loginedIn ? (
           <>
+            <Route path="/" element={<Navigate to={PRODUCT_MANAGEMENT_PATH} replace />} />
+
             {PRIVATE_ROUTES.map(({ id, routes, template: LayoutTemplate }) => (
               <Route
                 element={
@@ -79,14 +81,6 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
                 </>
               </Route>
             ))}
-            <Route
-              path="/"
-              element={
-                <Suspense fallback={<SpinderCustom />}>
-                  <Navigate to={PRODUCT_MANAGEMENT_PATH} replace />
-                </Suspense>
-              }
-            />
 
             <Route
               path="/error"
@@ -108,16 +102,6 @@ const SwitchRouter: React.FC<SwitchRouterProps> = ({ loginedIn }) => {
           </>
         ) : (
           <>
-            <Route
-              path="/"
-              element={
-                <Suspense fallback={<SpinderCustom />}>
-                  <PublicLayOut>
-                    <LandingPage />
-                  </PublicLayOut>
-                </Suspense>
-              }
-            />
             <Route path="*" element={<Navigate to={LOGIN_PATH} replace />} />
           </>
         )}
