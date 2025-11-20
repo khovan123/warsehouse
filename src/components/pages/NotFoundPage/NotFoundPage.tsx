@@ -1,9 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router';
 
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import { PRODUCT_MANAGEMENT_PATH } from '@/routers/route.constants';
 
 export const NotFoundPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   return (
     <main className="relative min-h-screen flex items-center justify-center bg-linear-to-br from-secondary via-background to-black text-secondary-foreground px-4">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -35,10 +39,18 @@ export const NotFoundPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+          <div
+            className={cn(
+              'mt-4 flex items-center justify-center gap-3 w-full',
+              isMobile ? 'flex-col' : 'flex-row'
+            )}
+          >
             <Link
               to={PRODUCT_MANAGEMENT_PATH}
-              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-secondary shadow-lg shadow-primary/40 hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition"
+              className={cn(
+                'inline-flex items-center justify-center gap-2 rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-secondary shadow-lg shadow-primary/40 hover:bg-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition',
+                isMobile ? 'w-full' : 'w-auto'
+              )}
             >
               <span>Go Home</span>
               <span className="inline-block translate-x-0 transition-transform group-hover:translate-x-0.5">
@@ -48,7 +60,10 @@ export const NotFoundPage: React.FC = () => {
 
             <button
               type="button"
-              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground hover:bg-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition"
+              className={cn(
+                'inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground hover:bg-primary/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 transition',
+                isMobile ? 'w-full' : 'w-auto'
+              )}
             >
               Contact support
             </button>

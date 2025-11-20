@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router';
 
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import { PRODUCT_MANAGEMENT_PATH } from '@/routers/route.constants';
 
 type ErrorPageProps = {
@@ -10,6 +12,7 @@ type ErrorPageProps = {
 
 export const ErrorPage: React.FC<ErrorPageProps> = ({ error, onRetry }) => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const message =
     error instanceof Error
@@ -54,17 +57,28 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({ error, onRetry }) => {
             <p className="text-sm text-muted max-w-md">{message}</p>
           </div>
 
-          <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+          <div
+            className={cn(
+              'mt-4 flex items-center justify-center gap-3 w-full',
+              isMobile ? 'flex-col' : 'flex-row'
+            )}
+          >
             <button
               onClick={handleRetry}
-              className="cursor-pointer inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-destructive px-6 py-2.5 text-sm font-semibold text-white shadow-[0_20px_45px_rgba(217,45,32,0.35)] hover:bg-destructive-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive transition"
+              className={cn(
+                'cursor-pointer inline-flex items-center justify-center gap-2 rounded-full bg-destructive px-6 py-2.5 text-sm font-semibold text-white shadow-[0_20px_45px_rgba(217,45,32,0.35)] hover:bg-destructive-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive transition',
+                isMobile ? 'w-full' : 'w-auto'
+              )}
             >
               Try Again
             </button>
 
             <Link
               to={PRODUCT_MANAGEMENT_PATH}
-              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive transition"
+              className={cn(
+                'inline-flex items-center justify-center gap-2 rounded-full border border-border px-6 py-2.5 text-sm font-medium text-foreground hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive transition',
+                isMobile ? 'w-full' : 'w-auto'
+              )}
             >
               Go Home
             </Link>

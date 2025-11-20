@@ -1,4 +1,4 @@
-export const LANDING_PATH = '/wms/landing';
+export const LANDING_PATH = '/';
 export const LOGIN_PATH = '/wms/auth/login';
 export const LOGOUT_PATH = '/wms/auth/logout';
 export const TOP_PATH = '/wms';
