@@ -19,7 +19,7 @@ export const NotFoundPage: React.FC = () => {
 
       <section className="relative z-10 w-full max-w-lg rounded-3xl border border-border/70 bg-card/80 px-8 py-10 shadow-2xl backdrop-blur-xl text-foreground">
         <div className="flex flex-col items-center gap-4 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-muted">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-4 py-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
             Page not found
           </span>
@@ -33,7 +33,7 @@ export const NotFoundPage: React.FC = () => {
 
           <div className="space-y-2">
             <h2 className="text-xl font-semibold">Oops, we couldn’t find that page.</h2>
-            <p className="text-sm text-muted">
+            <p className="text-sm text-muted-foreground">
               The link may be broken or the page may have been removed. You can go back to your
               Openbravo workspace and continue from there.
             </p>

@@ -1,10 +1,12 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { FilterSelect } from '@/components/molecules/FilterSelect';
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
-import { Input } from '@/components/ui/input';
+import { Toolbar, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -124,56 +126,10 @@ const MaterialTransactionReportPage: React.FC = () => {
     columns,
     data: transactions,
   };
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <Input
-        type="date"
-        className={cn('rounded-full text-xs h-8', isMobile ? 'w-full' : 'w-fit')}
-        defaultValue="2025-11-15"
-      />
-      <Input
-        type="date"
-        className={cn('rounded-full text-xs h-8', isMobile ? 'w-full' : 'w-fit')}
-        defaultValue="2025-11-16"
-      />
-      <FilterSelect
-        defaultValue="all-types"
-        placeholder="All transaction types"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
-        options={[
-          { value: 'all-types', label: 'All transaction types' },
-          { value: 'receipt', label: 'Receipt' },
-          { value: 'shipment', label: 'Shipment' },
-          { value: 'movement', label: 'Movement' },
-          { value: 'inventory', label: 'Inventory' },
-        ]}
-      />
-      <FilterSelect
-        defaultValue="all-warehouses"
-        placeholder="All warehouses"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
-        options={[
-          { value: 'all-warehouses', label: 'All warehouses' },
-          { value: 'main-dc', label: 'Main DC' },
-          { value: 'store-01', label: 'Store 01' },
-        ]}
-      />
-      <Input
-        type="text"
-        placeholder="Product / Document / Partner"
-        className={cn(
-          'rounded-full text-xs focus:outline-none h-8 placeholder:text-xs',
-          isMobile ? 'w-full' : 'flex-1 min-w-40'
-        )}
-      />
-    </div>
-  );
 
   const totalCost = transactions.reduce((sum, tx) => sum + tx.cost * tx.movementQty, 0);
 
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card text-[11px] flex',
@@ -188,16 +144,45 @@ const MaterialTransactionReportPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="MATERIAL TRANSACTION REPORT"
-      description="Lists all documents (shipments or receipts) grouped by Business Partner, aligning with Openbravo's analysis menu."
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+    <PageOverview>
+      <PageHeader
+        title="MATERIAL TRANSACTION REPORT"
+        description="Lists all documents (shipments or receipts) grouped by Business Partner, aligning with Openbravo's analysis menu."
+      />
+      <Toolbar>
+        <FilterSelect
+          defaultValue="all-types"
+          placeholder="All transaction types"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
+          options={[
+            { value: 'all-types', label: 'All transaction types' },
+            { value: 'receipt', label: 'Receipt' },
+            { value: 'shipment', label: 'Shipment' },
+            { value: 'movement', label: 'Movement' },
+            { value: 'inventory', label: 'Inventory' },
+          ]}
+        />
+        <FilterSelect
+          defaultValue="all-warehouses"
+          placeholder="All warehouses"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
+          options={[
+            { value: 'all-warehouses', label: 'All warehouses' },
+            { value: 'main-dc', label: 'Main DC' },
+            { value: 'store-01', label: 'Store 01' },
+          ]}
+        />
+        <ToolbarInput type="date" defaultValue="2025-11-15" />
+        <ToolbarInput type="date" defaultValue="2025-11-16" />
+        <ToolbarInput type="text" placeholder="Search by criteria" />
+      </Toolbar>
+      <PageContent>
+        <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 

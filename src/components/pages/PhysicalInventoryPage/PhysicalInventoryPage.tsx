@@ -1,12 +1,15 @@
 // src/components/pages/Transactions/PhysicalInventoryPage.tsx
 import { type ColumnDef } from '@tanstack/react-table';
+import { Plus } from 'lucide-react';
 import React from 'react';
 
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
+import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -98,35 +101,8 @@ const PhysicalInventoryPage: React.FC = () => {
     columns,
     data: inventories,
   };
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <Button size={isMobile ? 'default' : 'sm'} className="rounded-full bg-primary px-4 py-1.5">
-        + New Inventory
-      </Button>
-      <Button
-        variant={'outline'}
-        size={isMobile ? 'default' : 'sm'}
-        type="button"
-        disabled
-        className="rounded-full border border-border cursor-not-allowed"
-      >
-        Count List
-      </Button>
-      <Button
-        variant={'outline'}
-        size={isMobile ? 'default' : 'sm'}
-        type="button"
-        disabled
-        className="rounded-full border border-border cursor-not-allowed"
-      >
-        Process Inventory
-      </Button>
-    </div>
-  );
 
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card text-[11px] flex',
@@ -141,16 +117,25 @@ const PhysicalInventoryPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="PHYSICAL INVENTORY"
-      description="Create and manage physical inventory documents to count goods and update stock quantities."
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+    <PageOverview>
+      <PageHeader
+        title="PHYSICAL INVENTORY"
+        description="Create and manage physical inventory documents to count goods and update stock quantities."
+      />
+      <Toolbar>
+        <ToolbarButton>
+          <Plus size={isMobile ? 16 : 12} /> New Inventory
+        </ToolbarButton>
+        <ToolbarButton disabled>Count List</ToolbarButton>
+        <ToolbarButton disabled>Process Inventory</ToolbarButton>
+      </Toolbar>
+      <PageContent>
+        <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 

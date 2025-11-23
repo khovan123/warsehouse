@@ -11,7 +11,7 @@ const LandingPage: React.FC = () => {
     <>
       <header
         className={cn(
-          'pt-10 pb-12 flex items-center gap-10',
+          'flex-1 max-w-6xl w-full mx-auto py-10 space-y-10 pt-10 pb-12 flex items-center gap-10',
           isMobile ? 'flex-col' : 'lg:pt-16 lg:pb-16 flex-row md:px-16'
         )}
       >

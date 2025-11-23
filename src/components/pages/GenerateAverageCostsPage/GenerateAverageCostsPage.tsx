@@ -1,10 +1,12 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { FilterSelect } from '@/components/molecules/FilterSelect';
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
-import { Button } from '@/components/ui/button';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
+import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -111,69 +113,62 @@ const GenerateAverageCostsPage: React.FC = () => {
     data: costRuns,
   };
 
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <Button className="rounded-full" size={'sm'}>
-        Run cost calculation
-      </Button>
-      <FilterSelect
-        defaultValue="org-all"
-        placeholder="Organization: All"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
-        options={[
-          { value: 'org-all', label: 'Organization: All' },
-          { value: 'org-1', label: 'Org 1' },
-          { value: 'org-2', label: 'Org 2' },
-        ]}
-      />
-      <FilterSelect
-        defaultValue="rule-default"
-        placeholder="Costing Rule: Default"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
-        options={[
-          { value: 'rule-default', label: 'Costing Rule: Default' },
-          { value: 'rule-warehouse', label: 'Warehouse specific' },
-        ]}
-      />
-    </div>
-  );
-
   return (
-    <PageLayout
-      title="GENERATE AVERAGE COSTS"
-      description="Schedule and monitor the costing background process defined in Inventory Accuracy."
-      toolbar={toolbar}
-    >
-      <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
-          {metrics.map((metric) => (
-            <div
-              key={metric.label}
-              className="rounded-xl border border-border bg-card px-4 py-3 text-xs"
-            >
-              <p className="text-muted-foreground uppercase tracking-wide text-xs">
-                {metric.label}
-              </p>
-              <p className="mt-2 text-lg font-semibold">{metric.value}</p>
-            </div>
-          ))}
-        </div>
+    <PageOverview>
+      <PageHeader
+        title="GENERATE AVERAGE COSTS"
+        description="Schedule and monitor the costing background process defined in Inventory Accuracy."
+      />
+      <Toolbar>
+        <ToolbarButton>Run cost calculation</ToolbarButton>
+        <FilterSelect
+          defaultValue="org-all"
+          placeholder="Organization: All"
+          options={[
+            { value: 'org-all', label: 'Organization: All' },
+            { value: 'org-1', label: 'Org 1' },
+            { value: 'org-2', label: 'Org 2' },
+          ]}
+        />
+        <FilterSelect
+          defaultValue="rule-default"
+          placeholder="Costing Rule: Default"
+          options={[
+            { value: 'rule-default', label: 'Costing Rule: Default' },
+            { value: 'rule-warehouse', label: 'Warehouse specific' },
+          ]}
+        />
+      </Toolbar>
+      <PageContent>
+        <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
+            {metrics.map((metric) => (
+              <div
+                key={metric.label}
+                className="rounded-xl border border-border bg-card px-4 py-3 text-xs"
+              >
+                <p className="text-muted-foreground uppercase tracking-wide text-xs">
+                  {metric.label}
+                </p>
+                <p className="mt-2 text-lg font-semibold">{metric.value}</p>
+              </div>
+            ))}
+          </div>
 
-        <div className="border border-border rounded bg-card overflow-hidden">
-          <header
-            className={cn(
-              'border-b border-border text-xs font-semibold',
-              isMobile ? 'px-2 py-1.5' : 'px-4 py-2'
-            )}
-          >
-            Costing Jobs
-          </header>
-          <DataTable {...tableProps} className="border-0 rounded-none" />
+          <div className="border border-border rounded bg-card overflow-hidden">
+            <header
+              className={cn(
+                'border-b border-border text-xs font-semibold',
+                isMobile ? 'px-2 py-1.5' : 'px-4 py-2'
+              )}
+            >
+              Costing Jobs
+            </header>
+            <DataTable {...tableProps} className="border-0 rounded-none" />
+          </div>
         </div>
-      </div>
-    </PageLayout>
+      </PageContent>
+    </PageOverview>
   );
 };
 

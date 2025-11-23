@@ -1,8 +1,8 @@
 import { ChevronRight } from 'lucide-react';
 import { Link } from 'react-router';
 
-import NavUser from '@/components/organisms/NavUser/NavUser';
 import { SearchForm } from '@/components/organisms/SearchForm/SearchForm';
+import UserDropdown from '@/components/organisms/UserDropdown/UserDropdown';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   Sidebar,
@@ -17,20 +17,23 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { usePageContext } from '@/context/page-context';
 import { cn } from '@/lib/utils';
+import { LANDING_PATH } from '@/routers/route.constants';
 import { isActivePath } from '@/utils/navigation';
 
 import type { SideBarProps } from './type';
 
 const AppSideBar = ({ activePath, sections, iconSize = 4, ...props }: SideBarProps) => {
+  const { setBreadCrumb } = usePageContext();
   return (
     <Sidebar {...props}>
       <SidebarHeader className="p-0">
         <div className="bg-primary px-2 h-16 flex items-center justify-center">
-          <p>
+          <Link to={LANDING_PATH}>
             <span className="text-lg font-semibold text-primary-foreground">OpenWMS</span>
             <span className="text-[11px] hidden sm:inline">Warehouse Management</span>
-          </p>
+          </Link>
         </div>
         <SearchForm />
       </SidebarHeader>
@@ -62,6 +65,9 @@ const AppSideBar = ({ activePath, sections, iconSize = 4, ...props }: SideBarPro
                                 ? 'text-primary!'
                                 : 'hover:text-primary'
                             )}
+                            onClick={() => {
+                              setBreadCrumb({ group: name, items: [{ path, label }] });
+                            }}
                           >
                             <Link to={path}>
                               <Icon size={iconSize} />
@@ -79,9 +85,14 @@ const AppSideBar = ({ activePath, sections, iconSize = 4, ...props }: SideBarPro
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser
-          user={{ name: 'shadcn', email: 'shadcn.io', avatar: 'https://github.com/shadcn.png' }}
-        />
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <UserDropdown
+              user={{ name: 'shadcn', email: 'shadcn.io', avatar: 'https://github.com/shadcn.png' }}
+              inSidebar={true}
+            />
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

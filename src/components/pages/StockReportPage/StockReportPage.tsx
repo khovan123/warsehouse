@@ -1,11 +1,12 @@
-// src/components/pages/Analysis/StockReportPage.tsx
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { FilterSelect } from '@/components/molecules/FilterSelect';
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
-import { Input } from '@/components/ui/input';
+import { Toolbar, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -82,42 +83,8 @@ const StockReportPage: React.FC = () => {
     columns,
     data: rows,
   };
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <FilterSelect
-        defaultValue="all-warehouses"
-        placeholder="All warehouses"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-36')}
-        options={[
-          { value: 'all-warehouses', label: 'All warehouses' },
-          { value: 'main-dc', label: 'Main DC' },
-          { value: 'store-01', label: 'Store 01' },
-        ]}
-      />
-      <FilterSelect
-        defaultValue="all-categories"
-        placeholder="All categories"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-36')}
-        options={[
-          { value: 'all-categories', label: 'All categories' },
-          { value: 'apparel', label: 'Apparel' },
-          { value: 'footwear', label: 'Footwear' },
-        ]}
-      />
-      <Input
-        type="text"
-        placeholder="Search product..."
-        className={cn(
-          'rounded-full text-xs h-8 placeholder:text-xs',
-          isMobile ? 'w-full' : 'flex-1 min-w-40'
-        )}
-      />
-    </div>
-  );
 
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card text-[11px] flex',
@@ -132,16 +99,41 @@ const StockReportPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="STOCK REPORT"
-      description="Stock level of all products and their location (warehouse and storage bin) grouped by product category."
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+    <PageOverview>
+      <PageHeader
+        title="STOCK REPORT"
+        description="Stock level of all products and their location (warehouse and storage bin) grouped by product category."
+      />
+      <Toolbar>
+        <FilterSelect
+          defaultValue="all-warehouses"
+          placeholder="All warehouses"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-36')}
+          options={[
+            { value: 'all-warehouses', label: 'All warehouses' },
+            { value: 'main-dc', label: 'Main DC' },
+            { value: 'store-01', label: 'Store 01' },
+          ]}
+        />
+        <FilterSelect
+          defaultValue="all-categories"
+          placeholder="All categories"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-36')}
+          options={[
+            { value: 'all-categories', label: 'All categories' },
+            { value: 'apparel', label: 'Apparel' },
+            { value: 'footwear', label: 'Footwear' },
+          ]}
+        />
+        <ToolbarInput type="text" placeholder="Search by criteria" />
+      </Toolbar>
+      <PageContent>
+        <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 

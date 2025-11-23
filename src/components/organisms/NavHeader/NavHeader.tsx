@@ -13,7 +13,10 @@ import {
 } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { LOGIN_PATH } from '@/routers/route.constants';
+import { LOGIN_PATH, PRODUCT_MANAGEMENT_PATH } from '@/routers/route.constants';
+import { useAuthSelector } from '@/state/ducks/auth/selectors';
+
+import UserDropdown from '../UserDropdown/UserDropdown';
 
 type MenuItem = { path: string; name: string; customStyle?: string };
 
@@ -34,9 +37,9 @@ const PUBLIC_MENU: MenuItem[] = [
 
 const NavHeader: React.FC = () => {
   const isMobile = useIsMobile();
+  const authSelector = useAuthSelector();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Tự động đóng sheet khi màn hình chuyển từ mobile sang desktop
   useEffect(() => {
     if (!isMobile && mobileMenuOpen) {
       setMobileMenuOpen(false);
@@ -53,7 +56,6 @@ const NavHeader: React.FC = () => {
     }
   };
 
-  // Chỉ cho phép mở/đóng sheet trên mobile
   const handleSheetOpenChange = (open: boolean) => {
     if (isMobile) {
       setMobileMenuOpen(open);
@@ -83,7 +85,6 @@ const NavHeader: React.FC = () => {
           </div>
         </Link>
 
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-6 text-xs sm:text-sm font-medium shrink-0">
           {PUBLIC_MENU.map((item) => (
             <Link
@@ -98,18 +99,39 @@ const NavHeader: React.FC = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3 shrink-0">
-          <Link
-            to={LOGIN_PATH}
-            className="text-xs sm:text-sm font-medium hover:text-primary transition-colors whitespace-nowrap"
-          >
-            Log in
-          </Link>
-          <Link
-            to={LOGIN_PATH}
-            className="inline-flex items-center justify-center rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/80 transition-colors shadow-sm whitespace-nowrap"
-          >
-            Get started now
-          </Link>
+          {authSelector.logined ? (
+            <>
+              <Link
+                to={PRODUCT_MANAGEMENT_PATH}
+                className="inline-flex items-center justify-center rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/80 transition-colors shadow-sm whitespace-nowrap"
+              >
+                OpenWMS
+              </Link>
+
+              <UserDropdown
+                user={{
+                  name: 'shadcn',
+                  email: 'shadcn.io',
+                  avatar: 'https://github.com/shadcn.png',
+                }}
+              />
+            </>
+          ) : (
+            <>
+              <Link
+                to={LOGIN_PATH}
+                className="text-xs sm:text-sm font-medium hover:text-primary transition-colors whitespace-nowrap"
+              >
+                Log in
+              </Link>
+              <Link
+                to={LOGIN_PATH}
+                className="inline-flex items-center justify-center rounded-full px-4 py-1.5 text-xs sm:text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/80 transition-colors shadow-sm whitespace-nowrap"
+              >
+                Get started now
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="flex md:hidden items-center gap-2 shrink-0 ml-auto">
@@ -131,7 +153,6 @@ const NavHeader: React.FC = () => {
         </div>
       </div>
 
-      {/* Sheet - chỉ hiển thị và cho phép mở trên mobile */}
       <Sheet open={mobileMenuOpen && isMobile} onOpenChange={handleSheetOpenChange}>
         <SheetContent side="right" className="w-80 sm:w-96">
           <SheetHeader>

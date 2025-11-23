@@ -54,7 +54,7 @@ export const ErrorPage: React.FC<ErrorPageProps> = ({ error, onRetry }) => {
 
           <div className="space-y-2">
             <h2 className="text-xl font-semibold">Something went wrong.</h2>
-            <p className="text-sm text-muted max-w-md">{message}</p>
+            <p className="text-sm text-muted-foreground max-w-md">{message}</p>
           </div>
 
           <div

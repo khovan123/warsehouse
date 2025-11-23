@@ -2,19 +2,14 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Minus, Plus } from 'lucide-react';
 import React from 'react';
 
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Toolbar, ToolbarButton, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -122,48 +117,8 @@ const GoodsMovementPage: React.FC = () => {
     columns,
     data: movements,
   };
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <Button size={isMobile ? 'default' : 'sm'} className="rounded-full">
-        <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New Movement
-      </Button>
 
-      <Input
-        type="text"
-        placeholder="Search by document, warehouse"
-        className={cn(
-          'h-8 rounded-full border border-border bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-xs',
-          isMobile ? 'w-full' : 'flex-1 min-w-40'
-        )}
-      />
-
-      <Select>
-        <SelectTrigger
-          className={cn(
-            'text-xs rounded-full h-8 border border-border',
-            isMobile ? 'w-full' : 'w-36'
-          )}
-        >
-          <SelectValue placeholder="All warehouses" />
-        </SelectTrigger>
-        <SelectContent className="w-fit border border-border">
-          <SelectItem className="text-xs" value="All warehouses">
-            All warehouses
-          </SelectItem>
-          <SelectItem className="text-xs" value="Main DC">
-            Main DC
-          </SelectItem>
-          <SelectItem className="text-xs" value="Store 01">
-            Store 01
-          </SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
-  );
-
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card text-[11px] flex items-center',
@@ -178,16 +133,34 @@ const GoodsMovementPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="GOODS MOVEMENTS"
-      description="Move inventory between storage bins or warehouses following Openbravo Goods Movement flow."
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+    <PageOverview>
+      <PageHeader
+        title="GOODS MOVEMENTS"
+        description="Move inventory between storage bins or warehouses following Openbravo Goods Movement flow."
+      />
+      <Toolbar>
+        <ToolbarButton>
+          <Plus size={isMobile ? 16 : 12} /> New Movement
+        </ToolbarButton>
+        <FilterSelect
+          defaultValue="All warehouses"
+          placeholder="All warehouses"
+          options={[
+            { value: 'All warehouses', label: 'All warehouses' },
+            { value: 'Main DC', label: 'Main DC' },
+            { value: 'Store 01', label: 'Store 01' },
+          ]}
+        />
+
+        <ToolbarInput type="text" placeholder="Search by document, warehouse" />
+      </Toolbar>
+      <PageContent>
+        <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 

@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 type FilterOption = {
@@ -34,11 +35,14 @@ const FilterSelect = ({
   triggerClassName,
   contentClassName,
 }: FilterSelectProps) => {
+  const isMobile = useIsMobile();
+
   return (
     <Select defaultValue={defaultValue} value={value} onValueChange={onValueChange}>
       <SelectTrigger
         className={cn(
           'w-40 rounded-full h-8 border border-border text-xs bg-background',
+          isMobile ? 'w-full' : 'w-48',
           triggerClassName
         )}
       >
