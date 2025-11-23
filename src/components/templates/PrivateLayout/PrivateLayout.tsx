@@ -22,11 +22,12 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { usePageContext } from '@/context/page-context';
+import { WithPageContext } from '@/hocs/withPageContext';
 import {
   GENERATE_AVG_COSTS_PATH,
   GOODS_MOVEMENT_PATH,
@@ -84,6 +85,8 @@ const PrivateLayout: React.FC = () => {
     sections: SIDEBAR_ITEMS,
   };
 
+  const { breadcrumb } = usePageContext();
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex-1 text-foreground">
@@ -96,17 +99,28 @@ const PrivateLayout: React.FC = () => {
                 orientation="vertical"
                 className="mr-2 h-full data-[orientation=vertical]:h-4"
               />
-              <Breadcrumb>
-                <BreadcrumbList>
-                  <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="#">Management</BreadcrumbLink>
-                  </BreadcrumbItem>
-                  <BreadcrumbSeparator className="hidden md:block" />
-                  <BreadcrumbItem>
-                    <BreadcrumbPage>Product</BreadcrumbPage>
-                  </BreadcrumbItem>
-                </BreadcrumbList>
-              </Breadcrumb>
+              {breadcrumb && breadcrumb.group && (
+                <Breadcrumb>
+                  <BreadcrumbList>
+                    <BreadcrumbItem className="hidden md:block">
+                      <BreadcrumbLink href={`#${breadcrumb.group.toLowerCase()}`}>
+                        {breadcrumb.group}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className="hidden md:block" />
+                    {breadcrumb.items.map(({ label, path }, index) => (
+                      <React.Fragment key={path}>
+                        <BreadcrumbItem className="hidden md:block">
+                          <BreadcrumbLink href={path}>{label}</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        {index < breadcrumb.items.length - 1 && (
+                          <BreadcrumbSeparator className="hidden md:block" />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </BreadcrumbList>
+                </Breadcrumb>
+              )}
             </header>
             <Outlet />
           </SidebarInset>
@@ -116,4 +130,4 @@ const PrivateLayout: React.FC = () => {
   );
 };
 
-export default PrivateLayout;
+export default WithPageContext(PrivateLayout);

@@ -2,12 +2,15 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Download, X } from 'lucide-react';
 import React from 'react';
 
-import { FilterSelect } from '@/components/molecules/FilterSelect';
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
+import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -123,24 +126,6 @@ const ProductManagementPage: React.FC = () => {
     columns,
     data: DEMO_PRODUCTS,
   };
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <Button
-        type="button"
-        variant={'outline'}
-        size={isMobile ? 'default' : 'sm'}
-        className="rounded-full cursor-not-allowed"
-      >
-        Details
-      </Button>
-      <Button type="button" size={isMobile ? 'default' : 'sm'} className="rounded-full">
-        Export
-        <Download size={isMobile ? 16 : 12} className="text-primary-foreground" />
-      </Button>
-    </div>
-  );
 
   const headerMeta = (
     <div
@@ -168,7 +153,7 @@ const ProductManagementPage: React.FC = () => {
     </div>
   );
 
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card flex items-center text-[11px]',
@@ -211,17 +196,26 @@ const ProductManagementPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="PRODUCT MANAGEMENT"
-      description="Maintain product master data, tagging and availability for all warehouses."
-      meta={headerMeta}
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn('w-full h-full', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+    <PageOverview>
+      <PageHeader
+        title="PRODUCT MANAGEMENT"
+        description="Maintain product master data, tagging and availability for all warehouses."
+        meta={headerMeta}
+      />
+      <Toolbar>
+        <ToolbarButton disabled>Details</ToolbarButton>
+        <ToolbarButton>
+          Export
+          <Download size={isMobile ? 16 : 12} />
+        </ToolbarButton>
+      </Toolbar>
+      <PageContent meta={headerMeta}>
+        <div className={cn('w-full h-full', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 

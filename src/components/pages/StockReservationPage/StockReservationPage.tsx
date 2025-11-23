@@ -2,18 +2,13 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Toolbar, ToolbarButton, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -100,51 +95,7 @@ const StockReservationPage: React.FC = () => {
     data: reservations,
   };
 
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <Button className="rounded-full" size={isMobile ? 'default' : 'sm'}>
-        <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New Reservation
-      </Button>
-
-      <Select>
-        <SelectTrigger
-          className={cn(
-            'text-xs rounded-full h-8 border border-border',
-            isMobile ? 'w-full' : 'w-32'
-          )}
-        >
-          <SelectValue placeholder="All" />
-        </SelectTrigger>
-        <SelectContent className="w-fit border border-border">
-          <SelectItem className="text-xs" value="All">
-            All
-          </SelectItem>
-          <SelectItem className="text-xs" value="Draft">
-            Draft
-          </SelectItem>
-          <SelectItem className="text-xs" value="Reserved">
-            Reserved
-          </SelectItem>
-          <SelectItem className="text-xs" value="Closed">
-            Closed
-          </SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Input
-        type="text"
-        placeholder="Search by reservation, product, order"
-        className={cn(
-          'rounded-full focus:outline-none h-8 placeholder:text-xs',
-          isMobile ? 'w-full' : 'flex-1 min-w-40'
-        )}
-      />
-    </div>
-  );
-
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card text-[11px] flex',
@@ -159,16 +110,37 @@ const StockReservationPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="STOCK RESERVATION"
-      description="Reserve stock for sales or production orders following the Openbravo Stock Reservation workflow."
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+    <PageOverview>
+      <PageHeader
+        title="STOCK RESERVATION"
+        description="Reserve stock for sales or production orders following the Openbravo Stock Reservation workflow."
+      />
+      <Toolbar>
+        <ToolbarButton>
+          <Plus size={isMobile ? 16 : 12} /> New Reservation
+        </ToolbarButton>
+
+        <FilterSelect
+          defaultValue="All"
+          placeholder="All"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-36')}
+          options={[
+            { value: 'All', label: 'All' },
+            { value: 'Draft', label: 'Draft' },
+            { value: 'Reserved', label: 'Reserved' },
+            { value: 'Closed', label: 'Closed' },
+          ]}
+        />
+
+        <ToolbarInput type="text" placeholder="Search by criteria" />
+      </Toolbar>
+      <PageContent>
+        <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 

@@ -2,16 +2,12 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Minus } from 'lucide-react';
 import React from 'react';
 
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Toolbar, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -94,71 +90,7 @@ const GoodsTransactionPage: React.FC = () => {
     data: transactions,
   };
 
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <Select>
-        <SelectTrigger
-          className={cn(
-            'text-xs rounded-full h-8 border border-border',
-            isMobile ? 'w-full' : 'w-40'
-          )}
-        >
-          <SelectValue placeholder="All transaction types" />
-        </SelectTrigger>
-        <SelectContent className="w-fit border border-border">
-          <SelectItem className="text-xs" value="All transaction types">
-            All transaction types
-          </SelectItem>
-          <SelectItem className="text-xs" value="Receipt">
-            Receipt
-          </SelectItem>
-          <SelectItem className="text-xs" value="Shipment">
-            Shipment
-          </SelectItem>
-          <SelectItem className="text-xs" value="Movement">
-            Movement
-          </SelectItem>
-          <SelectItem className="text-xs" value="Inventory">
-            Inventory
-          </SelectItem>
-        </SelectContent>
-      </Select>
-
-      <Select>
-        <SelectTrigger
-          className={cn(
-            'text-xs rounded-full h-8 border border-border',
-            isMobile ? 'w-full' : 'w-36'
-          )}
-        >
-          <SelectValue placeholder="All warehouses" />
-        </SelectTrigger>
-        <SelectContent className="w-fit border border-border">
-          <SelectItem className="text-xs" value="All warehouses">
-            All warehouses
-          </SelectItem>
-          <SelectItem className="text-xs" value="Main DC">
-            Main DC
-          </SelectItem>
-          <SelectItem className="text-xs" value="Store 01">
-            Store 01
-          </SelectItem>
-        </SelectContent>
-      </Select>
-      <Input
-        type="text"
-        placeholder="Filter by product, doc, business partner"
-        className={cn(
-          'h-8 rounded-full focus:outline-none placeholder:text-xs',
-          isMobile ? 'w-full' : 'flex-1 min-w-40'
-        )}
-      />
-    </div>
-  );
-
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card text-[11px] flex items-center',
@@ -173,16 +105,42 @@ const GoodsTransactionPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="GOODS TRANSACTION"
-      description="Read-only view of all inventory transactions with filtering capabilities."
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+    <PageOverview>
+      <PageHeader
+        title="GOODS TRANSACTION"
+        description="Read-only view of all inventory transactions with filtering capabilities."
+      />
+      <Toolbar>
+        <FilterSelect
+          defaultValue="All transaction types"
+          placeholder="All transaction types"
+          options={[
+            { value: 'All transaction types', label: 'All transaction types' },
+            { value: 'Receipt', label: 'Receipt' },
+            { value: 'Shipment', label: 'Shipment' },
+            { value: 'Movement', label: 'Movement' },
+            { value: 'Inventory', label: 'Inventory' },
+          ]}
+        />
+
+        <FilterSelect
+          defaultValue="All warehouses"
+          placeholder="All warehouses"
+          options={[
+            { value: 'All warehouses', label: 'All warehouses' },
+            { value: 'Main DC', label: 'Main DC' },
+            { value: 'Store 01', label: 'Store 01' },
+          ]}
+        />
+        <ToolbarInput type="text" placeholder="Search by criteria" />
+      </Toolbar>
+      <PageContent>
+        <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 
