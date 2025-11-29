@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { LoginCredentials, LoginResponse } from '@/@types/auth';
+import type { ApiError } from '@/apis/type';
 
 import { INIT_AUTH } from './type';
 
@@ -14,10 +15,10 @@ const authSlice = createSlice({
     },
     loginSuccess: (state, action: PayloadAction<LoginResponse>) => {
       state.loading = false;
-      state.data = { name: action.payload.id.toString() };
+      state.data = action.payload;
       state.logined = true;
     },
-    loginFailure: (state, action) => {
+    loginFailure: (state, action: PayloadAction<ApiError>) => {
       state.loading = false;
       state.error = action.payload;
     },

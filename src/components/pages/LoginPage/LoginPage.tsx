@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Spinner } from '@/components/ui/spinner';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { LANDING_PATH, PRODUCT_MANAGEMENT_PATH } from '@/routers/route.constants';
@@ -128,7 +129,8 @@ const LoginPage: React.FC = () => {
             </div>
 
             <Button type="submit" className="w-full rounded-full">
-              {authSelector.loading ? 'Loading…' : 'Log in'}
+              Log in
+              {authSelector.loading && <Spinner />}
             </Button>
 
             <div className="relative">

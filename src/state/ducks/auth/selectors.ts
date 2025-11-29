@@ -6,3 +6,8 @@ export const useAuthSelector = () => {
   const auth = useSelector((state: GlobalState) => state.auth);
   return auth;
 };
+
+export const useUserSelector = () => {
+  const user = useSelector((state: GlobalState) => state.auth.data?.user);
+  return user;
+};
