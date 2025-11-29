@@ -1,8 +1,8 @@
-import axios, { AxiosError, type AxiosResponse } from 'axios';
+import axios, { AxiosError } from 'axios';
 
 import type { HttpClientInstance, RequestConfig } from '@/@types/request';
 
-import { ApiError, type OtherErrorInfo } from './type';
+import { ApiError, type GraphqlError } from './type';
 
 class HttpClient {
   private config: RequestConfig;
@@ -29,68 +29,74 @@ class HttpClient {
   //   console.warn('Session expired. Redirect to login...');
   // }
 
-  private buildApiError(data: unknown, status: number | undefined): ApiError {
+  private buildApiError(error: unknown): ApiError {
     let errorCode;
     let errorMessage;
     let errorDetail;
-    let otherErrorInfo;
+    let errorPath;
 
-    const refinedData = data as Record<string, unknown>;
+    if ((error as GraphqlError).errors) {
+      const refinedData = error as Record<string, unknown>;
+      if (Array.isArray(refinedData.errors) && refinedData.errors.length > 0) {
+        const gqlError = refinedData.errors[0];
+        const extensions = gqlError.extensions || {};
 
-    if (refinedData.errorCodes) {
-      const { errorCodes, errorMessages, errorDetails } = refinedData;
+        errorMessage = gqlError.message;
 
-      errorCode = Array.isArray(errorCodes) ? (errorCodes as Array<string>)[0] : errorCodes;
+        errorCode = extensions.code;
 
-      errorMessage = Array.isArray(errorMessages)
-        ? (errorMessages as Array<string>)[0]
-        : errorMessages;
+        errorDetail =
+          extensions.stacktrace ||
+          (Array.isArray(extensions.stacktrace)
+            ? extensions.stacktrace.join(',')
+            : extensions.stacktrace) ||
+          gqlError.message;
 
-      errorDetail = Array.isArray(errorDetails) ? (errorDetails as Array<string>)[0] : errorDetails;
-    } else if (refinedData.errorCode) {
-      errorCode = refinedData.errorCode;
-      errorMessage = refinedData.errorMessage;
-      errorDetail = refinedData.errorDetail;
+        errorPath = gqlError.path;
+
+        return new ApiError(
+          errorCode as string,
+          errorMessage as string,
+          errorDetail as string,
+          errorPath as string
+        );
+      }
     }
+    if (error as AxiosError) {
+      const { code, config, message, stack } = error as AxiosError;
 
-    if (refinedData.errorList) {
-      otherErrorInfo = {
-        validationError: {
-          pageErrorFocus: refinedData.pageErrorFocus,
-          errorType: refinedData.errorType,
-          errorList: refinedData.errorList,
-          isConfirmMode: refinedData.isConfirmMode,
-        },
-      };
+      errorCode = code;
+      errorMessage = message;
+      errorDetail = stack;
+      errorPath = [config?.baseURL, config?.url].join('');
+
+      return new ApiError(
+        (errorCode as string) || 'UNKNOWN_ERROR',
+        (errorMessage as string) || 'UNKNOWN_ERROR',
+        (errorDetail as string) || 'UNKNOWN_ERROR',
+        (errorPath as string) || 'UNKNOW_ERROR_PATH'
+      );
     }
 
     return new ApiError(
-      errorCode as string,
-      errorMessage as string,
-      errorDetail as string,
-      otherErrorInfo as OtherErrorInfo,
-      status
+      'UNKNOWN_ERROR_CODE',
+      'UNKNOWN_ERROR_MESSAGE',
+      'UNKNOWN_ERROR_DETAIL',
+      'UNKNOW_ERROR_PATH'
     );
   }
 
-  private processApiError = (error: {
-    response?: { status: number; data: Record<string, unknown> };
-  }): Promise<unknown> => {
+  private processApiError = (error: unknown): Promise<unknown> => {
     let apiError = null;
-
-    if ((error as AxiosError).response) {
-      const { data, status } = error.response as AxiosResponse;
-      if (data) {
-        apiError = this.buildApiError(data, status);
-      } else {
-        apiError = new ApiError(
-          'UNKNOWN_ERROR',
-          'UNKNOWN_ERROR',
-          'UNKNOWN_ERROR',
-          undefined,
-          status
-        );
-      }
+    if ((error as GraphqlError).errors || (error as AxiosError)) {
+      apiError = this.buildApiError(error);
+    } else {
+      apiError = new ApiError(
+        'UNKNOWN_ERROR_CODE',
+        'UNKNOWN_ERROR_MESSAGE',
+        'UNKNOWN_ERROR_DETAIL',
+        'UNKNOW_ERROR_PATH'
+      );
     }
     if (!apiError) {
       apiError = error;
@@ -140,7 +146,13 @@ class HttpClient {
         //   this.updateContextHash(contextHashNew);
         // }
 
-        return Array.isArray(response.data) ? response.data[0] : response.data;
+        const { data } = response;
+
+        if (data && Array.isArray(data.errors) && data.errors.length > 0) {
+          return Promise.reject(this.buildApiError(data));
+        }
+
+        return data.data || data;
       },
       (error) => this.processApiError(error)
     );

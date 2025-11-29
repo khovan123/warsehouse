@@ -1,1 +1,1 @@
-export const REQUEST_LOGIN_PATH = '/user';
+export const GRAPHQL = '/graphql/v1';
