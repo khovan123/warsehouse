@@ -3,52 +3,35 @@ image: node:22.17.1
 stages:
   - lint
   - build
-  - test
-  - secret-detection
-
-cache:
-  key:
-    files:
-      - package-lock.json
-  paths:
-    - node_modules/
-  policy: pull-push
-
-before_script:
-  - node -v
-  - npm -v
-  - '[ -d node_modules ] || npm ci'
 
 # -----------------------------
 # LINT: ESLint + Prettier
 # -----------------------------
 lint:
   stage: lint
+  variables:
+    NODE_ENV: development
+  before_script:
+    - '[ -d node_modules ] || npm ci --client'
   script:
     - npm run lint
-  artifacts:
-    when: always
-  allow_failure: false
-  only:
-    - merge_requests
-    - main
-    - master
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
 # -----------------------------
 # BUILD: tsc + Vite build
 # -----------------------------
 build:
   stage: build
+  needs: [lint]
+  variables:
+    NODE_ENV: development
+  before_script:
+    - '[ -d node_modules ] || npm ci --client'
   script:
     - npm run build
-  artifacts:
-    paths:
-      - dist
-    expire_in: 1 week
-  only:
-    - merge_requests
-    - main
-    - master
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
 # -----------------------------
 # SECURITY: SAST + Secret Detection
@@ -61,14 +44,3 @@ include:
 variables:
   SECRET_DETECTION_ENABLED: 'true'
   ROLLUP_DISABLE_NATIVE: 'true'
-
-sast:
-  stage: test
-  needs:
-    - job: build
-      optional: true
-  before_script: []
-
-secret_detection:
-  stage: secret-detection
-  before_script: []
