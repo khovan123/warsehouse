@@ -3,6 +3,7 @@ image: node:22.17.1
 stages:
   - lint
   - build
+  - test
 
 # -----------------------------
 # LINT: ESLint + Prettier
