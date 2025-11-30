@@ -1,7 +1,7 @@
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export type ToastPayload = {
-  id?: string;
+  id?: string | number;
   type: ToastType;
   message: string;
 };

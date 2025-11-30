@@ -39,6 +39,7 @@ const NavHeader: React.FC = () => {
   const isMobile = useIsMobile();
   const authSelector = useAuthSelector();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const user = authSelector.data?.user;
 
   useEffect(() => {
     if (!isMobile && mobileMenuOpen) {
@@ -110,8 +111,8 @@ const NavHeader: React.FC = () => {
 
               <UserDropdown
                 user={{
-                  name: 'shadcn',
-                  email: 'shadcn.io',
+                  name: user!.username,
+                  email: user!.email,
                   avatar: 'https://github.com/shadcn.png',
                 }}
               />
