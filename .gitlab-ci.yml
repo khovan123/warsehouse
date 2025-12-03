@@ -1,0 +1,18 @@
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - echo "RUN SAST & Secret-Detection"
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
+
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+
+variables:
+  SECRET_DETECTION_ENABLED: 'true'
+  ROLLUP_DISABLE_NATIVE: 'true'
+  AST_ENABLE_MR_PIPELINES: 'true'
