@@ -29,7 +29,7 @@ namespace Application.Services
             {
                 return new ApiResponse<Login.Response>.FailedBuilder(
                     "Invalid username",
-                    "AUTH_INVALID",
+                    ApiErrorCode.AuthenticationFailed,
                     StatusCodes.Status401Unauthorized
                     );
             }
@@ -38,7 +38,7 @@ namespace Application.Services
             {
                 return new ApiResponse<Login.Response>.FailedBuilder(
                     "Invalid password",
-                    "AUTH_INVALID",
+                    ApiErrorCode.AuthenticationFailed,
                     StatusCodes.Status401Unauthorized
                     );
             }

@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Helper\**" />
-    <EmbeddedResource Remove="Helper\**" />
-    <None Remove="Helper\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.11" />
 	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
@@ -22,6 +16,12 @@
     <ProjectReference Include="..\Contract\Contract.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+	<Folder Include="DTOs\" />
+	<Folder Include="Interfaces\" />
+	<Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
