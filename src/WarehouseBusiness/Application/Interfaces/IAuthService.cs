@@ -1,14 +1,10 @@
-﻿using Application.Dtos;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.DTOs;
+using Contract.Responses;
 
 namespace Application.Interfaces
 {
     public interface IAuthService
     {
-        Task<Login.Response?> LoginRequest(Login.Request requestPayload, CancellationToken ct);
+        Task<ApiResponse<Login.Response>> LoginAsync(Login.Request requestPayload, CancellationToken ct);
     }
 }

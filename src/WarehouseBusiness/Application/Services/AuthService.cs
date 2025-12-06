@@ -1,7 +1,9 @@
-﻿using Application.Dtos;
+﻿using Application.DTOs;
 using Application.Interfaces;
+using Contract.Responses;
 using Domain.Entities;
 using Domain.Repositories;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,7 +12,7 @@ using System.Text;
 
 namespace Application.Services
 {
-    public class AuthService : IAuthService
+    public class AuthService: IAuthService
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _config;
@@ -20,21 +22,32 @@ namespace Application.Services
             this._userRepository = _userRepository;
             this._config = _config;
         }
-        public async Task<Login.Response?> LoginRequest(Login.Request requestPayload, CancellationToken ct)
+        public async Task<ApiResponse<Login.Response>> LoginAsync(Login.Request requestPayload, CancellationToken ct)
         {
             var user = await _userRepository.GetByUsername(requestPayload.Username, ct);
             if (user is null)
             {
-                return null;
+                return new ApiResponse<Login.Response>.FailedBuilder(
+                    "Invalid username",
+                    "AUTH_INVALID",
+                    StatusCodes.Status401Unauthorized
+                    );
             }
 
-            if(! BCrypt.Net.BCrypt.Verify(requestPayload.Password, user.Password))
+            if (! BCrypt.Net.BCrypt.Verify(requestPayload.Password, user.Password))
             {
-                return null;
+                return new ApiResponse<Login.Response>.FailedBuilder(
+                    "Invalid password",
+                    "AUTH_INVALID",
+                    StatusCodes.Status401Unauthorized
+                    );
             }
             var token = GenerateJWT(user);
-
-            return new Login.Response(new Login.UserDTO(user.Id, user.Username, user.Email), token);
+            var data = new Login.Response(
+                new Login.UserDTO(user.Id, user.Username, user.Email),
+                token
+            );
+            return new ApiResponse<Login.Response>.SuccessBuilder(data, "Login successful");
         }
 
         private string GenerateJWT(User user) {

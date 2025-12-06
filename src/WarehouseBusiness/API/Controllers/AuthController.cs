@@ -1,11 +1,12 @@
-﻿using Application.Dtos;
+﻿using API.Common;
+using Application.DTOs;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
     [ApiController]
-    [Route("/api/auth")]
+    [Route("/api/v1/auth")]
     public class AuthController: ControllerBase
     {
         private readonly IAuthService _authService;
@@ -18,11 +19,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] Login.Request request, CancellationToken ct)
         {
-            var result = await _authService.LoginRequest(request, ct);
-            if (result is null)
-                return Unauthorized();
-
-            return Ok(result);
+            return ApiBuilder.Result(await _authService.LoginAsync(request, ct));
         }
     }
 }

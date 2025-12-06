@@ -7,7 +7,7 @@
   </PropertyGroup>
 	
   <PropertyGroup>
-    <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+    <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
     <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
   </PropertyGroup>
 
@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+	<Folder Include="Controllers\" />
     <Folder Include="Middlewares\" />
   </ItemGroup>
 
