@@ -1,0 +1,6 @@
+@API_HostAddress = http://localhost:8081
+
+GET {{API_HostAddress}}/warehouse/
+Accept: application/json
+
+###
