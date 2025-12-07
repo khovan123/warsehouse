@@ -28,7 +28,6 @@ import type { SideBarProps } from './type';
 const AppSideBar = ({ activePath, sections, iconSize = 4, ...props }: SideBarProps) => {
   const { setBreadCrumb } = usePageContext();
   const user = useUserSelector();
-  console.log(user);
   return (
     <Sidebar {...props}>
       <SidebarHeader className="p-0">
