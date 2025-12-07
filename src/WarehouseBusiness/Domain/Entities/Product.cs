@@ -23,7 +23,8 @@ namespace Domain.Entities
         [BsonElement("availability")]
         public string Availability {  get; set; } = default!;
         [BsonElement("categoryId")]
-        public Category Category { get; set; } = default!;
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+        public string CategoryId { get; set; } = default!;
 
     }
 }

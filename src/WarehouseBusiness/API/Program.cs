@@ -4,6 +4,7 @@ using Domain.Repositories;
 using Infrastructure.DB;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -26,8 +27,19 @@ builder.Services.AddCors(options =>
 builder.Services.Configure<MongoDBConfig>(builder.Configuration.GetSection("MONGO"));
 builder.Services.AddSingleton<MongoDbContext>();
 
-builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IHealthService, HealthService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IBinRepository, BinRepository>();
+builder.Services.AddScoped<IBinService, BinService>();
+builder.Services.AddScoped<IBusinessPartnetRepository, BusinessPartnerRepository>();
+builder.Services.AddScoped<IBusinessPartnerService, BusinessPartnerService>();
 
 var jwtSection = builder.Configuration.GetSection("JWT");
 var keyBytes = Encoding.UTF8.GetBytes(jwtSection["SECRET_KEY"]!);

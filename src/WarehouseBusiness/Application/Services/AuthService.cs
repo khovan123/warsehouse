@@ -22,12 +22,12 @@ namespace Application.Services
             this._userRepository = _userRepository;
             this._config = _config;
         }
-        public async Task<ApiResponse<Login.Response>> LoginAsync(Login.Request requestPayload, CancellationToken ct)
+        public async Task<ApiResponse<LoginDTO.Response>> LoginAsync(LoginDTO.Request requestPayload, CancellationToken ct)
         {
             var user = await _userRepository.GetByUsername(requestPayload.Username, ct);
             if (user is null)
             {
-                return new ApiResponse<Login.Response>.FailedBuilder(
+                return new ApiResponse<LoginDTO.Response>.FailedBuilder(
                     "Invalid username",
                     ApiErrorCode.AuthenticationFailed,
                     StatusCodes.Status401Unauthorized
@@ -36,18 +36,18 @@ namespace Application.Services
 
             if (! BCrypt.Net.BCrypt.Verify(requestPayload.Password, user.Password))
             {
-                return new ApiResponse<Login.Response>.FailedBuilder(
+                return new ApiResponse<LoginDTO.Response>.FailedBuilder(
                     "Invalid password",
                     ApiErrorCode.AuthenticationFailed,
                     StatusCodes.Status401Unauthorized
                     );
             }
             var token = GenerateJWT(user);
-            var data = new Login.Response(
-                new Login.UserDTO(user.Id, user.Username, user.Email),
+            var data = new LoginDTO.Response(
+                new LoginDTO.UserDTO(user.Id, user.Username, user.Email),
                 token
             );
-            return new ApiResponse<Login.Response>.SuccessBuilder(data, "Login successful");
+            return new ApiResponse<LoginDTO.Response>.SuccessBuilder(data, "Login successful");
         }
 
         private string GenerateJWT(User user) {

@@ -1,6 +1,6 @@
 ﻿namespace Application.DTOs
 {
-    public class Login
+    public class LoginDTO
     {
         public class Request
         {
