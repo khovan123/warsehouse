@@ -17,9 +17,11 @@
     <ProjectReference Include="..\Contract\Contract.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
-	
+
   <ItemGroup>
-	<Folder Include="DB\" />
+    <Folder Include="DB\" />
+    <Folder Include="Constants\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
