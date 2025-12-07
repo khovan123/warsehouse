@@ -28,6 +28,7 @@ import type { SideBarProps } from './type';
 const AppSideBar = ({ activePath, sections, iconSize = 4, ...props }: SideBarProps) => {
   const { setBreadCrumb } = usePageContext();
   const user = useUserSelector();
+  console.log(user);
   return (
     <Sidebar {...props}>
       <SidebarHeader className="p-0">
@@ -91,8 +92,8 @@ const AppSideBar = ({ activePath, sections, iconSize = 4, ...props }: SideBarPro
           <SidebarMenuItem>
             <UserDropdown
               user={{
-                name: user!.username,
-                email: user!.email,
+                name: user?.username || 'Username',
+                email: user?.email || 'username@email.io',
                 avatar: 'https://github.com/shadcn.png',
               }}
               inSidebar={true}
