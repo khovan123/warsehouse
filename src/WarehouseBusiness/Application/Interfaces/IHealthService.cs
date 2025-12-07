@@ -4,6 +4,6 @@ namespace Application.Interfaces
 {
     public interface IHealthService
     {
-        public Task<string> CheckHealth();
+        Task<string> CheckHealth();
     }
 }
