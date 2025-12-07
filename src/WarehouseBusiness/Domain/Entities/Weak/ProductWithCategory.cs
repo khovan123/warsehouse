@@ -10,4 +10,3 @@ namespace Domain.Entities.Weak
         public List<Category>? Categories { get; set; } = default!;
     }
 }
-}
