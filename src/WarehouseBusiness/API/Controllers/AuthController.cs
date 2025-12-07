@@ -17,7 +17,7 @@ namespace API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] Login.Request request, CancellationToken ct)
+        public async Task<IActionResult> Login([FromBody] LoginDTO.Request request, CancellationToken ct)
         {
             return ApiBuilder.Result(await _authService.LoginAsync(request, ct));
         }
