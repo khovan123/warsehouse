@@ -428,3 +428,4 @@ out/
 WARP.md
 
 appsettings.Development.json
+appsettings.Production.json
