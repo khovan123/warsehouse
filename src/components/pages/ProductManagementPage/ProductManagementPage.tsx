@@ -1,59 +1,31 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Download, X } from 'lucide-react';
-import React from 'react';
+import { Download } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import AppPagination from '@/components/organisms/AppPagination/AppPagination';
 import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
 import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-
-type Product = {
-  account: string;
-  label: string;
-  sku: string;
-  baseUom: string;
-  description: string;
-  overbook: boolean;
-  availability: 'Available' | 'Blocked' | 'Out of stock';
-};
-
-const DEMO_PRODUCTS: Product[] = [
-  {
-    account: '4046664115021',
-    label: '4046664115021',
-    sku: '5905417902',
-    baseUom: '1',
-    description: 'Holzspalter stehend HL1650 Zomtec - 400V 50Hz 350l',
-    overbook: true,
-    availability: 'Available',
-  },
-  {
-    account: '4014915082057',
-    label: '4014915082057',
-    sku: '4901305902',
-    baseUom: '1',
-    description: 'Tischkreissäge TS310 Zomtec - 400V 50Hz 2800W - 3',
-    overbook: true,
-    availability: 'Available',
-  },
-  {
-    account: '4014915042693',
-    label: '4014915042693',
-    sku: '10011210',
-    baseUom: '1',
-    description: 'Fahrvorrichtung',
-    overbook: true,
-    availability: 'Available',
-  },
-];
+import { useProductSelector } from '@/state/ducks/product/selectors';
+import { productRequest } from '@/state/ducks/product/slice';
+import type { Product } from '@/state/ducks/product/type';
+// type Product = {
+//   account: string;
+//   label: string;
+//   sku: string;
+//   baseUom: string;
+//   description: string;
+//   overbook: boolean;
+//   availability: 'Available' | 'Blocked' | 'Out of stock';
+// };
 
 const columns: ColumnDef<Product>[] = [
   {
@@ -80,9 +52,9 @@ const columns: ColumnDef<Product>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'account',
+    accessorKey: 'accountId',
     header: 'Account',
-    cell: ({ row }) => <div className="whitespace-nowrap">{row.getValue('account')}</div>,
+    cell: ({ row }) => <div className="whitespace-nowrap">{row.getValue('accountId')}</div>,
   },
   {
     accessorKey: 'label',
@@ -104,9 +76,9 @@ const columns: ColumnDef<Product>[] = [
     header: 'Description',
   },
   {
-    accessorKey: 'overbook',
+    accessorKey: 'isOverBook',
     header: 'Overbook',
-    cell: ({ row }) => <div>{String(row.getValue('overbook'))}</div>,
+    cell: ({ row }) => <div>{String(row.getValue('isOverBook'))}</div>,
   },
   {
     accessorKey: 'availability',
@@ -120,87 +92,24 @@ const columns: ColumnDef<Product>[] = [
 ];
 
 const ProductManagementPage: React.FC = () => {
+  const dispatch = useDispatch();
   const isMobile = useIsMobile();
+  const productSelector = useProductSelector();
 
   const tableProps: DataTableProps<Product, unknown> = {
     columns,
-    data: DEMO_PRODUCTS,
+    data: productSelector.data.products || [],
   };
 
-  const headerMeta = (
-    <div
-      className={cn(
-        'flex flex-wrap items-center gap-3 text-xs',
-        isMobile ? 'flex-col' : 'justify-between'
-      )}
-    >
-      <div className="flex items-center gap-2">
-        <div className="inline-flex items-center rounded-md bg-card border border-border px-1 py-1 gap-0.5">
-          <span>Result for:</span>
-          <Button
-            type="button"
-            size={'sm'}
-            variant={'ghost'}
-            className="rounded-full hover:text-destructive"
-          >
-            Empty <X size={0} />
-          </Button>
-        </div>
-      </div>
-      <Button type="button" variant={'secondary'} size={'sm'}>
-        Clear All Tags
-      </Button>
-    </div>
-  );
-
-  const Footer = () => (
-    <div
-      className={cn(
-        'border-t border-border bg-card flex items-center text-[11px]',
-        isMobile ? 'px-3 py-2 flex-col gap-3' : 'px-6 py-2 justify-between'
-      )}
-    >
-      <span>1 - {DEMO_PRODUCTS.length} of 726 items</span>
-      <div className="flex items-center gap-1">
-        <Button className={isMobile ? 'size-8' : 'size-6'}>
-          <ChevronsLeft />
-        </Button>
-        <Button className={isMobile ? 'size-8' : 'size-6'}>
-          <ChevronLeft />
-        </Button>
-        {[1, 2, 3, 4].map((page) => (
-          <Button key={page} className={isMobile ? 'size-8' : 'size-6'}>
-            {page}
-          </Button>
-        ))}
-        <Button className={isMobile ? 'size-8' : 'size-6'}>
-          <ChevronRight />
-        </Button>
-        <Button className={isMobile ? 'size-8' : 'size-6'}>
-          <ChevronsRight />
-        </Button>
-      </div>
-      <div className="flex items-center gap-1">
-        <span>Items per page:</span>
-        <FilterSelect
-          defaultValue="200"
-          triggerClassName={cn('rounded h-8', isMobile ? 'w-full' : 'w-20')}
-          options={[
-            { value: '200', label: '200' },
-            { value: '100', label: '100' },
-            { value: '50', label: '50' },
-          ]}
-        />
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    dispatch(productRequest());
+  }, [dispatch]);
 
   return (
     <PageOverview>
       <PageHeader
         title="PRODUCT MANAGEMENT"
         description="Maintain product master data, tagging and availability for all warehouses."
-        meta={headerMeta}
       />
       <Toolbar>
         <ToolbarButton disabled>Details</ToolbarButton>
@@ -209,12 +118,12 @@ const ProductManagementPage: React.FC = () => {
           <Download size={isMobile ? 16 : 12} />
         </ToolbarButton>
       </Toolbar>
-      <PageContent meta={headerMeta}>
+      <PageContent>
         <div className={cn('w-full h-full', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
           <DataTable {...tableProps} />
         </div>
       </PageContent>
-      <Footer />
+      <AppPagination />
     </PageOverview>
   );
 };

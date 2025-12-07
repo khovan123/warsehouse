@@ -9,9 +9,7 @@ type PageOverviewProps = PageHeaderProps & {
 };
 
 const PageOverview = ({ className, children }: PageOverviewProps) => {
-  return (
-    <div className={cn('min-h-full flex flex-col text-foreground', className)}>{children}</div>
-  );
+  return <div className={cn('flex flex-col text-foreground flex-1', className)}>{children}</div>;
 };
 
 export default PageOverview;
