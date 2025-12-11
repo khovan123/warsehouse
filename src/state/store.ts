@@ -7,12 +7,14 @@ import rootSaga from './ducks';
 import { authPersistFilter } from './ducks/auth/persist-filter';
 import authReducer from './ducks/auth/slice';
 import productReducer from './ducks/product/slice';
+import setupsReducer from './ducks/setups/slice';
 import toastReducer from './ducks/toast/slice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   toast: toastReducer,
   product: productReducer,
+  setups: setupsReducer,
 });
 
 const persistConfig = {
