@@ -6,7 +6,7 @@ namespace Application.DTOs
     {
         public record Response(List<BusinessPartner>? BusinessPartners = default!)
         {
-            public List<BusinessPartner>? BusinessPartners = BusinessPartners;
+            public List<BusinessPartner>? BusinessPartners { get; set; } = BusinessPartners;
         }
     }
 }

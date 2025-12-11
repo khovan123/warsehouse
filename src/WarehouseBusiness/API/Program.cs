@@ -4,7 +4,6 @@ using Domain.Repositories;
 using Infrastructure.DB;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -40,6 +39,7 @@ builder.Services.AddScoped<IBinRepository, BinRepository>();
 builder.Services.AddScoped<IBinService, BinService>();
 builder.Services.AddScoped<IBusinessPartnetRepository, BusinessPartnerRepository>();
 builder.Services.AddScoped<IBusinessPartnerService, BusinessPartnerService>();
+builder.Services.AddScoped<ISetupsService, SetupsService>();
 
 var jwtSection = builder.Configuration.GetSection("JWT");
 var keyBytes = Encoding.UTF8.GetBytes(jwtSection["SECRET_KEY"]!);
