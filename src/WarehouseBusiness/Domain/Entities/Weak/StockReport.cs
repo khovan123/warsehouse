@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Domain.Entities.Weak
 {
+    [BsonIgnoreExtraElements]
     public class StockReport : Stock
     {
         [BsonElement("product")]
@@ -20,6 +21,22 @@ namespace Domain.Entities.Weak
         [BsonElement("category")]
         [JsonIgnore]
         public Category? CategoryEntity { get; set; }
+        
+        [BsonIgnore]
+        [JsonIgnore]
+        public List<Product>? Products { get; set; }
+        
+        [BsonIgnore]
+        [JsonIgnore]
+        public List<Warehouse>? Warehouses { get; set; }
+        
+        [BsonIgnore]
+        [JsonIgnore]
+        public List<Bin>? Bins { get; set; }
+        
+        [BsonIgnore]
+        [JsonIgnore]
+        public List<Category>? Categories { get; set; }
         
         [BsonIgnore]
         [JsonPropertyName("product")]
