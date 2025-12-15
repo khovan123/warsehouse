@@ -8,19 +8,20 @@ export const productSlice = createSlice({
   name: 'product',
   initialState: INIT_PRODUCT_STATE,
   reducers: {
-    productRequest: (state) => {
+    fetchProductRequest: (state) => {
       state.loading = true;
     },
-    productSuccess: (state, action: PayloadAction<Product[]>) => {
+    fetchProductSuccess: (state, action: PayloadAction<Product[]>) => {
       state.data.products = action.payload;
       state.loading = false;
     },
-    productFailure: (state, action: PayloadAction<ApiError>) => {
+    fetchProductFailure: (state, action: PayloadAction<ApiError>) => {
       state.error = action.payload;
       state.loading = false;
     },
   },
 });
 
-export const { productRequest, productSuccess, productFailure } = productSlice.actions;
+export const { fetchProductRequest, fetchProductSuccess, fetchProductFailure } =
+  productSlice.actions;
 export default productSlice.reducer;

@@ -1,24 +1,24 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 
-import type { InventoryResponse } from '@/@types/inventory';
-import { inventoryRequestApi } from '@/apis/inventory/inventory';
+import type { FetchInventoryResponse } from '@/@types/inventory';
+import { fetchInventoryApi } from '@/apis/inventory/inventory';
 import type { ApiError } from '@/apis/type';
 
-import { inventoriesFailure, inventoriesRequest, inventoriesSuccess } from './slice';
+import { fetchInventoryFailure, fetchInventoryRequest, fetchInventorySuccess } from './slice';
 
-function* handleInventoryRequest() {
+function* fetchInventoryFlow() {
   try {
-    const res: InventoryResponse = yield call(inventoryRequestApi);
-    yield put(inventoriesSuccess(res.inventories));
+    const res: FetchInventoryResponse = yield call(fetchInventoryApi);
+    yield put(fetchInventorySuccess(res.inventories));
   } catch (error) {
-    yield put(inventoriesFailure(error as ApiError));
+    yield put(fetchInventoryFailure(error as ApiError));
   }
 }
 
-function* watchInventory() {
-  yield takeLatest(inventoriesRequest.type, handleInventoryRequest);
+function* watchInventoryFlows() {
+  yield takeLatest(fetchInventoryRequest.type, fetchInventoryFlow);
 }
 
 export function* inventorySaga() {
-  yield all([fork(watchInventory)]);
+  yield all([fork(watchInventoryFlows)]);
 }

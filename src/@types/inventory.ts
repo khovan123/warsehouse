@@ -1,5 +1,5 @@
 import type { Inventory } from '@/state/ducks/inventory/type';
 
-export type InventoryResponse = {
+export type FetchInventoryResponse = {
   inventories: Inventory[];
 };

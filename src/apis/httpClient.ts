@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
-import type { RefreshToken } from '@/@types/refresh-token';
+import type { RefreshTokenResponse } from '@/@types/refresh-token';
 import type { HttpClientInstance, RequestConfig } from '@/@types/request';
 import { setToken } from '@/state/ducks/auth/slice';
 import store from '@/state/store';
@@ -129,7 +129,7 @@ class HttpClient {
   private async refreshAccessToken(client: ReturnType<typeof axios.create>): Promise<string> {
     if (!this.refreshPromise) {
       this.refreshPromise = (async () => {
-        const res: RefreshToken = await client.post(REFRESH_TOKEN_PATH, null, {
+        const res: RefreshTokenResponse = await client.post(REFRESH_TOKEN_PATH, null, {
           withCredentials: true,
         });
 

@@ -15,7 +15,7 @@ import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { useProductSelector } from '@/state/ducks/product/selectors';
-import { productRequest } from '@/state/ducks/product/slice';
+import { fetchProductRequest } from '@/state/ducks/product/slice';
 import type { Product } from '@/state/ducks/product/type';
 // type Product = {
 //   account: string;
@@ -102,7 +102,7 @@ const ProductManagementPage: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(productRequest());
+    dispatch(fetchProductRequest());
   }, [dispatch]);
 
   return (
