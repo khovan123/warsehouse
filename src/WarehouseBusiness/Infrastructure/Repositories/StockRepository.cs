@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Domain.Entities.Weak;
 using Domain.Repositories;
+using Infrastructure.Constants;
 using Infrastructure.DB;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -34,41 +35,45 @@ namespace Infrastructure.Repositories
         {
             var pipeline = _stocks.Aggregate()
                 .Match(s => true)
-                .AppendStage<StockReport>(new BsonDocument("$lookup", new BsonDocument
+                .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
                 {
-                    { "from", "products" },
+                    { "from", MongoCollections.Products },
                     { "localField", "productId" },
                     { "foreignField", "_id" },
                     { "as", "products" }
                 }))
-                .AppendStage<StockReport>(new BsonDocument("$lookup", new BsonDocument
+                .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
                 {
-                    { "from", "warehouses" },
+                    { "from", MongoCollections.Warehouses },
                     { "localField", "warehouseId" },
                     { "foreignField", "_id" },
                     { "as", "warehouses" }
                 }))
-                .AppendStage<StockReport>(new BsonDocument("$lookup", new BsonDocument
+                .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
                 {
-                    { "from", "bins" },
+                    { "from", MongoCollections.Bins },
                     { "localField", "binId" },
                     { "foreignField", "_id" },
                     { "as", "bins" }
                 }))
-                .AppendStage<StockReport>(new BsonDocument("$lookup", new BsonDocument
+                .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
                 {
-                    { "from", "categories" },
+                    { "from", MongoCollections.Categories },
                     { "localField", "categoryId" },
                     { "foreignField", "_id" },
                     { "as", "categories" }
                 }))
-                .AppendStage<StockReport>(new BsonDocument("$addFields", new BsonDocument
+                .AppendStage<BsonDocument>(new BsonDocument("$project", new BsonDocument
                 {
+                    { "onHand", 1 },
+                    { "reserved", 1 },
+                    { "available", 1 },
                     { "product", new BsonDocument("$arrayElemAt", new BsonArray { "$products", 0 }) },
                     { "warehouse", new BsonDocument("$arrayElemAt", new BsonArray { "$warehouses", 0 }) },
                     { "bin", new BsonDocument("$arrayElemAt", new BsonArray { "$bins", 0 }) },
                     { "category", new BsonDocument("$arrayElemAt", new BsonArray { "$categories", 0 }) }
-                }));
+                }))
+                .As<StockReport>();
 
             return await pipeline.ToListAsync(ct);
         }
