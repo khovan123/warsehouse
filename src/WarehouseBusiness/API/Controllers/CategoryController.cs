@@ -15,6 +15,7 @@ namespace API.Controllers
             _categoryService = categoryService;
         }
 
+        [HttpGet("")]
         public async Task<IActionResult> GetAllCategories(CancellationToken ct)
         {
             return ApiBuilder.Result(await _categoryService.GetAll(ct));

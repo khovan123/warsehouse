@@ -1,7 +1,9 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Weak;
 using Domain.Repositories;
+using Infrastructure.Constants;
 using Infrastructure.DB;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Infrastructure.Repositories
@@ -26,29 +28,27 @@ namespace Infrastructure.Repositories
         {
             var pipeline = _products.Aggregate()
               .Match(p => true)
-              .Lookup<Product, Category, ProductWithCategory>(
-                  _categories,
-                  p => p.CategoryId,
-                  c => c.Id,
-                  pwc => pwc.Categories
-              )
-              .Unwind(x => x.Categories, new AggregateUnwindOptions<ProductWithCategory>
+              .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument {
+                    { "from", MongoCollections.Categories },
+                    { "localField", "categoryId" },
+                    { "foreignField", "_id" },
+                    { "as", "tmp_categories" }
+                }))
+              .AppendStage<BsonDocument>(new BsonDocument("$unwind", new BsonDocument
               {
-                  PreserveNullAndEmptyArrays = true
-              })
-              .Project(x => new ProductWithCategory
+                    {"path", "tmp_categories"},
+                    {"preserveNullAndEmptyArrays", true}
+              }))
+              .AppendStage<BsonDocument>(new BsonDocument("$addFields", new BsonDocument
               {
-                  Id = x.Id,
-                  AccountId = x.AccountId,
-                  Label = x.Label,
-                  Sku = x.Sku,
-                  BaseUom = x.BaseUom,
-                  Description = x.Description,
-                  IsOverBook = x.IsOverBook,
-                  Availability = x.Availability,
-                  CategoryId = x.CategoryId,
-                  Category = x.Categories != null ? x.Categories.FirstOrDefault() : null
-              });
+                    {"catogory", "$tmp_categories"}
+              }))
+              .AppendStage<BsonDocument>(new BsonDocument("$project", new BsonDocument
+              {
+                    {"tmp_categories", 0}
+              }))
+              .As<ProductWithCategory>();
+
             return await pipeline.ToListAsync(ct);
         }
 

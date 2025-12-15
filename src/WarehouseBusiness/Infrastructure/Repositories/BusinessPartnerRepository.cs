@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace Infrastructure.Repositories
 {
-    public class BusinessPartnerRepository : IBusinessPartnetRepository
+    public class BusinessPartnerRepository : IBusinessPartnerRepository
     {
         private readonly IMongoCollection<BusinessPartner> _businessPartners;
 

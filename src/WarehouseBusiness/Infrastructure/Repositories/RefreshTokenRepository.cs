@@ -1,0 +1,49 @@
+﻿using Domain.Entities;
+using Domain.Repositories;
+using Infrastructure.DB;
+using MongoDB.Driver;
+
+namespace Infrastructure.Repositories
+{
+    public class RefreshTokenRepository : IRefreshTokenRepository
+    {
+        private readonly IMongoCollection<RefreshToken> _refreshToken;
+
+        public RefreshTokenRepository(MongoDbContext context)
+        {
+            _refreshToken = context.RefreshTokens;
+        }
+
+        public void CreateOne(RefreshToken refreshToken, CancellationToken ct) => _refreshToken.InsertOne(refreshToken, cancellationToken: ct);
+
+        public async Task<RefreshToken> GetByTokenHash(string token_hash, CancellationToken ct)
+        {
+            var exp = Builders<RefreshToken>.Filter;
+
+            var filter = exp.And(
+                exp.Eq(r => r.TokenHash, token_hash)
+                );
+
+            return await _refreshToken.Find(filter).FirstOrDefaultAsync(ct);
+        }   
+
+        public void UpdateOne(RefreshToken refreshToken, CancellationToken ct)
+        {
+            var exp = Builders<RefreshToken>.Filter;
+
+            var filter = exp.And(
+                exp.Eq(r => r.UserId, refreshToken.UserId),
+                exp.Eq(r => r.TokenHash, refreshToken.TokenHash)
+            );
+
+            var update = Builders<RefreshToken>.Update
+                .Set(r => r.CreatedAt, refreshToken.CreatedAt)
+                .Set(r => r.ExpiresAt, refreshToken.ExpiresAt)
+                .Set(r => r.RevokedAt, refreshToken.RevokedAt)
+                .Set(r => r.ReplacedByTokenHash, refreshToken.ReplacedByTokenHash)
+                .Set(r => r.DeviceId, refreshToken.DeviceId);
+
+            _refreshToken.UpdateOne(filter, update, cancellationToken: ct);
+        }
+    }
+}

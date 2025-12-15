@@ -1,6 +1,5 @@
 ﻿using Domain.Entities;
 using Infrastructure.Constants;
-using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 namespace Infrastructure.DB
 {
@@ -8,11 +7,9 @@ namespace Infrastructure.DB
     {
         private readonly IMongoDatabase _database;
 
-        public MongoDbContext(IOptions<MongoDBConfig> options)
+        public MongoDbContext(IMongoDatabase mongoDatabase)
         {
-            var config = options.Value;
-            var client = new MongoClient(config.ConnectionString);
-            _database = client.GetDatabase(config.DatabaseName);
+            _database = mongoDatabase;
         }
 
         public IMongoCollection<User> Users => _database.GetCollection<User>(MongoCollections.Users);
@@ -28,5 +25,6 @@ namespace Infrastructure.DB
         public IMongoCollection<BusinessPartner> BusinessPartnets => _database.GetCollection<BusinessPartner>(MongoCollections.BusinessPartners);
 
         public IMongoCollection<Inventory> Inventories => _database.GetCollection<Inventory>(MongoCollections.Inventory);
+        public IMongoCollection<RefreshToken> RefreshTokens => _database.GetCollection<RefreshToken>(MongoCollections.RefreshTokens);
     }
 }

@@ -21,7 +21,6 @@
   <ItemGroup>
     <Folder Include="DB\" />
     <Folder Include="Constants\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

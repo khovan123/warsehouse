@@ -6,7 +6,5 @@ namespace Domain.Entities.Weak
     {
         [BsonElement("category")]
         public Category? Category { get; set; } = default!;
-        [BsonIgnore]
-        public List<Category>? Categories { get; set; } = default!;
     }
 }
