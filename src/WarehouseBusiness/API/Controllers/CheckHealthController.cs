@@ -14,7 +14,7 @@ namespace API.Controllers
             _healthService = healthService;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<string> CheckHealth()
         {
             return await _healthService.CheckHealth();

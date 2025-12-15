@@ -8,9 +8,9 @@ namespace Application.Services
 {
     public class BusinessPartnerService : IBusinessPartnerService
     {
-        private readonly IBusinessPartnetRepository _businessPartnetRepository;
+        private readonly IBusinessPartnerRepository _businessPartnetRepository;
 
-        public BusinessPartnerService(IBusinessPartnetRepository businessPartnetRepository)
+        public BusinessPartnerService(IBusinessPartnerRepository businessPartnetRepository)
         {
             _businessPartnetRepository = businessPartnetRepository;
         }

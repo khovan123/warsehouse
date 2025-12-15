@@ -1,13 +1,12 @@
-
 ```
 warehouse-api-dotnet
 ├─ Dockerfile
+├─ README.md
 ├─ src
 │  └─ WarehouseBusiness
 │     ├─ API
 │     │  ├─ API.csproj
 │     │  ├─ API.http
-│     │  ├─ API.json
 │     │  ├─ appsettings.json
 │     │  ├─ Common
 │     │  │  └─ ApiBuilder.cs
@@ -18,7 +17,10 @@ warehouse-api-dotnet
 │     │  │  ├─ CategoryController.cs
 │     │  │  ├─ CheckHealthController.cs
 │     │  │  ├─ ProductController.cs
+│     │  │  ├─ SetupsController.cs
 │     │  │  └─ WarehouseController.cs
+│     │  ├─ DependencyInjection
+│     │  │  └─ DependencyInjection.cs
 │     │  ├─ Middlewares
 │     │  ├─ Program.cs
 │     │  └─ Properties
@@ -32,7 +34,11 @@ warehouse-api-dotnet
 │     │  │  ├─ CategoryDTO.cs
 │     │  │  ├─ LoginDTO.cs
 │     │  │  ├─ ProductDTO.cs
+│     │  │  ├─ RefreshTokenDTO.cs
+│     │  │  ├─ SetupsDTO.cs
 │     │  │  └─ WarehouseDTO.cs
+│     │  ├─ Helper
+│     │  │  └─ Hash.cs
 │     │  ├─ Interfaces
 │     │  │  ├─ IAuthService.cs
 │     │  │  ├─ IBinService.cs
@@ -40,6 +46,7 @@ warehouse-api-dotnet
 │     │  │  ├─ ICategoryService.cs
 │     │  │  ├─ IHealthService.cs
 │     │  │  ├─ IProductService.cs
+│     │  │  ├─ ISetupsService.cs
 │     │  │  └─ IWarehouseService.cs
 │     │  └─ Services
 │     │     ├─ AuthService.cs
@@ -48,6 +55,7 @@ warehouse-api-dotnet
 │     │     ├─ CategoryService.cs
 │     │     ├─ HealthService.cs
 │     │     ├─ ProductService.cs
+│     │     ├─ SetupsService.cs
 │     │     └─ WarehouseService.cs
 │     ├─ Contract
 │     │  ├─ Contract.csproj
@@ -63,6 +71,7 @@ warehouse-api-dotnet
 │     │  │  ├─ Category.cs
 │     │  │  ├─ Contact.cs
 │     │  │  ├─ Product.cs
+│     │  │  ├─ RefreshToken.cs
 │     │  │  ├─ User.cs
 │     │  │  ├─ Warehouse.cs
 │     │  │  └─ Weak
@@ -71,9 +80,10 @@ warehouse-api-dotnet
 │     │  └─ Repositories
 │     │     ├─ IBaseRepository.cs
 │     │     ├─ IBinRepository.cs
-│     │     ├─ IBusinessPartnetRepository.cs
+│     │     ├─ IBusinessPartnerRepository.cs
 │     │     ├─ ICategoryRepository.cs
 │     │     ├─ IProductRepository.cs
+│     │     ├─ IRefreshTokenRepository.cs
 │     │     ├─ IUserRepository.cs
 │     │     └─ IWarehouseRepository.cs
 │     └─ Infrastructure
@@ -88,6 +98,7 @@ warehouse-api-dotnet
 │           ├─ BusinessPartnerRepository.cs
 │           ├─ CategoryRepository.cs
 │           ├─ ProductRepository.cs
+│           ├─ RefreshTokenRepository.cs
 │           ├─ UserRepository.cs
 │           └─ WarehouseRepository.cs
 └─ warehouse-api-dotnet.sln
