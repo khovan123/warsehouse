@@ -8,20 +8,20 @@ export const inventorySlice = createSlice({
   name: 'inventory',
   initialState: INIT_INVENTORY_STATE,
   reducers: {
-    inventoriesRequest: (state) => {
+    fetchInventoryRequest: (state) => {
       state.loading = true;
     },
-    inventoriesSuccess: (state, action: PayloadAction<Inventory[]>) => {
+    fetchInventorySuccess: (state, action: PayloadAction<Inventory[]>) => {
       state.data.inventories = action.payload;
       state.loading = false;
     },
-    inventoriesFailure: (state, action: PayloadAction<ApiError>) => {
+    fetchInventoryFailure: (state, action: PayloadAction<ApiError>) => {
       state.error = action.payload;
       state.loading = false;
     },
   },
 });
 
-export const { inventoriesRequest, inventoriesSuccess, inventoriesFailure } =
+export const { fetchInventoryRequest, fetchInventorySuccess, fetchInventoryFailure } =
   inventorySlice.actions;
 export default inventorySlice.reducer;

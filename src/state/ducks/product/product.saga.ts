@@ -1,24 +1,24 @@
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 
-import type { ProductResponse } from '@/@types/product';
-import { productRequestApi } from '@/apis/product/product';
+import type { FetchProductResponse } from '@/@types/product';
+import { fetchProductApi } from '@/apis/product/product';
 import type { ApiError } from '@/apis/type';
 
-import { productFailure, productRequest, productSuccess } from './slice';
+import { fetchProductFailure, fetchProductRequest, fetchProductSuccess } from './slice';
 
-function* handleProductRequest() {
+function* fetchProductFlow() {
   try {
-    const res: ProductResponse = yield call(productRequestApi);
-    yield put(productSuccess(res.products));
+    const res: FetchProductResponse = yield call(fetchProductApi);
+    yield put(fetchProductSuccess(res.products));
   } catch (error) {
-    yield put(productFailure(error as ApiError));
+    yield put(fetchProductFailure(error as ApiError));
   }
 }
 
-function* watchProduct() {
-  yield takeLatest(productRequest.type, handleProductRequest);
+function* watchProductFlows() {
+  yield takeLatest(fetchProductRequest.type, fetchProductFlow);
 }
 
 export function* productSaga() {
-  yield all([fork(watchProduct)]);
+  yield all([fork(watchProductFlows)]);
 }
