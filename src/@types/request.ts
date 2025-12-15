@@ -10,4 +10,6 @@ export type Method = AxiosMethod;
 export type RequestPromise<T> = AxiosPromise<T>;
 export type HttpClientInstance = AxiosInstance;
 export type HttpResponse<T> = AxiosResponse<T>;
-export type RequestConfig = AxiosRequestConfig;
+export type RequestConfig = AxiosRequestConfig & {
+  __isRetry?: boolean;
+};
