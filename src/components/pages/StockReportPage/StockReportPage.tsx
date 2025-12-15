@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import AppPagination from '@/components/organisms/AppPagination/AppPagination';
 import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
 import { Toolbar, ToolbarInput } from '@/components/ui/toolbar';
@@ -14,16 +15,6 @@ import { cn } from '@/lib/utils';
 import { useStockSelector } from '@/state/ducks/stock/selectors';
 import { stockRequest } from '@/state/ducks/stock/slice';
 import type { Stock } from '@/state/ducks/stock/type';
-
-// type StockRow = {
-//   product: string;
-//   warehouse: string;
-//   bin: string;
-//   category: string;
-//   onHand: number;
-//   reserved: number;
-//   available: number;
-// };
 
 const columns: ColumnDef<Stock>[] = [
   {
@@ -75,20 +66,6 @@ const StockReportPage: React.FC = () => {
     data: rows,
   };
 
-  const Footer = () => (
-    <div
-      className={cn(
-        'border-t border-border bg-card text-[11px] flex',
-        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
-      )}
-    >
-      <span>
-        1 - {rows.length} of {rows.length} rows
-      </span>
-      <span>Items per page: 200</span>
-    </div>
-  );
-
   return (
     <PageOverview>
       <PageHeader
@@ -123,7 +100,7 @@ const StockReportPage: React.FC = () => {
           <DataTable {...tableProps} />
         </div>
       </PageContent>
-      <Footer />
+      <AppPagination />
     </PageOverview>
   );
 };
