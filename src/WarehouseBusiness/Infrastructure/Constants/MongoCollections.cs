@@ -9,6 +9,7 @@
                 public const string BusinessPartners = "businessPartners";
                 public const string Products = "products";
                 public const string Inventory = "inventories";
+                public const string Stocks = "stocks";
                 public const string RefreshTokens = "refreshtokens";
         }
 }
