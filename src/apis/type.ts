@@ -1,32 +1,43 @@
 class ApiError extends Error {
-  errorCode: string;
-  errorMessage: string;
-  errorDetail: string;
-  errorPath: string;
+  status: number;
+  title: string;
+  detail?: string;
+  instance?: string;
+  traceId?: string;
+  errors?: Record<string, unknown>;
 
-  constructor(errorCode: string, errorMessage: string, errorDetail: string, errorPath: string) {
-    super(errorMessage);
-    this.errorCode = errorCode;
-    this.errorMessage = errorMessage;
-    this.errorDetail = errorDetail;
-    this.errorPath = errorPath;
+  constructor(
+    status: number,
+    title: string,
+    detail: string,
+    instance: string,
+    traceId: string,
+    errors: Record<string, unknown>
+  ) {
+    super(title);
+    this.status = status;
+    this.title = title;
+    this.detail = detail;
+    this.instance = instance;
+    this.traceId = traceId;
+    this.errors = errors;
   }
 }
 
-type GraphqlError = {
-  errors: {
-    message: string;
-    locations: {
-      line: number;
-      column: number;
-    }[];
-    path: string[];
-    extensions: {
-      code: string;
-      stacktrace: string[];
-    };
-  }[];
-  data?: unknown | null;
-};
+// type GraphqlError = {
+//   errors: {
+//     message: string;
+//     locations: {
+//       line: number;
+//       column: number;
+//     }[];
+//     path: string[];
+//     extensions: {
+//       code: string;
+//       stacktrace: string[];
+//     };
+//   }[];
+//   data?: unknown | null;
+// };
 
-export { ApiError, type GraphqlError };
+export { ApiError };

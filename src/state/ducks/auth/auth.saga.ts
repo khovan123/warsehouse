@@ -26,7 +26,7 @@ function* loginFlow(action: PayloadAction<LoginCredentials>) {
     yield put(showToast({ type: 'success', message: 'Login successfully!' }));
   } catch (error) {
     yield put(loginFailure(error as ApiError));
-    yield put(showToast({ type: 'error', message: (error as ApiError).errorMessage }));
+    yield put(showToast({ type: 'error', message: (error as ApiError).title }));
   }
 }
 
