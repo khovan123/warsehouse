@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Application.DependencyInjection;
 using Application.Services;
 using Infrastructure.Repositories;
 
@@ -8,6 +9,7 @@ namespace API.DependencyInjection
     {
         public static IServiceCollection AddProjectDependencies(this IServiceCollection services)
         {
+            services.AddApplicationDependencies();
             services.AddApplicationServices();
             services.AddInfrastructureRepositories();
             return services;
