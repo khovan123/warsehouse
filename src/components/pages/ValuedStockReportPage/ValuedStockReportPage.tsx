@@ -1,61 +1,30 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import { Download } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
 import MetricCard from '@/components/molecules/MetricCard/MetricCard';
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import AppPagination from '@/components/organisms/AppPagination/AppPagination';
 import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
 import { Toolbar, ToolbarButton, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-
-type ValuedStockRow = {
-  product: string;
-  category: string;
-  warehouse: string;
-  onHand: number;
-  averageCost: number;
-  inventoryValue: number;
-};
-
-const valuedRows: ValuedStockRow[] = [
-  {
-    product: 'SKU-1001 Cotton T-Shirt Blue M',
-    category: 'Apparel',
-    warehouse: 'Main DC',
-    onHand: 120,
-    averageCost: 9.4,
-    inventoryValue: 1128,
-  },
-  {
-    product: 'SKU-2001 Running Shoes 42',
-    category: 'Footwear',
-    warehouse: 'Main DC',
-    onHand: 40,
-    averageCost: 34.2,
-    inventoryValue: 1368,
-  },
-  {
-    product: 'SKU-4005 Winter Jacket L',
-    category: 'Apparel',
-    warehouse: 'Store 01',
-    onHand: 15,
-    averageCost: 45.5,
-    inventoryValue: 682.5,
-  },
-];
+import { useStockSelector } from '@/state/ducks/stock/selectors';
+import { stockRequest } from '@/state/ducks/stock/slice';
+import type { Stock } from '@/state/ducks/stock/type';
 
 const valuationSummary = [
   { label: 'Inventory Value', value: '3,178.5 €' },
   { label: 'Average Cost Variance', value: '+1.5 %' },
-  { label: 'Products Valued', value: valuedRows.length.toString() },
+  { label: 'Products Valued', value: '2' },
 ];
 
-const columns: ColumnDef<ValuedStockRow>[] = [
+const columns: ColumnDef<Stock>[] = [
   {
     accessorKey: 'product',
     header: 'Product',
@@ -90,26 +59,18 @@ const columns: ColumnDef<ValuedStockRow>[] = [
 ];
 
 const ValuedStockReportPage: React.FC = () => {
+  const dispatch = useDispatch();
   const isMobile = useIsMobile();
+  const stockSelector = useStockSelector();
 
-  const tableProps: DataTableProps<ValuedStockRow, unknown> = {
+  useEffect(() => {
+    dispatch(stockRequest());
+  }, [dispatch]);
+
+  const tableProps: DataTableProps<Stock, unknown> = {
     columns,
-    data: valuedRows,
+    data: stockSelector.data.stocks || [],
   };
-
-  const Footer = () => (
-    <div
-      className={cn(
-        'border-t border-border bg-card text-[11px] flex',
-        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
-      )}
-    >
-      <span>
-        1 - {valuedRows.length} of {valuedRows.length} products
-      </span>
-      <span>Total value: {valuationSummary[0].value}</span>
-    </div>
-  );
 
   return (
     <PageOverview>
@@ -154,7 +115,7 @@ const ValuedStockReportPage: React.FC = () => {
           <DataTable {...tableProps} />
         </div>
       </PageContent>
-      <Footer />
+      <AppPagination />
     </PageOverview>
   );
 };
