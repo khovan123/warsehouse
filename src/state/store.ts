@@ -9,6 +9,7 @@ import authReducer from './ducks/auth/slice';
 import inventoryReducer from './ducks/inventory/slice';
 import productReducer from './ducks/product/slice';
 import setupsReducer from './ducks/setups-warehouse/slice';
+import stockReducer from './ducks/stock/slice';
 import toastReducer from './ducks/toast/slice';
 
 const rootReducer = combineReducers({
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   product: productReducer,
   setups: setupsReducer,
   inventory: inventoryReducer,
+  stock: stockReducer,
 });
 
 const persistConfig = {
