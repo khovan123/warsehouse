@@ -47,7 +47,7 @@ namespace API.Controllers
             return ApiBuilder.Result(result!);
         }
 
-        [HttpPost("refresh")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> Refresh(CancellationToken ct)
         {
             if (!Request.Cookies.TryGetValue("refresh_token", out var rawRefreshToken) || string.IsNullOrEmpty(rawRefreshToken))

@@ -12,6 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.MongoDb" Version="9.0.0" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.11" />
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="9.0.11">
@@ -19,6 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="9.0.11" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.6" />
   </ItemGroup>
 
@@ -32,6 +35,7 @@
     <Folder Include="Middlewares\" />
 	<Folder Include="Controllers\" />
     <Folder Include="Common\" />
+    <Folder Include="DependencyInjection\" />
   </ItemGroup>
 
 </Project>
