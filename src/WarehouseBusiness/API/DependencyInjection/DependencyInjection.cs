@@ -2,6 +2,7 @@
 using Application.DependencyInjection;
 using Application.Services;
 using Infrastructure.Repositories;
+using MongoDB.Driver;
 
 namespace API.DependencyInjection
 {
