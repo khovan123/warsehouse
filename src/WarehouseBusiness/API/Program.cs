@@ -1,17 +1,17 @@
 using API.DependencyInjection;
+using API.Extensions;
 using API.Middlewares;
 using Infrastructure.DB;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddApiRateLimit();
 
 builder.Services.AddCors(options =>
 {
@@ -58,70 +58,9 @@ builder.Services.AddSingleton<MongoDbContext>();
 
 builder.Services.AddProjectDependencies();
 
-builder.Services
-    .AddHealthChecks()
-    .AddMongoDb(
-        clientFactory: sp => sp.GetRequiredService<IMongoClient>(),
-        databaseNameFactory: sp =>
-        {
-            var config = sp.GetRequiredService<IOptions<MongoDBConfig>>().Value;
-            return config.DatabaseName;
-        },
-        name: "mongodb"
-    );
+builder.Services.AddMongoDbHealthCheck();
 
-var jwtSection = builder.Configuration.GetSection("JWT");
-var keyBytes = Encoding.UTF8.GetBytes(jwtSection["SECRET_KEY"]!);
-
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSection["ISSUER"],
-            ValidAudience = jwtSection["AUDIENCE"],
-            IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
-        };
-
-        options.Events = new JwtBearerEvents
-        {
-            OnChallenge = async context =>
-            {
-                context.HandleResponse();
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                context.Response.ContentType = "application/json";
-                var payload = new
-                {
-                    success = false,
-                    message = "Unauthorized",
-                    errorCode = "UNAUTHORIZED",
-                    statusCode = 401
-                };
-
-                await context.Response.WriteAsJsonAsync(payload);
-
-            },
-
-            OnForbidden = async context =>
-            {
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                context.Response.ContentType = "application/json";
-                var payload = new
-                {
-                    success = false,
-                    message = "Forbidden",
-                    errorCode = "FORBIDDEN",
-                    statusCode = 403
-                };
-
-                await context.Response.WriteAsJsonAsync(payload);
-            }
-        };
-    });
+builder.Services.AddAuthenticationByJwtBearer(builder.Configuration);
 
 builder.Services.AddAuthorization();
 
@@ -139,15 +78,24 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
-
-app.MapHealthChecks("/api/v1/health/live");
-app.MapHealthChecks("/api/v1/health/ready");
-
+app.UseMiddleware<CorrelationCheckMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
 app.UseCors("Default");
+
+app.UseRateLimiter();
+
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
+
+app.MapHealthChecks("/api/v1/health/live").DisableRateLimiting();
+app.MapHealthChecks("/api/v1/health/ready").DisableRateLimiting();
+
+app.MapControllers().RequireRateLimiting("ip");
+//app.MapControllers().RequireRateLimiting("ip-token");
+
 
 app.Run();
