@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using System.Threading.Tasks;
+using Domain.Entities;
 using Domain.Repositories;
 using Infrastructure.DB;
 using MongoDB.Driver;
@@ -12,7 +13,15 @@ namespace Infrastructure.Repositories
         public RefreshTokenRepository(MongoDbContext context)
         {
             _refreshToken = context.RefreshTokens;
+            CreateTTLIndexForAtomicDelete();
         }
+
+        private void CreateTTLIndexForAtomicDelete() => _refreshToken.Indexes.CreateOneAsync(
+            new CreateIndexModel<RefreshToken>(
+                Builders<RefreshToken>.IndexKeys.Ascending(x => x.ExpiresAt),
+                new CreateIndexOptions { ExpireAfter = TimeSpan.Zero }
+            )
+        );
 
         public void CreateOne(RefreshToken refreshToken, CancellationToken ct) => _refreshToken.InsertOne(refreshToken, cancellationToken: ct);
 
@@ -25,7 +34,7 @@ namespace Infrastructure.Repositories
                 );
 
             return await _refreshToken.Find(filter).FirstOrDefaultAsync(ct);
-        }   
+        }
 
         public void UpdateOne(RefreshToken refreshToken, CancellationToken ct)
         {
