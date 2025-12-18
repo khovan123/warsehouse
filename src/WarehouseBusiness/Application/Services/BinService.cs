@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.Dtos;
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
-    public class BinService: IBinService
+    public class BinService : IBinService
     {
         private readonly IBinRepository _binRepository;
 

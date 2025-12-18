@@ -27,5 +27,8 @@ namespace Infrastructure.DB
         public IMongoCollection<Inventory> Inventories => _database.GetCollection<Inventory>(MongoCollections.Inventory);
         public IMongoCollection<RefreshToken> RefreshTokens => _database.GetCollection<RefreshToken>(MongoCollections.RefreshTokens);
         public IMongoCollection<Stock> Stocks => _database.GetCollection<Stock>(MongoCollections.Stocks);
+        public IMongoCollection<Movement> Movements => _database.GetCollection<Movement>(MongoCollections.Movements);
+        public IMongoCollection<GoodTransaction> GoodTransactions => _database.GetCollection<GoodTransaction>(MongoCollections.GoodTransactions);
+        public IMongoCollection<Reservation> Reservations => _database.GetCollection<Reservation>(MongoCollections.Reservations);
     }
 }
