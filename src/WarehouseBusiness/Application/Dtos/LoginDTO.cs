@@ -1,6 +1,6 @@
 ﻿using Contract.Interfaces;
 
-namespace Application.DTOs
+namespace Application.Dtos
 {
     public class LoginDTO
     {

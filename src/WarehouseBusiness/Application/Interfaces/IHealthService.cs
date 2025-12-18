@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Application.Interfaces
+﻿namespace Application.Interfaces
 {
     public interface IHealthService
     {

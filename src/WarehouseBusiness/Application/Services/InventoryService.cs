@@ -3,7 +3,6 @@ using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Services
 {
