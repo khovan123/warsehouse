@@ -62,5 +62,18 @@ namespace API.Extensions
           });
       return services;
     }
+
+    public static IApplicationBuilder AddAppHeaders(this IApplicationBuilder app)
+    {
+      app.Use(async (httpContext, next) =>
+      {
+        httpContext.Response.Headers.XContentTypeOptions = "nosniff"; //MIME-type sniffing
+        httpContext.Response.Headers.XFrameOptions = "DENY"; //Clickjacking attack
+        httpContext.Response.Headers["Referrer-Policy"] = "no-referrer";
+        httpContext.Response.Headers["Permissions-Policy"] = "geolocation=()";//disable GPS
+        await next();
+      });
+      return app;
+    }
   }
 }
