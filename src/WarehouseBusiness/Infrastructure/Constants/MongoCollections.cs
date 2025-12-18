@@ -11,5 +11,8 @@
                 public const string Inventory = "inventories";
                 public const string Stocks = "stocks";
                 public const string RefreshTokens = "refreshtokens";
+                public const string Movements = "movements";
+                public const string GoodTransactions = "goodtransactions";
+                public const string Reservations = "reservations";
         }
 }

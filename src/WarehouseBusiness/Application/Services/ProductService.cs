@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.Dtos;
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
@@ -10,7 +10,7 @@ namespace Application.Services
     public class ProductService : IProductService
     {
         private readonly IProductRepository _productRepository;
-        
+
         public ProductService(IProductRepository productRepository)
         {
             _productRepository = productRepository;
