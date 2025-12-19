@@ -16,7 +16,7 @@ namespace Application.Dtos
             public string Token { get; set; } = token;
         }
 
-        public class ResponseWithRefreshToken(UserDTO userDTO, string token, string refreshToken) : Response
+        public class ResponseWithRefreshToken(UserDTO userDTO = default!, string token = default!, string refreshToken = default!) : Response
         {
             public Response Response { get; set; } = new Response(userDTO, token);
             public string RefreshToken { get; set; } = refreshToken;

@@ -19,7 +19,7 @@ namespace Application.Services
         {
             var warehouses = await _warehouseRepository.GetAll(ct);
             var data = new WarehouseDTO.Response(warehouses);
-            return new ApiResponse<WarehouseDTO.Response>.SuccessBuilder(data, null, StatusCodes.Status200OK);
+            return new ApiResponse<WarehouseDTO.Response>(data);
         }
     }
 }

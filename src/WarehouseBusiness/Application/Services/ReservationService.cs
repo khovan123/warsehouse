@@ -19,7 +19,7 @@ namespace Application.Services
     {
       var reservations = await _reservationRepository.GetAll(ct);
       var data = new ReservationDTO.Response(reservations);
-      return new ApiResponse<ReservationDTO.Response>.SuccessBuilder(data, "Get resources successfully!", StatusCodes.Status200OK);
+      return new ApiResponse<ReservationDTO.Response>(data);
     }
   }
 }

@@ -19,7 +19,7 @@ namespace Application.Services
         {
             var inventories = await _inventoryRepository.GetAll(ct);
             var data = new InventoryDTO.Response(inventories);
-            return new ApiResponse<InventoryDTO.Response>.SuccessBuilder(data, null, StatusCodes.Status200OK);
+            return new ApiResponse<InventoryDTO.Response>(data);
         }
     }
 }
