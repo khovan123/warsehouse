@@ -66,7 +66,7 @@ namespace Application.Services
             );
 
 
-            return new ApiResponse<LoginDTO.ResponseWithRefreshToken>.SuccessBuilder(data, "Login successful");
+            return new ApiResponse<LoginDTO.ResponseWithRefreshToken>(data, "Login successfully!");
         }
 
         public async Task<ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>> RefreshAccessToken(string token_hash, CancellationToken ct)
@@ -105,7 +105,7 @@ namespace Application.Services
                 RefreshToken = newRaw
             };
 
-            return new ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>.SuccessBuilder(data, StatusCode: StatusCodes.Status201Created);
+            return new ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>(data, statusCode: StatusCodes.Status201Created);
         }
     }
 }

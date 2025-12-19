@@ -18,7 +18,7 @@ namespace Application.Services
     {
       var movements = await _movementRepository.GetAll(ct);
       var data = new MovementDTO.Response(movements);
-      return new ApiResponse<MovementDTO.Response>.SuccessBuilder(data, "Get resources successfully!", StatusCodes.Status200OK);
+      return new ApiResponse<MovementDTO.Response>(data);
     }
   }
 }

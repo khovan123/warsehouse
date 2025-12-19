@@ -24,7 +24,7 @@ namespace Application.Services
             var warehouses = await _warehouseRepository.GetAll(ct);
             var bins = await _binRepository.GetAll(ct);
             var data = new SetupsDTO.Response(warehouses, bins);
-            return new ApiResponse<SetupsDTO.Response>.SuccessBuilder(data, null, StatusCodes.Status200OK);
+            return new ApiResponse<SetupsDTO.Response>(data);
         }
     }
 }

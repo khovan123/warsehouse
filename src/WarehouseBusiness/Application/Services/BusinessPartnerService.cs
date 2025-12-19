@@ -19,7 +19,7 @@ namespace Application.Services
             var businessPartners = await _businessPartnetRepository.GetAll(ct);
             var data = new BusinessPartnerDTO.Response(businessPartners);
 
-            return new ApiResponse<BusinessPartnerDTO.Response>.SuccessBuilder(data, null, StatusCodes.Status200OK);
+            return new ApiResponse<BusinessPartnerDTO.Response>(data);
         }
     }
 }

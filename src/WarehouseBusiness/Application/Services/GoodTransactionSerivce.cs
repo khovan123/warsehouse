@@ -18,7 +18,7 @@ namespace Application.Services
     {
       var goodTransactions = await _goodTransactionRepository.GetAll(ct);
       var data = new GoodTransactionDTO.Response(goodTransactions);
-      return new ApiResponse<GoodTransactionDTO.Response>.SuccessBuilder(data, "Get resources successfully!", StatusCodes.Status200OK);
+      return new ApiResponse<GoodTransactionDTO.Response>(data);
     }
   }
 }

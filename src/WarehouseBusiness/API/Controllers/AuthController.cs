@@ -21,13 +21,12 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO.Request request, CancellationToken ct)
         {
-            var result = await _authService.LoginAsync(request, ct);
+            var res = await _authService.LoginAsync(request, ct);
 
-            if (result is ApiResponse<LoginDTO.ResponseWithRefreshToken>.SuccessBuilder and not null)
+            if (res is ApiResponse<LoginDTO.ResponseWithRefreshToken> and not null)
             {
-                ApiResponse<LoginDTO.ResponseWithRefreshToken>.SuccessBuilder successBuilder = (ApiResponse<LoginDTO.ResponseWithRefreshToken>.SuccessBuilder)result;
-                var rawRefreshToken = successBuilder.Result.Data.RefreshToken;
-                var data = successBuilder.Result.Data.Response;
+                var rawRefreshToken = res.Result.Data.RefreshToken ?? "";
+                var data = res.Result.Data.Response;
 
                 Response.Cookies.Append("refresh_token", rawRefreshToken, new CookieOptions
                 {
@@ -38,12 +37,12 @@ namespace API.Controllers
                     Path = "/api/v1/auth"
                 });
 
-                var newApiRes = new ApiResponse<LoginDTO.Response>.SuccessBuilder(data, successBuilder.Message, successBuilder.StatusCode);
+                var newApiRes = new ApiResponse<LoginDTO.Response>(data, res.Result.Message, res.StatusCode);
 
                 return ApiBuilder.Result(newApiRes);
             }
 
-            return ApiBuilder.Result(result!);
+            return ApiBuilder.Result(res!);
         }
 
         [HttpPost("refresh-token")]
@@ -54,13 +53,12 @@ namespace API.Controllers
 
             var tokenHash = Hash.Sha256(rawRefreshToken);
 
-            var result = await _authService.RefreshAccessToken(tokenHash, ct);
+            var res = await _authService.RefreshAccessToken(tokenHash, ct);
 
-            if (result is ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>.SuccessBuilder and not null)
+            if (res is ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken> and not null)
             {
-                ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>.SuccessBuilder successBuilder = (ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>.SuccessBuilder)result;
-                var newRefreshToken = successBuilder.Result.Data.RefreshToken;
-                var data = successBuilder.Result.Data.Response;
+                var newRefreshToken = res.Result.Data.RefreshToken;
+                var data = res.Result.Data.Response;
 
                 Response.Cookies.Append("refresh_token", newRefreshToken, new CookieOptions
                 {
@@ -72,12 +70,12 @@ namespace API.Controllers
                 });
 
 
-                var newApiRes = new ApiResponse<RefreshTokenDTO.Response>.SuccessBuilder(data, successBuilder.Message, successBuilder.StatusCode);
+                var newApiRes = new ApiResponse<RefreshTokenDTO.Response>(data, res.Result.Message, res.StatusCode);
 
                 return ApiBuilder.Result(newApiRes);
             }
 
-            return ApiBuilder.Result(result!);
+            return ApiBuilder.Result(res!);
         }
     }
 }

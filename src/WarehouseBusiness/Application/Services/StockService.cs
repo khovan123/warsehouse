@@ -20,7 +20,7 @@ namespace Application.Services
             var stockReports = await _stockRepository.GetAllWithDetails(ct);
 
             var data = new StockDTO.Response(stockReports);
-            return new ApiResponse<StockDTO.Response>.SuccessBuilder(data, "Get resources successfully!", StatusCodes.Status200OK);
+            return new ApiResponse<StockDTO.Response>(data);
         }
     }
 }

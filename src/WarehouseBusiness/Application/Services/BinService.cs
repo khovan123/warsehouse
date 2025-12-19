@@ -19,7 +19,7 @@ namespace Application.Services
         {
             var bins = await _binRepository.GetAll(ct);
             var data = new BinDTO.Response(bins);
-            return new ApiResponse<BinDTO.Response>.SuccessBuilder(data, null, StatusCodes.Status200OK);
+            return new ApiResponse<BinDTO.Response>(data);
         }
     }
 }

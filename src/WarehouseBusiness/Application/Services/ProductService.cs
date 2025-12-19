@@ -21,7 +21,7 @@ namespace Application.Services
 
             var data = new ProductDTO.Response(products);
 
-            return new ApiResponse<ProductDTO.Response>.SuccessBuilder(data, "Get resources successfully!", StatusCodes.Status200OK);
+            return new ApiResponse<ProductDTO.Response>(data);
         }
     }
 }
