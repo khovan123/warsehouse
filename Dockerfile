@@ -2,6 +2,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /app
 
 ENV ASPNETCORE_URLS=http://0.0.0.0:8081
+ENV PORT=8081
+ENV HTTP_PORTS=8081
+ENV HTTPS_PORTS=8082
+
+RUN mkdir -p /var/keys
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app

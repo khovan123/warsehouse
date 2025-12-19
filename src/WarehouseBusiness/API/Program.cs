@@ -5,6 +5,7 @@ using Infrastructure.DB;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,7 +66,25 @@ builder.Services.AddAuthenticationByJwtBearer(builder.Configuration);
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo("/keys"));
+builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo("/var/keys")).SetApplicationName("Openbravo.Warehouse.Api.Dotnet.Prod");
+
+if (builder.Environment.IsProduction())
+{
+    var certificatePath = builder.Configuration.GetValue<string>("DataProtection:CertificatePath");
+
+    if (string.IsNullOrWhiteSpace(certificatePath))
+    {
+        throw new InvalidOperationException("Data Protection certificate path is not configured.");
+    }
+
+    var certificatePassword = builder.Configuration.GetValue<string>("DataProtection:CertificatePassword");
+    var cert = X509CertificateLoader.LoadPkcs12FromFile(certificatePath, certificatePassword);
+
+    builder.Services.AddDataProtection()
+        .SetApplicationName("Openbravo.Warehouse.Api.Dotnet.Prod")
+        .PersistKeysToFileSystem(new DirectoryInfo("/var/keys"))
+        .ProtectKeysWithCertificate(cert);
+}
 
 var app = builder.Build();
 
