@@ -2,6 +2,7 @@ using API.DependencyInjection;
 using API.Extensions;
 using API.Middlewares;
 using Infrastructure.DB;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -63,6 +64,8 @@ builder.Services.AddMongoDbHealthCheck();
 builder.Services.AddAuthenticationByJwtBearer(builder.Configuration);
 
 builder.Services.AddAuthorization();
+
+builder.Services.AddDataProtection().PersistKeysToFileSystem(new DirectoryInfo("/keys"));
 
 var app = builder.Build();
 
