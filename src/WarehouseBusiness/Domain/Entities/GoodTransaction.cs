@@ -29,6 +29,7 @@ namespace Domain.Entities
   public class GoodTransactionLine
   {
     [BsonElement("productId")]
+    [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
     public string ProductId { get; set; } = default!;
     [BsonElement("expectedQty")]
     public int ExpectedQty { get; set; } = default!;
