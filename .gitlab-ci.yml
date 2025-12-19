@@ -1,6 +1,7 @@
 stages:
   - build
   - docker
+  - deploy
   - test
 
 variables:
@@ -30,6 +31,18 @@ docker-build:
     - docker push "$CI_REGISTRY_IMAGE:latest"
   rules:
     # - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
+
+koyeb-deploy:
+  stage: deploy
+  needs: [docker-build]
+  script:
+    - |
+      curl -v -X POST \
+        -H "Authorization: Bearer $KOYEB_API_TOKEN" \
+        "https://app.koyeb.com/v1/services/$KOYEB_SERVICE_ID/redeploy" \
+        -d '{"deployment_group": "", "sha": "", "use_cache": false, "skip_build": false}'
+  rules:
     - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
 test:
