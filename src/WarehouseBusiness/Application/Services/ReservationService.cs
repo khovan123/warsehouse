@@ -2,7 +2,6 @@ using Application.Dtos;
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {

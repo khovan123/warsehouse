@@ -6,7 +6,7 @@ namespace Application.Dtos
   {
     public record Response(List<Reservation>? Reservations = default!)
     {
-      public List<Reservation>? Reservations = Reservations;
+      public List<Reservation>? Reservations { get; set; } = Reservations;
     }
   }
 }
