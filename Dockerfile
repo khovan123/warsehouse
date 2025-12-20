@@ -29,9 +29,6 @@ RUN dotnet publish "API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 FROM base AS final
 WORKDIR /app
 
-RUN mkdir -p /app/certs
-COPY certs/ /app/certs/
-
 EXPOSE 8081
 
 COPY --from=publish /app/publish .
