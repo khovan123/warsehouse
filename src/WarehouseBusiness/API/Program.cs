@@ -1,9 +1,6 @@
-using API.DependencyInjection;
+﻿using API.DependencyInjection;
 using API.Extensions;
 using API.Middlewares;
-using Infrastructure.DB;
-using Microsoft.Extensions.Options;
-using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,22 +36,9 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.Configure<MongoDBConfig>(builder.Configuration.GetSection("MONGO"));
+builder.Services.AddMongoDBRunner(builder.Configuration);
 
-builder.Services.AddSingleton<IMongoClient>(sp =>
-{
-    var config = sp.GetRequiredService<IOptions<MongoDBConfig>>().Value;
-    return new MongoClient(config.ConnectionString);
-});
-
-builder.Services.AddSingleton<IMongoDatabase>(sp =>
-{
-    var config = sp.GetRequiredService<IOptions<MongoDBConfig>>().Value;
-    var client = sp.GetRequiredService<IMongoClient>();
-    return client.GetDatabase(config.DatabaseName);
-});
-
-builder.Services.AddSingleton<MongoDbContext>();
+builder.Services.AddPersistKeysToRedis(builder.Configuration, builder.Environment);
 
 builder.Services.AddProjectDependencies();
 

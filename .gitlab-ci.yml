@@ -30,8 +30,8 @@ docker-build:
     - docker build -t "$CI_REGISTRY_IMAGE:latest" -f Dockerfile .
     - docker push "$CI_REGISTRY_IMAGE:latest"
   rules:
-    # - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
-    - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    # - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
 koyeb-deploy:
   stage: deploy
@@ -43,7 +43,8 @@ koyeb-deploy:
         "https://app.koyeb.com/v1/services/$KOYEB_SERVICE_ID/redeploy" \
         -d '{"deployment_group": "", "sha": "", "use_cache": false, "skip_build": false}'
   rules:
-    - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    # - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
 test:
   stage: test
