@@ -9,7 +9,7 @@ export const getClient = () => {
       baseURL: import.meta.env.VITE_API_URL,
       timeout: Number.parseInt(import.meta.env.VITE_API_TIMEOUT, 10),
       responseType: 'json',
-      // withCredentials: true,
+      withCredentials: true,
       // headers: {
       //   "x-sharex-authtoken-userid": userId,
       // },
