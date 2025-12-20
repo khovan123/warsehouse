@@ -1,6 +1,4 @@
-﻿using System.Runtime.Intrinsics.Arm;
-using System.Security.Cryptography.X509Certificates;
-using Infrastructure.DB;
+﻿using Infrastructure.DB;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -40,10 +38,10 @@ namespace API.Extensions
             var port = redisSection.GetValue<int>("Port");
             var password = redisSection.GetValue<string>("Password");
             var applicationName = configuration.GetValue<string>("ApplicationName") ?? "DefaultAppName";
-            var certSection = configuration.GetSection("DataProtection");
-            var certPath = certSection.GetValue<string>("CertificatePath");
-            var certPassword = certSection.GetValue<string>("CertificatePassword");
-            var cert = X509CertificateLoader.LoadPkcs12FromFile(certPath ?? "<URL>.pfx", certPassword);
+            // var certSection = configuration.GetSection("DataProtection");
+            // var certPath = certSection.GetValue<string>("CertificatePath");
+            // var certPassword = certSection.GetValue<string>("CertificatePassword");
+            // var cert = X509CertificateLoader.LoadPkcs12FromFile(certPath ?? "<URL>.pfx", certPassword);
 
             var options = new ConfigurationOptions
             {
@@ -64,8 +62,8 @@ namespace API.Extensions
 
             services.AddDataProtection()
                     .SetApplicationName(applicationName)
-                    .PersistKeysToStackExchangeRedis(redis, configuration.GetValue<string>("PrefixDataProtectionKey"))
-                    .ProtectKeysWithCertificate(cert);
+                    .PersistKeysToStackExchangeRedis(redis, configuration.GetValue<string>("PrefixDataProtectionKey"));
+            // .ProtectKeysWithCertificate(cert);
 
             return services;
         }
