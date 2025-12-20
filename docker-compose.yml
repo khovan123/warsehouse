@@ -7,6 +7,7 @@ services:
     ports:
       - "8081:8081"
     environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
       ASPNETCORE_URLS: "http://0.0.0.0:8081"
       HTTP_PORTS: "8081"
       HTTPS_PORTS: "8082"

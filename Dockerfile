@@ -6,8 +6,6 @@ ENV PORT=8081
 ENV HTTP_PORTS=8081
 ENV HTTPS_PORTS=8082
 
-RUN mkdir -p /var/keys
-
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
@@ -30,6 +28,10 @@ RUN dotnet publish "API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
+
+RUN mkdir -p /var/keys
+RUN mkdir -p /app/certs
+COPY certs/ /app/certs
 
 EXPOSE 8081
 
