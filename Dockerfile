@@ -31,7 +31,7 @@ WORKDIR /app
 
 RUN mkdir -p /var/keys
 RUN mkdir -p /app/certs
-COPY certs/ /app/certs
+COPY ../../certs/ /app/certs
 
 EXPOSE 8081
 
