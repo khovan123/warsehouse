@@ -1,46 +1,21 @@
-// src/components/pages/Transactions/PhysicalInventoryPage.tsx
 import { type ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import AppPagination from '@/components/organisms/AppPagination/AppPagination';
 import PageOverview from '@/components/organisms/PageOverview/PageOverview';
-import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DataTable } from '@/components/ui/data-table';
 import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-
-type Inventory = {
-  docNo: string;
-  warehouse: string;
-  description: string;
-  countDate: string;
-  status: 'In Progress' | 'Completed';
-  createdBy: string;
-};
-
-const inventories: Inventory[] = [
-  {
-    docNo: 'PI-240010',
-    warehouse: 'Main DC',
-    description: 'Cycle Count Aisle A',
-    countDate: '2025-11-16',
-    status: 'In Progress',
-    createdBy: 'operator01',
-  },
-  {
-    docNo: 'PI-240009',
-    warehouse: 'Main DC',
-    description: 'Full count – Main DC',
-    countDate: '2025-11-10',
-    status: 'Completed',
-    createdBy: 'superuser',
-  },
-];
+import { useInventorySelector } from '@/state/ducks/inventory/selectors';
+import { fetchInventoryRequest } from '@/state/ducks/inventory/slice';
+import type { Inventory } from '@/state/ducks/inventory/type';
 
 const columns: ColumnDef<Inventory>[] = [
   {
@@ -65,56 +40,72 @@ const columns: ColumnDef<Inventory>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: 'docNo',
+    accessorKey: 'document',
     header: 'Document No.',
   },
   {
-    accessorKey: 'warehouse',
+    accessorKey: 'line',
+    header: 'Line',
+  },
+  {
+    accessorKey: 'type',
+    header: 'Type',
+  },
+  {
+    accessorKey: 'movementDate',
+    header: 'Movement Date',
+  },
+  {
+    accessorKey: 'warehouseId',
     header: 'Warehouse',
   },
   {
-    accessorKey: 'description',
-    header: 'Description',
+    accessorKey: 'productId',
+    header: 'Product',
   },
   {
-    accessorKey: 'countDate',
-    header: 'Count Date',
+    accessorKey: 'binId',
+    header: 'Bin',
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) => {
-      const status = row.getValue<'In Progress' | 'Completed'>('status');
-      return <Badge variant={'process'}>{status === 'Completed' ? 'success' : 'processing'}</Badge>;
-    },
+    accessorKey: 'qty',
+    header: 'Quantity',
   },
   {
-    accessorKey: 'createdBy',
-    header: 'Created By',
+    accessorKey: 'uom',
+    header: 'Uom',
+  },
+  {
+    accessorKey: 'cost',
+    header: 'Cost',
+  },
+  // {
+  //   accessorKey: 'status',
+  //   header: 'Status',
+  //   cell: ({ row }) => {
+  //     const status = row.getValue<'In Progress' | 'Completed'>('status');
+  //     return <Badge variant={'process'}>{status === 'Completed' ? 'success' : 'processing'}</Badge>;
+  //   },
+  // },
+  {
+    accessorKey: 'bpartnerId',
+    header: 'Business partner',
   },
 ];
 
 const PhysicalInventoryPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const inventorySelector = useInventorySelector();
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    dispatch(fetchInventoryRequest());
+  }, [dispatch]);
 
   const tableProps: DataTableProps<Inventory, unknown> = {
     columns,
-    data: inventories,
+    data: inventorySelector.data.inventories ?? [],
   };
-
-  const Footer = () => (
-    <div
-      className={cn(
-        'border-t border-border bg-card text-[11px] flex',
-        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
-      )}
-    >
-      <span>
-        1 - {inventories.length} of {inventories.length} documents
-      </span>
-      <span>Items per page: 50</span>
-    </div>
-  );
 
   return (
     <PageOverview>
@@ -134,7 +125,7 @@ const PhysicalInventoryPage: React.FC = () => {
           <DataTable {...tableProps} />
         </div>
       </PageContent>
-      <Footer />
+      <AppPagination />
     </PageOverview>
   );
 };
