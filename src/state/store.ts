@@ -7,6 +7,7 @@ import rootSaga from './ducks';
 import { authPersistFilter } from './ducks/auth/persist-filter';
 import authReducer from './ducks/auth/slice';
 import inventoryReducer from './ducks/inventory/slice';
+import movementReducer from './ducks/movement/slice';
 import productReducer from './ducks/product/slice';
 import setupsReducer from './ducks/setups-warehouse/slice';
 import stockReducer from './ducks/stock/slice';
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   setups: setupsReducer,
   inventory: inventoryReducer,
   stock: stockReducer,
+  movement: movementReducer,
 });
 
 const persistConfig = {
