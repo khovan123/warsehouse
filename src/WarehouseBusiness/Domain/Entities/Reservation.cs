@@ -12,7 +12,7 @@ namespace Domain.Entities
     public string ReservationNo { get; set; } = default!;
     [BsonElement("productId")]
     [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-    public string RroductId { get; set; } = default!;
+    public string ProductId { get; set; } = default!;
     [BsonElement("warehouseId")]
     [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
     public string WarehouseId { get; set; } = default!;
