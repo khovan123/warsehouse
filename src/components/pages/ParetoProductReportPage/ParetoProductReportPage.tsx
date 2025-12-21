@@ -1,9 +1,11 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import AppPagination from '@/components/organisms/AppPagination/AppPagination';
 import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
 import { DataTable } from '@/components/ui/data-table';
@@ -11,53 +13,13 @@ import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useParetoSelector } from '@/state/ducks/pareto/selectors';
+import { fetchParetoRequest } from '@/state/ducks/pareto/slice';
+import type { Pareto, ParetoClassification } from '@/state/ducks/pareto/type';
+import { PARETO_CLASS_LABELS, type ParetoClassTag } from '@/utils/constants';
+import { formatDecimalNumber } from '@/utils/helpers/format';
 
-type ParetoRow = {
-  product: string;
-  category: string;
-  annualConsumption: number;
-  value: number;
-  classTag: 'A' | 'B' | 'C';
-};
-
-const classification = [
-  { label: 'Class A', percentage: 20, valueShare: 70, color: 'bg-primary/20 text-primary' },
-  { label: 'Class B', percentage: 30, valueShare: 20, color: 'bg-primary/20 text-primary' },
-  { label: 'Class C', percentage: 50, valueShare: 10, color: 'bg-primary/20 text-primary' },
-];
-
-const paretoRows: ParetoRow[] = [
-  {
-    product: 'SKU-1001 Cotton T-Shirt Blue M',
-    category: 'Apparel',
-    annualConsumption: 2000,
-    value: 18800,
-    classTag: 'A',
-  },
-  {
-    product: 'SKU-2001 Running Shoes 42',
-    category: 'Footwear',
-    annualConsumption: 800,
-    value: 27360,
-    classTag: 'A',
-  },
-  {
-    product: 'SKU-3010 Leather Belt',
-    category: 'Accessories',
-    annualConsumption: 450,
-    value: 5400,
-    classTag: 'B',
-  },
-  {
-    product: 'SKU-5002 Keychain',
-    category: 'Accessories',
-    annualConsumption: 1200,
-    value: 1800,
-    classTag: 'C',
-  },
-];
-
-const columns: ColumnDef<ParetoRow>[] = [
+const columns: ColumnDef<Pareto>[] = [
   {
     accessorKey: 'product',
     header: 'Product',
@@ -79,42 +41,36 @@ const columns: ColumnDef<ParetoRow>[] = [
     ),
   },
   {
-    accessorKey: 'classTag',
+    accessorKey: 'tag',
     header: 'Class',
     cell: ({ row }) => {
-      const classTag = row.getValue<'A' | 'B' | 'C'>('classTag');
-      return (
-        <Badge
-          variant={classTag === 'A' ? 'default' : classTag === 'B' ? 'process' : 'destructive'}
-        >
-          {classTag}
-        </Badge>
-      );
+      const tag = row.getValue<ParetoClassTag>('tag');
+      const variantMap: Record<ParetoClassTag, 'default' | 'process' | 'destructive'> = {
+        A: 'default',
+        B: 'process',
+        C: 'destructive',
+      };
+      return <Badge variant={variantMap[tag]}>{tag}</Badge>;
     },
   },
 ];
 
 const ParetoProductReportPage: React.FC = () => {
+  const dispatch = useDispatch();
   const isMobile = useIsMobile();
+  const paretoSelector = useParetoSelector();
 
-  const tableProps: DataTableProps<ParetoRow, unknown> = {
+  useEffect(() => {
+    dispatch(fetchParetoRequest());
+  }, [dispatch]);
+
+  const rows: Pareto[] = paretoSelector.paretos || [];
+  const classifications: ParetoClassification[] = paretoSelector.classifications || [];
+
+  const tableProps: DataTableProps<Pareto, unknown> = {
     columns,
-    data: paretoRows,
+    data: rows,
   };
-
-  const Footer = () => (
-    <div
-      className={cn(
-        'border-t border-border bg-card text-[11px] flex',
-        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
-      )}
-    >
-      <span>
-        1 - {paretoRows.length} of {paretoRows.length} SKUs
-      </span>
-      <span>ABC classification aligned with Pareto Product Report</span>
-    </div>
-  );
 
   return (
     <PageOverview>
@@ -148,15 +104,20 @@ const ParetoProductReportPage: React.FC = () => {
       <PageContent>
         <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
           <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
-            {classification.map((item) => (
+            {classifications.map((item) => (
               <div
-                key={item.label}
-                className={`rounded-xl border border-border bg-card px-4 py-3 text-xs ${item.color}`}
+                key={item.tag}
+                className={`rounded-xl border border-border bg-card px-4 py-3 text-xs bg-primary/20 text-primary`}
               >
-                <p className="text-xs font-semibold">{item.label}</p>
-                <p className="mt-2 text-2xl font-bold">{item.percentage}%</p>
+                <p className="text-xs font-semibold">{PARETO_CLASS_LABELS[item.tag]}</p>
+                <p className="mt-2 text-2xl font-bold">
+                  {formatDecimalNumber(item.tagPercentage)}%
+                </p>
                 <p className="text-xs">
-                  Value share: <span className="font-semibold">{item.valueShare}%</span>
+                  Value share:{' '}
+                  <span className="font-semibold">
+                    {formatDecimalNumber(item.valuePercentage)}%
+                  </span>
                 </p>
               </div>
             ))}
@@ -165,7 +126,7 @@ const ParetoProductReportPage: React.FC = () => {
           <DataTable {...tableProps} />
         </div>
       </PageContent>
-      <Footer />
+      <AppPagination />
     </PageOverview>
   );
 };
