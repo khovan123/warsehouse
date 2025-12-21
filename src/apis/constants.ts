@@ -5,4 +5,5 @@ export const SETUPS_REQUEST_PATH = '/setups';
 export const INVENTORY_REQUEST_PATH = '/inventories';
 export const STOCK_REQUEST_PATH = '/stocks';
 export const REFRESH_TOKEN_PATH = '/auth/refresh-token';
+export const MOVEMENT_REQUEST_PATH = '/movements';
 export const UNAUTHORIZED_STATUS_CODE = 401;
