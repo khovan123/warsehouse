@@ -30,5 +30,6 @@ namespace Infrastructure.DB
         public IMongoCollection<Movement> Movements => _database.GetCollection<Movement>(MongoCollections.Movements);
         public IMongoCollection<GoodTransaction> GoodTransactions => _database.GetCollection<GoodTransaction>(MongoCollections.GoodTransactions);
         public IMongoCollection<Reservation> Reservations => _database.GetCollection<Reservation>(MongoCollections.Reservations);
+        public IMongoCollection<Pareto> Paretos => _database.GetCollection<Pareto>(MongoCollections.Paretos);
     }
 }
