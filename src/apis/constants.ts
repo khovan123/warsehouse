@@ -4,5 +4,6 @@ export const PRODUCT_REQUEST_PATH = '/products';
 export const SETUPS_REQUEST_PATH = '/setups';
 export const INVENTORY_REQUEST_PATH = '/inventories';
 export const STOCK_REQUEST_PATH = '/stocks';
+export const PARETO_REQUEST_PATH = '/paretos';
 export const REFRESH_TOKEN_PATH = '/auth/refresh-token';
 export const UNAUTHORIZED_STATUS_CODE = 401;

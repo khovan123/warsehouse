@@ -2,6 +2,7 @@ import { all } from 'redux-saga/effects';
 
 import { authSaga } from './auth/auth.saga';
 import { inventorySaga } from './inventory/inventory.saga';
+import { paretoSaga } from './pareto/pareto.saga';
 import { productSaga } from './product/product.saga';
 import { setupsWarehouseSaga } from './setups-warehouse/setups.saga';
 import { stockSaga } from './stock/stock.saga';
@@ -13,6 +14,7 @@ export default function* rootSaga() {
     toastSaga(),
     productSaga(),
     stockSaga(),
+    paretoSaga(),
     setupsWarehouseSaga(),
     inventorySaga(),
   ]);
