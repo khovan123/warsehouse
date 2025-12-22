@@ -21,10 +21,7 @@ namespace Application.Services
         {
             var paretoReports = await _paretoRepository.GetAllWithDetails(ct);
 
-            var totalCount = paretoReports.Count;
-            var totalValue = paretoReports.Sum(p => p.Value);
-
-            var classifications = BuildClassifications(paretoReports, totalCount, totalValue);
+            var classifications = GetClassificationsFromParetoReports(paretoReports);
 
             var data = new ParetoDTO.Response(paretoReports, classifications);
 
@@ -35,11 +32,12 @@ namespace Application.Services
             );
         }
 
-        private static List<ParetoDTO.Classification> BuildClassifications(
-            List<Domain.Entities.Weak.ParetoReport> paretoReports,
-            int totalCount,
-            double totalValue)
+        private static List<ParetoDTO.Classification> GetClassificationsFromParetoReports(
+            List<Domain.Entities.Weak.ParetoReport> paretoReports)
         {
+            var totalCount = paretoReports.Count;
+            var totalValue = paretoReports.Sum(p => p.Value);
+
             return paretoReports
                 .Where(p => p.TagEnum.HasValue)
                 .GroupBy(p => p.TagEnum!.Value)
@@ -50,8 +48,8 @@ namespace Application.Services
 
                     return new ParetoDTO.Classification(
                         Tag: g.Key.ToString(),
-                        TagPercentage: PercentageCalculator.Calculate(count, totalCount),
-                        ValuePercentage: PercentageCalculator.Calculate(groupValue, totalValue)
+                        TagPercentage: Calculator.CalculatePercentage(count, totalCount),
+                        ValuePercentage: Calculator.CalculatePercentage(groupValue, totalValue)
                     );
                 })
                 .OrderBy(c => c.Tag)

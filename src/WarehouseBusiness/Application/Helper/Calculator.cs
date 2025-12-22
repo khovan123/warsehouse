@@ -1,8 +1,8 @@
 namespace Application.Helper
 {
-    public static class PercentageCalculator
+    public static class Calculator
     {
-        public static double Calculate(double part, double total, int decimalPlaces = 2)
+        public static double CalculatePercentage(double part, double total, int decimalPlaces = 2)
         {
             if (total <= 0)
                 return 0;
@@ -10,7 +10,7 @@ namespace Application.Helper
             return Math.Round(part / total * 100, decimalPlaces);
         }
 
-        public static double Calculate(int part, int total, int decimalPlaces = 2)
+        public static double CalculatePercentage(int part, int total, int decimalPlaces = 2)
         {
             if (total <= 0)
                 return 0;
