@@ -19,11 +19,12 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
   </ItemGroup>
-	
+
   <ItemGroup>
     <Folder Include="DependencyInjection\" />
     <Folder Include="Dtos\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Helper\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 
