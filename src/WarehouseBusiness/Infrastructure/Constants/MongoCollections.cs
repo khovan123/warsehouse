@@ -14,5 +14,6 @@
                 public const string Movements = "movements";
                 public const string GoodTransactions = "goodtransactions";
                 public const string Reservations = "reservations";
+                public const string Paretos = "paretos";
         }
 }
