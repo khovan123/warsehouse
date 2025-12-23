@@ -9,6 +9,7 @@ import authReducer from './ducks/auth/slice';
 import goodTransactionReducer from './ducks/good-transaction/slice';
 import inventoryReducer from './ducks/inventory/slice';
 import movementReducer from './ducks/movement/slice';
+import paretoReducer from './ducks/pareto/slice';
 import productReducer from './ducks/product/slice';
 import reservationReducer from './ducks/reservation/slice';
 import setupsReducer from './ducks/setups-warehouse/slice';
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   setups: setupsReducer,
   inventory: inventoryReducer,
   stock: stockReducer,
+  pareto: paretoReducer,
   movement: movementReducer,
   goodTransaction: goodTransactionReducer,
   reservation: reservationReducer,
