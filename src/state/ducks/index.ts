@@ -4,6 +4,7 @@ import { authSaga } from './auth/auth.saga';
 import { goodTransactionSaga } from './good-transaction/good-transaction.saga';
 import { inventorySaga } from './inventory/inventory.saga';
 import { movementSaga } from './movement/movement.saga';
+import { paretoSaga } from './pareto/pareto.saga';
 import { productSaga } from './product/product.saga';
 import { reservationSaga } from './reservation/reservation.saga';
 import { setupsWarehouseSaga } from './setups-warehouse/setups.saga';
@@ -16,6 +17,7 @@ export default function* rootSaga() {
     toastSaga(),
     productSaga(),
     stockSaga(),
+    paretoSaga(),
     setupsWarehouseSaga(),
     inventorySaga(),
     movementSaga(),
