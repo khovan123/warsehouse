@@ -24,6 +24,8 @@ class ApiError extends Error {
   }
 }
 
+export type Unwrap<T> = T extends Promise<infer U> ? U : T;
+
 // type GraphqlError = {
 //   errors: {
 //     message: string;
