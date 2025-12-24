@@ -10,6 +10,8 @@ stages:
 # -----------------------------
 lint:
   stage: lint
+  tags:
+    - openbravo-group-runner
   variables:
     NODE_ENV: development
   before_script:
@@ -24,6 +26,8 @@ lint:
 # -----------------------------
 build:
   stage: build
+  tags:
+    - openbravo-group-runner
   needs: [lint]
   variables:
     NODE_ENV: development
