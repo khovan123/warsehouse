@@ -8,6 +8,33 @@ stages:
 default:
   tags:
     - openbravo-group-runner
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+  policy: pull-push
+
+variables:
+  SECRET_DETECTION_ENABLED: 'true'
+  ROLLUP_DISABLE_NATIVE: 'true'
+  NPM_CONFIG_FETCH_RETRIES: '5'
+  NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: '20000'
+  NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: '120000'
+  NPM_CONFIG_AUDIT: 'false'
+  NPM_CONFIG_FUND: 'false'
+  NPM_CONFIG_CACHE: '$CI_PROJECT_DIR/.npm'
+
+# -----------------------------
+# SECURITY: SAST + Secret Detection
+# -----------------------------
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
 # -----------------------------
 # LINT: ESLint + Prettier
 # -----------------------------
@@ -16,7 +43,7 @@ lint:
   variables:
     NODE_ENV: development
   before_script:
-    - '[ -d node_modules ] || npm ci --client'
+    - '[ -d node_modules ] || npm ci --silent'
   script:
     - npm run lint
   rules:
@@ -36,15 +63,3 @@ build:
     - npm run build
   rules:
     - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
-
-# -----------------------------
-# SECURITY: SAST + Secret Detection
-# -----------------------------
-
-include:
-  - template: Security/SAST.gitlab-ci.yml
-  - template: Security/Secret-Detection.gitlab-ci.yml
-
-variables:
-  SECRET_DETECTION_ENABLED: 'true'
-  ROLLUP_DISABLE_NATIVE: 'true'
