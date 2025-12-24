@@ -2,7 +2,7 @@ import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 
 import type { GoodTransactionResponse } from '@/@types/good-transaction';
 import { fetchGoodTransactionApi } from '@/apis/good-transaction/good-transaction';
-import type { ApiError } from '@/apis/type';
+import type { ApiError, Unwrap } from '@/apis/type';
 
 import {
   fetchGoodTransactionFailure,
@@ -12,7 +12,7 @@ import {
 
 function* fetchGoodTransactionFlow() {
   try {
-    const res: GoodTransactionResponse = yield call(fetchGoodTransactionApi);
+    const res: Unwrap<GoodTransactionResponse> = yield call(fetchGoodTransactionApi);
     yield put(fetchGoodTransactionSuccess({ data: { goodTransactions: res.goodTransactions } }));
   } catch (error) {
     yield put(fetchGoodTransactionFailure({ error: error as ApiError }));
