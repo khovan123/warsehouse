@@ -4,18 +4,44 @@ stages:
   - deploy
   - test
 
+# UPDATE START 24/12/2025
+default:
+  tags:
+    - openbravo-group-runner
+# UPDATE END 24/12/2025
+
 variables:
   API_PATH: 'src/WarehouseBusiness/API/API.csproj'
   SECRET_DETECTION_ENABLED: 'true'
   ROLLUP_DISABLE_NATIVE: 'true'
   AST_ENABLE_MR_PIPELINES: 'true'
+  # UPDATE END 24/12/2025
+  NUGET_PACKAGES: '$CI_PROJECT_DIR/.nuget/packages'
+  DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+  DOTNET_NOLOGO: '1'
+
+cache:
+  key: '$CI_COMMIT_REF_SLUG'
+  paths:
+    - .nuget/packages/
+  policy: pull-push
+
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
+# UPDATE END 24/12/2025
 
 dotnet-build:
   stage: build
   image: mcr.microsoft.com/dotnet/sdk:9.0
   script:
     - dotnet restore $API_PATH
-    - dotnet build $API_PATH -c Release --no-restore
+    # UPDATE END 24/12/2025
+    - dotnet build $API_PATH -c Release --no-restore -o publish/
+  artifacts:
+    expire_in: 1 day
+    paths: [publish/]
+  # UPDATE END 24/12/2025
   rules:
     - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
@@ -25,17 +51,27 @@ docker-build:
   image: docker:27.1.1
   services:
     - docker:27.1.1-dind
+  # UPDATE END 24/12/2025
+  variables:
+    DOCKER_TLS_CERTDIR: ''
+    DOCKER_BUILDKIT: '1'
+  # UPDATE END 24/12/2025
   script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-    - docker build -t "$CI_REGISTRY_IMAGE:latest" -f Dockerfile .
-    - docker push "$CI_REGISTRY_IMAGE:latest"
+    # UPDATE START 24/12/2025
+    # - docker build -t "$CI_REGISTRY_IMAGE:latest" -f Dockerfile .
+    # - docker push "$CI_REGISTRY_IMAGE:latest"
+    - docker buildx create --use
+    - docker buildx build --cache-from type=registry,ref=$CI_REGISTRY_IMAGE:buildcache --cache-to type=registry,ref=$CI_REGISTRY_IMAGE:buildcache,mode=max -t "$CI_REGISTRY_IMAGE:latest" -f Dockerfile --push .
+    # UPDATE END 24/12/2025
   rules:
-    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
-    # - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    # - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
 koyeb-deploy:
   stage: deploy
   needs: [docker-build]
+  image: curlimages/curl:8.17.0
   script:
     - |
       curl -v -X POST \
@@ -43,8 +79,8 @@ koyeb-deploy:
         "https://app.koyeb.com/v1/services/$KOYEB_SERVICE_ID/redeploy" \
         -d '{"deployment_group": "", "sha": "", "use_cache": false, "skip_build": false}'
   rules:
-    # - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
-    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    # - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
 test:
   stage: test
@@ -52,7 +88,3 @@ test:
     - echo "RUN SAST & Secret-Detection"
   rules:
     - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
-
-include:
-  - template: Jobs/SAST.gitlab-ci.yml
-  - template: Jobs/Secret-Detection.gitlab-ci.yml
