@@ -2,6 +2,7 @@ import { flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-tabl
 
 import { cn } from '@/lib/utils';
 
+import { Spinner } from './spinner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table';
 import type { DataTableProps } from './type';
 
@@ -9,6 +10,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   className,
+  isLoadingData = false,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -33,7 +35,15 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {isLoadingData ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                <div className="flex justify-center">
+                  <Spinner />
+                </div>
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row, index) => (
               <TableRow key={row.id} className={cn(index % 2 === 0 ? 'bg-background' : 'bg-card')}>
                 {row.getVisibleCells().map((cell) => (
