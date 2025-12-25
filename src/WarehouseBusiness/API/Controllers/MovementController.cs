@@ -1,5 +1,6 @@
 using API.Common;
 using Application.Interfaces;
+using Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -19,6 +20,18 @@ namespace API.Controllers
     public async Task<IActionResult> GetAllMovements(CancellationToken ct)
     {
       return ApiBuilder.Result(await _movementService.GetAll(ct));
+    }
+    
+    [HttpGet("report")]
+    public async Task<IActionResult> GetMovementReport(CancellationToken ct)
+    {
+      return ApiBuilder.Result(await _movementService.GetReport(ct));
+    }
+    
+    [HttpGet("summary")]
+    public async Task<IActionResult> GetMovementSummary([FromQuery] SummaryPeriod period, CancellationToken ct)
+    {
+      return ApiBuilder.Result(await _movementService.GetSummary(period, ct));
     }
   }
 }
