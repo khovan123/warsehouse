@@ -12,7 +12,7 @@ import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useSetupsSelectopr } from '@/state/ducks/setups-warehouse/selectors';
+import { useSetupsSelector } from '@/state/ducks/setups-warehouse/selectors';
 import { fetchSetupsWarehouseRequest } from '@/state/ducks/setups-warehouse/slice';
 import type { Bin, Warehouse } from '@/state/ducks/setups-warehouse/type';
 
@@ -65,7 +65,7 @@ const binColumns: ColumnDef<Bin>[] = [
 const WarehousesSetupPage: React.FC = () => {
   const dispatch = useDispatch();
   const isMobile = useIsMobile();
-  const setupsSelector = useSetupsSelectopr();
+  const setupsSelector = useSetupsSelector();
 
   const warehouseTableProps: DataTableProps<Warehouse, unknown> = {
     columns: warehouseColumns,
@@ -112,7 +112,11 @@ const WarehousesSetupPage: React.FC = () => {
               >
                 Warehouses
               </header>
-              <DataTable {...warehouseTableProps} className="border-0 rounded-none" />
+              <DataTable
+                {...warehouseTableProps}
+                className="border-0 rounded-none"
+                isLoadingData={setupsSelector.loading}
+              />
             </div>
 
             <div className="border border-border rounded bg-card overflow-hidden">
@@ -124,7 +128,11 @@ const WarehousesSetupPage: React.FC = () => {
               >
                 Storage Bins
               </header>
-              <DataTable {...binTableProps} className="border-0 rounded-none" />
+              <DataTable
+                {...binTableProps}
+                className="border-0 rounded-none"
+                isLoadingData={setupsSelector.loading}
+              />
             </div>
           </div>
         </div>

@@ -15,7 +15,7 @@ import { Toolbar, ToolbarButton, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useMovementSelectors } from '@/state/ducks/movement/selectors';
+import { useMovementSelector } from '@/state/ducks/movement/selectors';
 import { fetchMovementRequest } from '@/state/ducks/movement/slice';
 import { flatMovementData, type FlatedMovement } from '@/utils/helpers/data-helper';
 
@@ -96,11 +96,11 @@ const columns: ColumnDef<FlatedMovement>[] = [
 const GoodsMovementPage: React.FC = () => {
   const isMobile = useIsMobile();
   const dispatch = useDispatch();
-  const movementSelectors = useMovementSelectors();
+  const movementSelector = useMovementSelector();
 
   const tableProps: DataTableProps<FlatedMovement, unknown> = {
     columns,
-    data: flatMovementData(movementSelectors.movements),
+    data: flatMovementData(movementSelector.data.movements),
   };
 
   useEffect(() => {
@@ -131,7 +131,7 @@ const GoodsMovementPage: React.FC = () => {
       </Toolbar>
       <PageContent>
         <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={movementSelector.loading} />
         </div>
       </PageContent>
       <AppPagination />

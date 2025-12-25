@@ -13,7 +13,7 @@ export const goodTransactionSlice = createSlice({
       state,
       action: PayloadAction<Pick<GoodTransactionState, 'data'>>
     ) => {
-      state.loading = true;
+      state.loading = false;
       state.data.goodTransactions = action.payload.data.goodTransactions;
     },
     fetchGoodTransactionFailure: (

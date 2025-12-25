@@ -60,7 +60,7 @@ const columns: ColumnDef<FlattedGoodTransaction>[] = [
 const GoodsTransactionPage: React.FC = () => {
   const isMobile = useIsMobile();
   const dispatch = useDispatch();
-  const goodTransactionSelectors = useGoodTransactionSelector();
+  const goodTransactionSelector = useGoodTransactionSelector();
 
   useEffect(() => {
     dispatch(fetchGoodTransactionRequest());
@@ -68,7 +68,7 @@ const GoodsTransactionPage: React.FC = () => {
 
   const tableProps: DataTableProps<FlattedGoodTransaction, unknown> = {
     columns,
-    data: flatGoodTransactionData(goodTransactionSelectors.goodTransactions),
+    data: flatGoodTransactionData(goodTransactionSelector.data.goodTransactions),
   };
 
   return (
@@ -103,7 +103,7 @@ const GoodsTransactionPage: React.FC = () => {
       </Toolbar>
       <PageContent>
         <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={goodTransactionSelector.loading} />
         </div>
       </PageContent>
       <AppPagination />

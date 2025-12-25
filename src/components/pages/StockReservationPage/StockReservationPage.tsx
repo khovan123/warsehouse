@@ -14,7 +14,7 @@ import { Toolbar, ToolbarButton, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useReservationSelectors } from '@/state/ducks/reservation/selectors';
+import { useReservationSelector } from '@/state/ducks/reservation/selectors';
 import { fetchReservationRequest } from '@/state/ducks/reservation/slice';
 import type { Reservation } from '@/state/ducks/reservation/type';
 
@@ -61,7 +61,7 @@ const columns: ColumnDef<Reservation>[] = [
 const StockReservationPage: React.FC = () => {
   const isMobile = useIsMobile();
   const dispatch = useDispatch();
-  const reservationSelectors = useReservationSelectors();
+  const reservationSelector = useReservationSelector();
 
   useEffect(() => {
     dispatch(fetchReservationRequest());
@@ -69,7 +69,7 @@ const StockReservationPage: React.FC = () => {
 
   const tableProps: DataTableProps<Reservation, unknown> = {
     columns,
-    data: reservationSelectors.reservations,
+    data: reservationSelector.data.reservations,
   };
 
   return (
@@ -99,7 +99,7 @@ const StockReservationPage: React.FC = () => {
       </Toolbar>
       <PageContent>
         <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={reservationSelector.loading} />
         </div>
       </PageContent>
       <AppPagination />
