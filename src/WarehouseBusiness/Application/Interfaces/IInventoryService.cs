@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IInventoryService
     {
-        Task<ApiResponse<InventoryDTO.Response>> GetAll(CancellationToken ct);
+        Task<ApiResponse<InventoryDTO.ResponseDetails>> GetAll(CancellationToken ct);
     }
 }
