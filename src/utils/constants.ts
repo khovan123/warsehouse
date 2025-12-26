@@ -8,16 +8,16 @@ export const PARETO_CLASS_LABELS: Record<ParetoClassTag, string> = {
 
 export type MovementType = 'Receipt' | 'Shipment' | 'Movement' | 'Inventory';
 
-export type Period = 'Daily' | 'Weekly' | 'Monthly';
+export type Period = 'Today' | 'ThisWeek' | 'ThisMonth';
 
 export const PERIOD_ENUM = {
-  DAILY: 'Daily',
-  WEEKLY: 'Weekly',
-  MONTHLY: 'Monthly',
+  TODAY: 'Today',
+  THIS_WEEK: 'ThisWeek',
+  THIS_MONTH: 'ThisMonth',
 } as const;
 
 export const PERIOD_OPTIONS = [
-  { value: PERIOD_ENUM.DAILY, label: 'Period: Today' },
-  { value: PERIOD_ENUM.WEEKLY, label: 'This week' },
-  { value: PERIOD_ENUM.MONTHLY, label: 'This month' },
+  { value: PERIOD_ENUM.TODAY, label: 'Period: Today' },
+  { value: PERIOD_ENUM.THIS_WEEK, label: 'This week' },
+  { value: PERIOD_ENUM.THIS_MONTH, label: 'This month' },
 ];

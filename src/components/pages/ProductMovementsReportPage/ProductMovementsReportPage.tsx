@@ -63,7 +63,7 @@ const ProductMovementsReportPage: React.FC = () => {
   const isMobile = useIsMobile();
   const dispatch = useDispatch();
   const { data, reportLoading } = useMovementSelector();
-  const [period, setPeriod] = useState<Period>(PERIOD_ENUM.DAILY);
+  const [period, setPeriod] = useState<Period>(PERIOD_ENUM.TODAY);
 
   useEffect(() => {
     dispatch(fetchMovementReportRequest());
