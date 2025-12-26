@@ -1,7 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import { INIT_MOVEMENT_STATE, type MovementState } from './type';
 import type { Period } from '@/utils/constants';
+
+import { INIT_MOVEMENT_STATE, type MovementState } from './type';
 
 export const movementSlice = createSlice({
   name: 'movement',

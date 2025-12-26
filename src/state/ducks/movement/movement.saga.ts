@@ -7,6 +7,7 @@ import {
   fetchMovementSummaryApi,
 } from '@/apis/movement/movement';
 import type { ApiError, Unwrap } from '@/apis/type';
+import type { Period } from '@/utils/constants';
 
 import type {
   FetchMovementReportResponse,
@@ -24,7 +25,6 @@ import {
   fetchMovementSummaryRequest,
   fetchMovementSummarySuccess,
 } from './slice';
-import type { Period } from '@/utils/constants';
 
 function* fetchMovementFlow() {
   try {
