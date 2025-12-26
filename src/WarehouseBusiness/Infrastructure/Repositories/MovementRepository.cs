@@ -5,6 +5,7 @@ using Domain.Helpers;
 using Domain.Repositories;
 using Infrastructure.Constants;
 using Infrastructure.DB;
+using Infrastructure.Helpers;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -13,18 +14,10 @@ namespace Infrastructure.Repositories
   public class MovementRepository : IMovementRepository
   {
     private readonly IMongoCollection<Movement> _movement;
-    private readonly IMongoCollection<Product> _products;
-    private readonly IMongoCollection<Warehouse> _warehouses;
-    private readonly IMongoCollection<Bin> _bins;
-    private readonly IMongoCollection<Inventory> _inventories;
 
     public MovementRepository(MongoDbContext context)
     {
       _movement = context.Movements;
-      _products = context.Products;
-      _warehouses = context.Warehouses;
-      _bins = context.Bins;
-      _inventories = context.Inventories;
     }
 
     public async Task<List<Movement>> GetAll(CancellationToken ct)
@@ -41,88 +34,51 @@ namespace Infrastructure.Repositories
 
     public async Task<List<MovementReport>> GetAllWithDetails(CancellationToken ct)
     {
-      var pipeline = _movement.Aggregate()
-        .AppendStage<BsonDocument>(new BsonDocument("$unwind", new BsonDocument
-        {
-          { "path", "$lines" },
-          { "preserveNullAndEmptyArrays", false }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
-        {
-          { "from", MongoCollections.Products },
-          { "localField", "lines.product" },
-          { "foreignField", "_id" },
-          { "as", "products" }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
-        {
-          { "from", MongoCollections.Warehouses },
-          { "localField", "fromWarehouse" },
-          { "foreignField", "_id" },
-          { "as", "fromWarehouses" }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
-        {
-          { "from", MongoCollections.Warehouses },
-          { "localField", "toWarehouse" },
-          { "foreignField", "_id" },
-          { "as", "toWarehouses" }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
-        {
-          { "from", MongoCollections.Bins },
-          { "localField", "lines.fromBin" },
-          { "foreignField", "_id" },
-          { "as", "fromBins" }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
-        {
-          { "from", MongoCollections.Inventory },
-          { "localField", "lines.product" },
-          { "foreignField", "productId" },
-          { "as", "inventories" }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$project", new BsonDocument
+      static BsonDocument BuildProjection()
+      {
+        var inventoryType = BsonDocumentExpression.GetField(
+          "type",
+          BsonDocumentExpression.ArrayElemAt(
+            MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Inventory)
+          )
+        );
+
+        return new BsonDocument
         {
           { "docNo", 1 },
           { "movementDate", 1 },
-          { "productEntity", new BsonDocument("$arrayElemAt", new BsonArray { "$products", 0 }) },
-          { "fromWarehouse", new BsonDocument("$getField", new BsonDocument
-            {
-              { "field", "code" },
-              { "input", new BsonDocument("$arrayElemAt", new BsonArray { "$fromWarehouses", 0 }) }
-            })
+          { "productEntity", BsonDocumentExpression.ArrayElemAt(
+            MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Products)) 
           },
-          { "toWarehouse", new BsonDocument("$getField", new BsonDocument
-            {
-              { "field", "code" },
-              { "input", new BsonDocument("$arrayElemAt", new BsonArray { "$toWarehouses", 0 }) }
-            })
+          { "fromWarehouse", BsonDocumentExpression.GetField(
+            "code",
+            BsonDocumentExpression.ArrayElemAt(
+              MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Warehouses))
+          ) },
+          { "toWarehouse", BsonDocumentExpression.GetField(
+            "code",
+            BsonDocumentExpression.ArrayElemAt("tmp_toWarehouses")
+          ) },
+          { "binEntity", BsonDocumentExpression.ArrayElemAt(
+            MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Bins)) 
           },
-          { "binEntity", new BsonDocument("$arrayElemAt", new BsonArray { "$fromBins", 0 }) },
-          { "type", new BsonDocument("$getField", new BsonDocument
-            {
-              { "field", "type" },
-              { "input", new BsonDocument("$arrayElemAt", new BsonArray { "$inventories", 0 }) }
-            })
-          },
-          { "qty", new BsonDocument("$cond", new BsonDocument
-            {
-              { "if", new BsonDocument("$in", new BsonArray 
-                { 
-                  new BsonDocument("$getField", new BsonDocument
-                  {
-                    { "field", "type" },
-                    { "input", new BsonDocument("$arrayElemAt", new BsonArray { "$inventories", 0 }) }
-                  }),
-                  new BsonArray { "Movement", "Shipment" } 
-                }) 
-              },
-              { "then", new BsonDocument("$multiply", new BsonArray { "$lines.qty", -1 }) },
-              { "else", "$lines.qty" }
-            })
-          }
-        }))
+          { "type", inventoryType },
+          { "qty", BsonDocumentExpression.Conditional(
+            BsonDocumentExpression.In(inventoryType, new BsonArray { "Movement", "Shipment" }),
+            BsonDocumentExpression.Multiply("$lines.qty", -1),
+            "$lines.qty"
+          ) }
+        };
+      }
+
+      var pipeline = new MongoAggregationPipeline<Movement>(_movement)
+        .UnwindField("lines", preserveNullAndEmptyArrays: false)
+        .Lookup(MongoCollections.Products, "lines.product")
+        .Lookup(MongoCollections.Warehouses, "fromWarehouse")
+        .Lookup(MongoCollections.Warehouses, "toWarehouse", asAlias: "tmp_toWarehouses")
+        .Lookup(MongoCollections.Bins, "lines.fromBin")
+        .Lookup(MongoCollections.Inventory, "lines.product", "productId")
+        .Project(BuildProjection())
         .As<MovementReport>();
 
       return await pipeline.ToListAsync(ct);
@@ -132,72 +88,66 @@ namespace Infrastructure.Repositories
     {
       var dateFormat = DateFormat.GetDateFormat(period);
 
-      var pipeline = _movement.Aggregate()
-        .AppendStage<BsonDocument>(new BsonDocument("$unwind", new BsonDocument
-        {
-          { "path", "$lines" },
-          { "preserveNullAndEmptyArrays", false }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
-        {
-          { "from", MongoCollections.Inventory },
-          { "localField", "lines.product" },
-          { "foreignField", "productId" },
-          { "as", "inventories" }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$project", new BsonDocument
+      static BsonDocument BuildCalculatedQtyProjection()
+      {
+        var inventoryType = BsonDocumentExpression.GetField(
+          "type",
+          BsonDocumentExpression.ArrayElemAt(
+            MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Inventory)
+          )
+        );
+
+        return new BsonDocument
         {
           { "movementDate", 1 },
-          { "calculatedQty", new BsonDocument("$cond", new BsonDocument
-            {
-              { "if", new BsonDocument("$in", new BsonArray 
-                { 
-                  new BsonDocument("$getField", new BsonDocument
-                  {
-                    { "field", "type" },
-                    { "input", new BsonDocument("$arrayElemAt", new BsonArray { "$inventories", 0 }) }
-                  }),
-                  new BsonArray { "Movement", "Shipment" } 
-                }) 
-              },
-              { "then", new BsonDocument("$multiply", new BsonArray { "$lines.qty", -1 }) },
-              { "else", "$lines.qty" }
-            })
-          }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$group", new BsonDocument
+          { "calculatedQty", BsonDocumentExpression.Conditional(
+            BsonDocumentExpression.In(inventoryType, new BsonArray { "Movement", "Shipment" }),
+            BsonDocumentExpression.Multiply("$lines.qty", -1),
+            "$lines.qty"
+          ) }
+        };
+      }
+
+      BsonDocument BuildGroupSpec()
+      {
+        return new BsonDocument
         {
-          { "_id", new BsonDocument("$dateToString", new BsonDocument
-            {
-              { "format", dateFormat },
-              { "date", new BsonDocument("$toDate", "$movementDate") }
-            })
-          },
-          { "negativeQty", new BsonDocument("$sum", new BsonDocument("$cond", new BsonArray 
-            { 
-              new BsonDocument("$lt", new BsonArray { "$calculatedQty", 0 }),
+          { "_id", BsonDocumentExpression.DateToString(
+            dateFormat,
+            BsonDocumentExpression.ToDate("movementDate")
+          ) },
+          { "negativeQty", BsonDocumentExpression.Sum(
+            BsonDocumentExpression.Conditional(
+              BsonDocumentExpression.Lt("$calculatedQty", 0),
               "$calculatedQty",
-              0 
-            }))
-          },
-          { "positiveQty", new BsonDocument("$sum", new BsonDocument("$cond", new BsonArray 
-            { 
-              new BsonDocument("$gt", new BsonArray { "$calculatedQty", 0 }),
+              0
+            )
+          ) },
+          { "positiveQty", BsonDocumentExpression.Sum(
+            BsonDocumentExpression.Conditional(
+              BsonDocumentExpression.Gt("$calculatedQty", 0),
               "$calculatedQty",
-              0 
-            }))
-          },
-          { "totalQty", new BsonDocument("$sum", "$calculatedQty") }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$project", new BsonDocument
+              0
+            )
+          ) },
+          { "totalQty", BsonDocumentExpression.Sum("$calculatedQty") }
+        };
+      }
+
+      var pipeline = new MongoAggregationPipeline<Movement>(_movement)
+        .UnwindField("lines", preserveNullAndEmptyArrays: false)
+        .Lookup(MongoCollections.Inventory, "lines.product", "productId")
+        .Project(BuildCalculatedQtyProjection())
+        .Group(BuildGroupSpec())
+        .Project(new BsonDocument
         {
           { "_id", 0 },
           { "period", "$_id" },
           { "negativeQty", 1 },
           { "positiveQty", 1 },
           { "totalQty", 1 }
-        }))
-        .AppendStage<BsonDocument>(new BsonDocument("$sort", new BsonDocument("period", 1)))
+        })
+        .Sort(new BsonDocument("period", 1))
         .As<MovementSummary>();
 
       return await pipeline.ToListAsync(ct);

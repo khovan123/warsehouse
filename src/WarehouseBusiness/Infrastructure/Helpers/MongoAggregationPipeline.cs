@@ -15,7 +15,6 @@ namespace Infrastructure.Helpers
       _aggregate = _mongoCollection.Aggregate();
     }
 
-
     public IAggregateFluent<TCollection> GetCurrentAggregate() => _aggregate;
 
     public static string TmpCollectionName(string collectionName) => $"tmp_{collectionName}";
@@ -33,15 +32,17 @@ namespace Infrastructure.Helpers
       return this;
     }
 
-    public MongoAggregationPipeline<TCollection> Lookup(string fromCollection, string localField, string foreignField = "_id")
+    public MongoAggregationPipeline<TCollection> Lookup(string fromCollection, string localField, string foreignField = "_id", string? asAlias = null)
     {
+      var asName = asAlias ?? TmpCollectionName(fromCollection);
+      
       _aggregate = _aggregate.AppendStage<TCollection>(
           new BsonDocument("$lookup", new BsonDocument
           {
                     { "from", fromCollection },
                     { "localField", localField },
                     { "foreignField", foreignField },
-                    { "as", TmpCollectionName(fromCollection) }
+                    { "as", asName }
           })
       );
 
@@ -54,6 +55,19 @@ namespace Infrastructure.Helpers
           new BsonDocument("$unwind", new BsonDocument
           {
                     { "path", $"${TmpCollectionName(fromCollection)}" },
+                    { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
+          })
+      );
+
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> UnwindField(string fieldPath, bool preserveNullAndEmptyArrays = false)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(
+          new BsonDocument("$unwind", new BsonDocument
+          {
+                    { "path", $"${fieldPath}" },
                     { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
           })
       );
@@ -83,7 +97,18 @@ namespace Infrastructure.Helpers
       return this;
     }
 
-    public IAggregateFluent<TResult> As<TResult>() => _aggregate.As<TResult>();
+    public MongoAggregationPipeline<TCollection> Group(BsonDocument groupSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$group", groupSpec));
+      return this;
+    }
 
+    public MongoAggregationPipeline<TCollection> Sort(BsonDocument sortSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$sort", sortSpec));
+      return this;
+    }
+
+    public IAggregateFluent<TResult> As<TResult>() => _aggregate.As<TResult>();
   }
 }
