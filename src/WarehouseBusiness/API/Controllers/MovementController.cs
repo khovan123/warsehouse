@@ -25,13 +25,13 @@ namespace API.Controllers
     [HttpGet("report")]
     public async Task<IActionResult> GetMovementReport(CancellationToken ct)
     {
-      return ApiBuilder.Result(await _movementService.GetReport(ct));
+      return ApiBuilder.Result(await _movementService.GetAsReport(ct));
     }
     
     [HttpGet("summary")]
     public async Task<IActionResult> GetMovementSummary([FromQuery] SummaryPeriod period, CancellationToken ct)
     {
-      return ApiBuilder.Result(await _movementService.GetSummary(period, ct));
+      return ApiBuilder.Result(await _movementService.GetAsSummary(period, ct));
     }
   }
 }
