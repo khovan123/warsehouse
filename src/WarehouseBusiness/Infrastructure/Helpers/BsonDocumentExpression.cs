@@ -60,33 +60,42 @@ namespace Infrastructure.Helpers
                 return new BsonDocument
                 {
                     {
-                        "$concat", new BsonArray
-                        {
-                            new BsonDocument("$toString",
-                                new BsonDocument("$isoWeekYear", "$movementDate")
-                            ),
-                            "-W",
-                            new BsonDocument("$cond", new BsonArray
-                            {
-                                new BsonDocument("$lt", new BsonArray
-                                {
-                                    new BsonDocument("$isoWeek", "$movementDate"),
-                                    10
-                                }),
-                                new BsonDocument("$concat", new BsonArray
-                                {
-                                    "0",
-                                    new BsonDocument("$toString",
-                                        new BsonDocument("$isoWeek", "$movementDate")
-                                    )
-                                }),
-                                new BsonDocument("$toString",
-                                    new BsonDocument("$isoWeek", "$movementDate")
-                                )
-                            })
-                        }
+                        "year", new BsonDocument ("$isoWeekYear", $"${date_field}")
+                    },
+                    {
+                        "week:", new BsonDocument ("$isoWeek", $"${date_field}")
                     }
                 };
+                // return new BsonDocument
+                // {
+                //     {
+                //         "$concat", new BsonArray
+                //         {
+                //             new BsonDocument("$toString",
+                //                 new BsonDocument("$isoWeekYear", $"${date_field}")
+                //             ),
+                //             "-W",
+                //             new BsonDocument("$cond", new BsonArray
+                //             {
+                //                 new BsonDocument("$lt", new BsonArray
+                //                 {
+                //                     new BsonDocument("$isoWeek", $"${date_field}"),
+                //                     10
+                //                 }),
+                //                 new BsonDocument("$concat", new BsonArray
+                //                 {
+                //                     "0",
+                //                     new BsonDocument("$toString",
+                //                         new BsonDocument("$isoWeek", $"${date_field}")
+                //                     )
+                //                 }),
+                //                 new BsonDocument("$toString",
+                //                     new BsonDocument("$isoWeek", $"${date_field}")
+                //                 )
+                //             })
+                //         }
+                //     }
+                // };
             }
             return DateToString(dateFormat, ToDate(date_field));
         }
