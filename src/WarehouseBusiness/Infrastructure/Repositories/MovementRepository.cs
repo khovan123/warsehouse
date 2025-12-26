@@ -48,7 +48,7 @@ namespace Infrastructure.Repositories
           { "docNo", 1 },
           { "movementDate", 1 },
           { "productEntity", BsonDocumentExpression.ArrayElemAt(
-            MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Products)) 
+            MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Products))
           },
           { "fromWarehouse", BsonDocumentExpression.GetField(
             "code",
@@ -60,7 +60,7 @@ namespace Infrastructure.Repositories
             BsonDocumentExpression.ArrayElemAt("tmp_toWarehouses")
           ) },
           { "binEntity", BsonDocumentExpression.ArrayElemAt(
-            MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Bins)) 
+            MongoAggregationPipeline<Movement>.TmpCollectionName(MongoCollections.Bins))
           },
           { "type", inventoryType },
           { "qty", BsonDocumentExpression.Conditional(
@@ -86,7 +86,7 @@ namespace Infrastructure.Repositories
 
     public async Task<List<MovementSummary>> GetSummary(SummaryPeriod period, CancellationToken ct)
     {
-      var dateFormat = DateFormat.GetDateFormat(period);
+      var dateFormat = MongoDateFormats.GetDateFormat(period);
 
       static BsonDocument BuildCalculatedQtyProjection()
       {
@@ -112,10 +112,7 @@ namespace Infrastructure.Repositories
       {
         return new BsonDocument
         {
-          { "_id", BsonDocumentExpression.DateToString(
-            dateFormat,
-            BsonDocumentExpression.ToDate("movementDate")
-          ) },
+          { "_id", BsonDocumentExpression.BuildGroupIdByDateField(period,"movementDate") },
           { "negativeQty", BsonDocumentExpression.Sum(
             BsonDocumentExpression.Conditional(
               BsonDocumentExpression.Lt("$calculatedQty", 0),
