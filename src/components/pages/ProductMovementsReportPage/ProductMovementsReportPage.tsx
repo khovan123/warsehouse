@@ -20,7 +20,7 @@ import {
 } from '@/state/ducks/movement/slice';
 import type { MovementReport } from '@/state/ducks/movement/type';
 import type { Period } from '@/utils/constants';
-import { PERIOD_OPTIONS, PERIOD_VALUES } from '@/utils/constants';
+import { PERIOD_ENUM, PERIOD_OPTIONS } from '@/utils/constants';
 
 const columns: ColumnDef<MovementReport>[] = [
   {
@@ -63,7 +63,7 @@ const ProductMovementsReportPage: React.FC = () => {
   const isMobile = useIsMobile();
   const dispatch = useDispatch();
   const { data, reportLoading } = useMovementSelector();
-  const [period, setPeriod] = useState<Period>(PERIOD_VALUES.DAILY);
+  const [period, setPeriod] = useState<Period>(PERIOD_ENUM.DAILY);
 
   useEffect(() => {
     dispatch(fetchMovementReportRequest());

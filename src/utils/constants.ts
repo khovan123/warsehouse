@@ -10,14 +10,14 @@ export type MovementType = 'Receipt' | 'Shipment' | 'Movement' | 'Inventory';
 
 export type Period = 'Daily' | 'Weekly' | 'Monthly';
 
-export const PERIOD_VALUES = {
+export const PERIOD_ENUM = {
   DAILY: 'Daily',
   WEEKLY: 'Weekly',
   MONTHLY: 'Monthly',
 } as const;
 
 export const PERIOD_OPTIONS = [
-  { value: PERIOD_VALUES.DAILY, label: 'Period: Today' },
-  { value: PERIOD_VALUES.WEEKLY, label: 'This week' },
-  { value: PERIOD_VALUES.MONTHLY, label: 'This month' },
+  { value: PERIOD_ENUM.DAILY, label: 'Period: Today' },
+  { value: PERIOD_ENUM.WEEKLY, label: 'This week' },
+  { value: PERIOD_ENUM.MONTHLY, label: 'This month' },
 ];
