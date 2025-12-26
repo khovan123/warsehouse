@@ -35,7 +35,7 @@ namespace Infrastructure.Helpers
     public MongoAggregationPipeline<TCollection> Lookup(string fromCollection, string localField, string foreignField = "_id", string? asAlias = null)
     {
       var asName = asAlias ?? TmpCollectionName(fromCollection);
-      
+
       _aggregate = _aggregate.AppendStage<TCollection>(
           new BsonDocument("$lookup", new BsonDocument
           {
@@ -52,7 +52,7 @@ namespace Infrastructure.Helpers
     public MongoAggregationPipeline<TCollection> Unwind(string fromCollection, bool preserveNullAndEmptyArrays = false, string? asAlias = null)
     {
       var path = asAlias ?? TmpCollectionName(fromCollection);
-      
+
       _aggregate = _aggregate.AppendStage<TCollection>(
           new BsonDocument("$unwind", new BsonDocument
           {
@@ -108,6 +108,12 @@ namespace Infrastructure.Helpers
     public MongoAggregationPipeline<TCollection> Sort(BsonDocument sortSpec)
     {
       _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$sort", sortSpec));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Match(BsonDocument matchSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$match", matchSpec));
       return this;
     }
 

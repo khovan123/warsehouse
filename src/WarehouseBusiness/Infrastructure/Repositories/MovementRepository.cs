@@ -101,7 +101,7 @@ namespace Infrastructure.Repositories
         {
           { "movementDate", 1 },
           { "calculatedQty", BsonDocumentExpression.Conditional(
-            BsonDocumentExpression.In(inventoryType, new BsonArray { "Movement", "Shipment" }),
+            BsonDocumentExpression.In(inventoryType, new BsonArray { MongoFields.Movement, MongoFields.Shipment }),
             BsonDocumentExpression.Multiply("$lines.qty", -1),
             "$lines.qty"
           ) }
@@ -131,7 +131,18 @@ namespace Infrastructure.Repositories
         };
       }
 
+      (DateTime startUtc, DateTime endUtc) = BsonDocumentExpression.RangeUtc(period);
+
+      var match = BsonDocumentExpression.Expr(
+        BsonDocumentExpression.And(new BsonArray
+          {
+            BsonDocumentExpression.Gte(BsonDocumentExpression.ToDate("movementDate"),startUtc),
+            BsonDocumentExpression.Lt(BsonDocumentExpression.ToDate("movementDate"),endUtc),
+          })
+        );
+
       var pipeline = new MongoAggregationPipeline<Movement>(_movement)
+        .Match(match)
         .UnwindField("lines", preserveNullAndEmptyArrays: false)
         .Lookup(MongoCollections.Inventory, "lines.product", "productId")
         .Project(BuildCalculatedQtyProjection())

@@ -7,6 +7,11 @@ namespace Domain.Enums
   {
     Daily = 0,
     Weekly = 1,
-    Monthly = 2
+    Monthly = 2,
+    Today,
+    ThisWeek,
+    ThisMonth,
+    ThisYear,
+
   }
 }
