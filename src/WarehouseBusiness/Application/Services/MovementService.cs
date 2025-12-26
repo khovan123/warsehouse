@@ -24,14 +24,14 @@ namespace Application.Services
       return new ApiResponse<MovementDTO.Response>(data);
     }
     
-    public async Task<ApiResponse<MovementDTO.ReportResponse>> GetReport(CancellationToken ct)
+    public async Task<ApiResponse<MovementDTO.ReportResponse>> GetAsReport(CancellationToken ct)
     {
       var movementReports = await _movementRepository.GetAllWithDetails(ct);
       var data = new MovementDTO.ReportResponse(movementReports);
       return new ApiResponse<MovementDTO.ReportResponse>(data);
     }
     
-    public async Task<ApiResponse<MovementDTO.SummaryResponse>> GetSummary(SummaryPeriod period, CancellationToken ct)
+    public async Task<ApiResponse<MovementDTO.SummaryResponse>> GetAsSummary(SummaryPeriod period, CancellationToken ct)
     {
       var movementSummaries = await _movementRepository.GetSummary(period, ct);
       var data = new MovementDTO.SummaryResponse(movementSummaries);
