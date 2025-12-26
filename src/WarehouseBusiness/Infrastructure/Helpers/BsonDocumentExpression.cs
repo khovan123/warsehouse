@@ -40,37 +40,26 @@ namespace Infrastructure.Helpers
         public static BsonDocument ToDate(string fieldName)
             => new("$toDate", $"${fieldName}");
 
-
         public static BsonDocument Sum(BsonValue expression)
             => new("$sum", expression);
 
         public static BsonDocument Lt(BsonValue ref__value_document, BsonValue value)
-            => new("$lt", new BsonArray { ref__value_document, value });
+            => new("$lt", new BsonArray { ref__value_document, value });      
         public static BsonDocument Gt(BsonValue ref__value_document, BsonValue value)
-            => new("$gt", new BsonArray { ref__value_document, value });
+            => new("$gt", new BsonArray { ref__value_document, value });        
         public static BsonDocument Gte(BsonValue ref__value_document, BsonValue value)
             => new("$gte", new BsonArray { ref__value_document, value });
         public static BsonDocument And(BsonArray array)
-            => new("$and", array);
+            => new("$and", array);   
         public static BsonDocument Expr(BsonDocument document)
             => new("$expr", document);
-
 
         public static BsonDocument BuildGroupIdByDateField(SummaryPeriod period, string date_field)
         {
             var dateFormat = MongoDateFormats.GetDateFormat(period);
 
-            if (period == SummaryPeriod.Weekly)
+            if (period == SummaryPeriod.ThisWeek)
             {
-                // return new BsonDocument
-                // {
-                //     {
-                //         "year", new BsonDocument ("$isoWeekYear", $"${date_field}")
-                //     },
-                //     {
-                //         "week:", new BsonDocument ("$isoWeek", $"${date_field}")
-                //     }
-                // };
                 return new BsonDocument
                 {
                     {
@@ -104,7 +93,6 @@ namespace Infrastructure.Helpers
             }
             return DateToString(dateFormat, ToDate(date_field));
         }
-
 
         public static (DateTime startUtc, DateTime endUtc) RangeUtc(SummaryPeriod period)
         {
@@ -141,7 +129,7 @@ namespace Infrastructure.Helpers
                     start = now.Date;
                     end = start.AddDays(1);
                     break;
-            }
+            } 
             return (start, end);
         }
     }

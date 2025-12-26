@@ -86,8 +86,6 @@ namespace Infrastructure.Repositories
 
     public async Task<List<MovementSummary>> GetSummary(SummaryPeriod period, CancellationToken ct)
     {
-      var dateFormat = MongoDateFormats.GetDateFormat(period);
-
       static BsonDocument BuildCalculatedQtyProjection()
       {
         var inventoryType = BsonDocumentExpression.GetField(
@@ -112,7 +110,7 @@ namespace Infrastructure.Repositories
       {
         return new BsonDocument
         {
-          { "_id", BsonDocumentExpression.BuildGroupIdByDateField(period,"movementDate") },
+          { "_id", BsonDocumentExpression.BuildGroupIdByDateField(period, "movementDate") },
           { "negativeQty", BsonDocumentExpression.Sum(
             BsonDocumentExpression.Conditional(
               BsonDocumentExpression.Lt("$calculatedQty", 0),
@@ -132,21 +130,16 @@ namespace Infrastructure.Repositories
       }
 
       (DateTime startUtc, DateTime endUtc) = BsonDocumentExpression.RangeUtc(period);
+      var startDate = DateOnly.FromDateTime(startUtc);
+      var endDate = DateOnly.FromDateTime(endUtc);
 
-      var match = BsonDocumentExpression.Expr(
-        BsonDocumentExpression.And(new BsonArray
-          {
-            BsonDocumentExpression.Gte(BsonDocumentExpression.ToDate("movementDate"),startUtc),
-            BsonDocumentExpression.Lt(BsonDocumentExpression.ToDate("movementDate"),endUtc),
-          })
-        );
-
-      var pipeline = new MongoAggregationPipeline<Movement>(_movement)
-        .Match(match)
+      var result = new MongoAggregationPipeline<Movement>(_movement)
+        .Match(m => m.MovementDate >= startDate && m.MovementDate < endDate)
         .UnwindField("lines", preserveNullAndEmptyArrays: false)
         .Lookup(MongoCollections.Inventory, "lines.product", "productId")
         .Project(BuildCalculatedQtyProjection())
         .Group(BuildGroupSpec())
+        .Sort(new BsonDocument("_id", 1))
         .Project(new BsonDocument
         {
           { "_id", 0 },
@@ -155,10 +148,9 @@ namespace Infrastructure.Repositories
           { "positiveQty", 1 },
           { "totalQty", 1 }
         })
-        .Sort(new BsonDocument("period", 1))
         .As<MovementSummary>();
 
-      return await pipeline.ToListAsync(ct);
+      return await result.ToListAsync(ct);
     }
   }
 }

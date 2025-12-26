@@ -12,9 +12,10 @@ namespace Domain.Helpers
     {
       return period switch
       {
-        SummaryPeriod.Daily => $"{Year}-{Month}-{Day}",
-        SummaryPeriod.Weekly => $"{Year}-W{IsoWeek}",
-        SummaryPeriod.Monthly => $"{Year}-{Month}",
+        SummaryPeriod.Today => $"{Year}-{Month}-{Day}",
+        SummaryPeriod.ThisWeek => $"{Year}-W{IsoWeek}",
+        SummaryPeriod.ThisMonth => $"{Year}-{Month}",
+        SummaryPeriod.ThisYear => $"{Year}-{Month}-{Day}",
         _ => $"{Year}-{Month}-{Day}"
       };
     }
