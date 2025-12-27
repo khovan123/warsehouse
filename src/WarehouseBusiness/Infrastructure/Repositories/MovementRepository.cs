@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
       return await _movement.Find(filter).FirstOrDefaultAsync(ct);
     }
 
-    public async Task<List<MovementReport>> GetAllWithDetails(CancellationToken ct)
+    public async Task<List<MovementReport>> GetAllWithDetails(InventoryType? type, CancellationToken ct)
     {
       static BsonDocument BuildProjection()
       {
@@ -55,17 +55,34 @@ namespace Infrastructure.Repositories
         };
       }
 
+      BsonDocument? BuildMatchFilter(InventoryType? filterType)
+      {
+        return BsonDocumentExpression.MatchEnumInArrayField(
+          filterType,
+          $"tmp_{MongoCollections.Inventory}",
+          "type"
+        );
+      }
+
       var pipeline = new MongoAggregationPipeline<Movement>(_movement)
         .Unwind("lines", false)
         .Lookup(MongoCollections.Products, "lines.product", $"tmp_{MongoCollections.Products}")
         .Lookup(MongoCollections.Warehouses, "fromWarehouse", "tmp_fromWarehouses")
         .Lookup(MongoCollections.Warehouses, "toWarehouse", "tmp_toWarehouses")
         .Lookup(MongoCollections.Bins, "lines.fromBin", $"tmp_{MongoCollections.Bins}")
-        .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId")
+        .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId");
+
+      var matchFilter = BuildMatchFilter(type);
+      if (matchFilter != null)
+      {
+        pipeline = pipeline.Match(matchFilter);
+      }
+
+      var result = pipeline
         .Project(BuildProjection())
         .As<MovementReport>();
 
-      return await pipeline.ToListAsync(ct);
+      return await result.ToListAsync(ct);
     }
 
     public async Task<List<MovementSummary>> GetSummary(SummaryPeriod period, CancellationToken ct)

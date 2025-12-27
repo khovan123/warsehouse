@@ -24,9 +24,9 @@ namespace Application.Services
       return new ApiResponse<MovementDTO.Response>(data);
     }
     
-    public async Task<ApiResponse<MovementDTO.ReportResponse>> GetAsReport(CancellationToken ct)
+    public async Task<ApiResponse<MovementDTO.ReportResponse>> GetAsReport(InventoryType? type, CancellationToken ct)
     {
-      var movementReports = await _movementRepository.GetAllWithDetails(ct);
+      var movementReports = await _movementRepository.GetAllWithDetails(type, ct);
       var data = new MovementDTO.ReportResponse(movementReports);
       return new ApiResponse<MovementDTO.ReportResponse>(data);
     }

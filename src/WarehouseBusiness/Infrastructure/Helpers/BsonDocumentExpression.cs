@@ -54,6 +54,42 @@ namespace Infrastructure.Helpers
             => new("$gt", new BsonArray { ref__value_document, value });
         public static BsonDocument Gte(BsonValue ref__value_document, BsonValue value)
             => new("$gte", new BsonArray { ref__value_document, value });
+        public static BsonDocument Eq(BsonValue ref__value_document, BsonValue value)
+            => new("$eq", new BsonArray { ref__value_document, value });
+        
+        public static BsonDocument? MatchEnumInArrayField<TEnum>(
+            TEnum? enumValue,
+            string arrayField,
+            string fieldName,
+            int arrayIndex = 0) where TEnum : struct, Enum
+        {
+            if (!enumValue.HasValue)
+                return null;
+
+            var enumString = enumValue.Value.ToString();
+            var targetField = GetField(fieldName, ArrayElemAt(arrayField, arrayIndex));
+            
+            return new BsonDocument
+            {
+                { "$expr", Eq(targetField, enumString) }
+            };
+        }
+
+        public static BsonDocument? MatchEnumField<TEnum>(
+            TEnum? enumValue,
+            string fieldName) where TEnum : struct, Enum
+        {
+            if (!enumValue.HasValue)
+                return null;
+
+            var enumString = enumValue.Value.ToString();
+
+            return new BsonDocument
+            {
+                { fieldName, enumString }
+            };
+        }
+
         public static BsonDocument And(BsonArray array)
             => new("$and", array);
         public static BsonDocument Expr(BsonDocument document)
