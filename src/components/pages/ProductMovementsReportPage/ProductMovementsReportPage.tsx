@@ -1,5 +1,5 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
@@ -19,8 +19,7 @@ import {
   fetchMovementSummaryRequest,
 } from '@/state/ducks/movement/slice';
 import type { MovementReport } from '@/state/ducks/movement/type';
-import type { Period } from '@/utils/constants';
-import { PERIOD_ENUM, PERIOD_OPTIONS } from '@/utils/constants';
+import { PERIOD_OPTIONS } from '@/utils/constants';
 
 const columns: ColumnDef<MovementReport>[] = [
   {
@@ -63,33 +62,28 @@ const ProductMovementsReportPage: React.FC = () => {
   const isMobile = useIsMobile();
   const dispatch = useDispatch();
   const { data, reportLoading } = useMovementSelector();
-  const [period, setPeriod] = useState<Period>(PERIOD_ENUM.TODAY);
 
   useEffect(() => {
     dispatch(fetchMovementReportRequest());
   }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(fetchMovementSummaryRequest({ period }));
-  }, [dispatch, period]);
 
   const summary = data.movementSummaries[0];
   const movementSummary = summary
     ? [
         {
           label: 'Inbound',
-          value: `+${summary.positiveQty}`,
+          value: `+${summary.inbound}`,
           detail: 'Receipts + returns',
         },
         {
           label: 'Outbound',
-          value: `${summary.negativeQty}`,
+          value: `${summary.outbound}`,
           detail: 'Shipments + transfers',
         },
         {
           label: 'Net Variation',
-          value: `${summary.totalQty}`,
-          detail: summary.totalQty >= 0 ? 'Inventory increased' : 'Inventory decreased',
+          value: `${summary.total}`,
+          detail: summary.total >= 0 ? 'Inventory increased' : 'Inventory decreased',
         },
       ]
     : [];
@@ -107,18 +101,20 @@ const ProductMovementsReportPage: React.FC = () => {
       />
       <Toolbar>
         <FilterSelect
-          value={period}
-          onValueChange={(value) => setPeriod(value as Period)}
-          placeholder="Period: Today"
+          defaultValue={PERIOD_OPTIONS[0].value.toString()}
+          onValueChange={(value) => {
+            dispatch(fetchMovementSummaryRequest({ period: value }));
+          }}
+          placeholder={PERIOD_OPTIONS[0].label}
           triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
           options={PERIOD_OPTIONS}
         />
         <FilterSelect
           defaultValue="all"
-          placeholder="Movement type: All"
-          triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
+          placeholder="All"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
           options={[
-            { value: 'all', label: 'Movement type: All' },
+            { value: 'all', label: 'All' },
             { value: 'receipt', label: 'Receipt' },
             { value: 'shipment', label: 'Shipment' },
             { value: 'movement', label: 'Movement' },

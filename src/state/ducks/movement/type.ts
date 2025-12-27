@@ -33,9 +33,9 @@ export type MovementReport = {
 
 export type MovementSummary = {
   period: string;
-  negativeQty: number;
-  positiveQty: number;
-  totalQty: number;
+  outbound: number;
+  inbound: number;
+  total: number;
 };
 
 export type MovementState = {

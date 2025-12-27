@@ -1,7 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import type { Period } from '@/utils/constants';
-
 import { INIT_MOVEMENT_STATE, type MovementState } from './type';
 
 export const movementSlice = createSlice({
@@ -30,7 +28,7 @@ export const movementSlice = createSlice({
       state.reportLoading = false;
       state.error = action.payload.error;
     },
-    fetchMovementSummaryRequest: (state, _action: PayloadAction<{ period: Period }>) => {
+    fetchMovementSummaryRequest: (state, _action: PayloadAction<{ period: number | string }>) => {
       state.summaryLoading = true;
     },
     fetchMovementSummarySuccess: (state, action: PayloadAction<Pick<MovementState, 'data'>>) => {
