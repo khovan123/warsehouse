@@ -9,17 +9,17 @@ namespace Domain.Entities.Weak.Movement
     [BsonElement("period")]
     [JsonPropertyName("period")]
     public string Period { get; set; } = default!;
-    
-    [BsonElement("negativeQty")]
-    [JsonPropertyName("negativeQty")]
-    public int NegativeQty { get; set; }
-    
-    [BsonElement("positiveQty")]
-    [JsonPropertyName("positiveQty")]
-    public int PositiveQty { get; set; }
-    
-    [BsonElement("totalQty")]
-    [JsonPropertyName("totalQty")]
-    public int TotalQty { get; set; }
+
+    [BsonElement("outbound")]
+    [JsonPropertyName("outbound")]
+    public int Outbound { get; set; } = default!;
+
+    [BsonElement("inbound")]
+    [JsonPropertyName("inbound")]
+    public int Inbound { get; set; } = default!;
+
+    [BsonElement("total")]
+    [JsonPropertyName("total")]
+    public int Total { get; set; } = default!;
   }
 }

@@ -15,7 +15,7 @@ namespace Domain.Helpers
         SummaryPeriod.Today => $"{Year}-{Month}-{Day}",
         SummaryPeriod.ThisWeek => $"{Year}-W{IsoWeek}",
         SummaryPeriod.ThisMonth => $"{Year}-{Month}",
-        SummaryPeriod.ThisYear => $"{Year}-{Month}-{Day}",
+        SummaryPeriod.ThisYear => $"{Year}",
         _ => $"{Year}-{Month}-{Day}"
       };
     }

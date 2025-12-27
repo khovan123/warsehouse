@@ -6,6 +6,9 @@ namespace Infrastructure.Helpers
 {
     public static class BsonDocumentExpression
     {
+        public static string RefField(string source, string field)
+            => $"${source.Replace("$", "")}.{field}";
+
         public static BsonDocument ArrayElemAt(string arrayField, int index = 0)
             => new("$arrayElemAt", new BsonArray { $"${arrayField}", index });
 
@@ -39,18 +42,20 @@ namespace Infrastructure.Helpers
 
         public static BsonDocument ToDate(string fieldName)
             => new("$toDate", $"${fieldName}");
-
         public static BsonDocument Sum(BsonValue expression)
             => new("$sum", expression);
-
+        public static BsonDocument Abs(BsonValue expression)
+            => new("$abs", expression);
+        public static BsonDocument Add(BsonArray array)
+            => new("$add", array);
         public static BsonDocument Lt(BsonValue ref__value_document, BsonValue value)
-            => new("$lt", new BsonArray { ref__value_document, value });      
+            => new("$lt", new BsonArray { ref__value_document, value });
         public static BsonDocument Gt(BsonValue ref__value_document, BsonValue value)
-            => new("$gt", new BsonArray { ref__value_document, value });        
+            => new("$gt", new BsonArray { ref__value_document, value });
         public static BsonDocument Gte(BsonValue ref__value_document, BsonValue value)
             => new("$gte", new BsonArray { ref__value_document, value });
         public static BsonDocument And(BsonArray array)
-            => new("$and", array);   
+            => new("$and", array);
         public static BsonDocument Expr(BsonDocument document)
             => new("$expr", document);
 
@@ -129,7 +134,7 @@ namespace Infrastructure.Helpers
                     start = now.Date;
                     end = start.AddDays(1);
                     break;
-            } 
+            }
             return (start, end);
         }
     }

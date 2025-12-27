@@ -17,9 +17,6 @@ namespace Infrastructure.Helpers
 
     public IAggregateFluent<TCollection> GetCurrentAggregate() => _aggregate;
 
-    public static string TmpCollectionName(string collectionName) => $"tmp_{collectionName}";
-    public static string RefField(string collectionName, string field) => $"${TmpCollectionName(collectionName)}.{field}";
-
     public MongoAggregationPipeline<TCollection> Reset(AggregateOptions? options = null)
     {
       _aggregate = _mongoCollection.Aggregate(options);
@@ -32,54 +29,36 @@ namespace Infrastructure.Helpers
       return this;
     }
 
-    public MongoAggregationPipeline<TCollection> Lookup(string fromCollection, string localField, string foreignField = "_id", string? asAlias = null)
+    public MongoAggregationPipeline<TCollection> Lookup(string fromCollection, string localField, string asAlias, string foreignField = "_id")
     {
-      var asName = asAlias ?? TmpCollectionName(fromCollection);
-
       _aggregate = _aggregate.AppendStage<TCollection>(
           new BsonDocument("$lookup", new BsonDocument
           {
-                    { "from", fromCollection },
-                    { "localField", localField },
-                    { "foreignField", foreignField },
-                    { "as", asName }
+            { "from", fromCollection },
+            { "localField", localField },
+            { "foreignField", foreignField },
+            { "as", asAlias }
           })
       );
-
       return this;
     }
 
-    public MongoAggregationPipeline<TCollection> Unwind(string fromCollection, bool preserveNullAndEmptyArrays = false, string? asAlias = null)
+    public MongoAggregationPipeline<TCollection> Unwind(string path, bool preserveNullAndEmptyArrays = true)
     {
-      var path = asAlias ?? TmpCollectionName(fromCollection);
 
       _aggregate = _aggregate.AppendStage<TCollection>(
           new BsonDocument("$unwind", new BsonDocument
           {
-                    { "path", $"${path}" },
-                    { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
+            { "path", $"${path.Replace("$","")}" },
+            { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
           })
       );
-
       return this;
     }
 
-    public MongoAggregationPipeline<TCollection> UnwindField(string fieldPath, bool preserveNullAndEmptyArrays = false)
-    {
-      _aggregate = _aggregate.AppendStage<TCollection>(
-          new BsonDocument("$unwind", new BsonDocument
-          {
-                    { "path", $"${fieldPath}" },
-                    { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
-          })
-      );
-
-      return this;
-    }
-
-    public MongoAggregationPipeline<TCollection> LookupAndUnwind(string fromCollection, string localField, string foreignField = "_id", string? asAlias = null)
-        => Lookup(fromCollection, localField, foreignField, asAlias)
-           .Unwind(fromCollection, asAlias: asAlias);
+    public MongoAggregationPipeline<TCollection> LookupAndUnwind(string fromCollection, string localField, string asAlias, string foreignField = "_id", bool preserveNullAndEmptyArrays = true)
+        => Lookup(fromCollection, localField, asAlias, foreignField)
+           .Unwind(asAlias, preserveNullAndEmptyArrays);
 
     public MongoAggregationPipeline<TCollection> Project(BsonDocument projectSpec)
     {
