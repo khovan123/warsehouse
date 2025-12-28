@@ -1,5 +1,5 @@
 import type { ApiError } from '@/apis/type';
-import type { MovementType } from '@/utils/constants';
+import type { InventoryType } from '@/utils/constants';
 
 export type Movement = {
   id: string;
@@ -27,7 +27,7 @@ export type MovementReport = {
   fromWarehouse: string;
   toWarehouse: string;
   bin: string;
-  type: MovementType;
+  type: InventoryType;
   qty: number;
 };
 

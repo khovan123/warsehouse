@@ -8,9 +8,17 @@ export const PARETO_CLASS_LABELS: Record<ParetoClassTag, string> = {
   C: 'Class C',
 };
 
-export type MovementType = 'Receipt' | 'Shipment' | 'Movement' | 'Inventory';
+export type InventoryType = -1 | 0 | 1 | 2 | 3;
 
-export type Period = 'Today' | 'This Week' | 'This Month';
+export const INVENTORY_TYPE_OPTIONS: FilterOption[] = [
+  { value: -1, label: 'All' },
+  { value: 0, label: 'Receipt' },
+  { value: 1, label: 'Shipment' },
+  { value: 2, label: 'Movement' },
+  { value: 3, label: 'Inventory' },
+];
+
+export type Period = 0 | 1 | 2 | 3;
 
 export const PERIOD_OPTIONS: FilterOption[] = [
   { value: 0, label: 'Today' },

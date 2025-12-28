@@ -7,7 +7,7 @@ import {
   fetchMovementSummaryApi,
 } from '@/apis/movement/movement';
 import type { ApiError, Unwrap } from '@/apis/type';
-import type { Period } from '@/utils/constants';
+import type { Period, InventoryType } from '@/utils/constants';
 
 import type {
   FetchMovementReportResponse,
@@ -39,9 +39,15 @@ function* fetchMovementFlow() {
   }
 }
 
-function* fetchMovementReportFlow() {
+function* fetchMovementReportFlow(
+  action: PayloadAction<{ inventoryType?: InventoryType; period?: Period }>
+) {
   try {
-    const res: Unwrap<FetchMovementReportResponse> = yield call(fetchMovementReportApi);
+    const res: Unwrap<FetchMovementReportResponse> = yield call(
+      fetchMovementReportApi,
+      action.payload.inventoryType,
+      action.payload.period
+    );
     yield put(
       fetchMovementReportSuccess({
         data: { movements: [], movementReports: res.movementReports, movementSummaries: [] },

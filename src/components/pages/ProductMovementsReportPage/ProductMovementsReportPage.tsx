@@ -1,5 +1,5 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
@@ -19,7 +19,8 @@ import {
   fetchMovementSummaryRequest,
 } from '@/state/ducks/movement/slice';
 import type { MovementReport } from '@/state/ducks/movement/type';
-import { PERIOD_OPTIONS } from '@/utils/constants';
+import type { InventoryType, Period } from '@/utils/constants';
+import { INVENTORY_TYPE_OPTIONS, PERIOD_OPTIONS } from '@/utils/constants';
 
 const columns: ColumnDef<MovementReport>[] = [
   {
@@ -63,9 +64,18 @@ const ProductMovementsReportPage: React.FC = () => {
   const dispatch = useDispatch();
   const { data, reportLoading } = useMovementSelector();
 
+  const [period, setPeriod] = useState<Period>(PERIOD_OPTIONS[0].value as Period);
+  const [inventoryType, setInventoryType] = useState<InventoryType>(
+    INVENTORY_TYPE_OPTIONS[0].value as InventoryType
+  );
+
   useEffect(() => {
-    dispatch(fetchMovementReportRequest());
-  }, [dispatch]);
+    dispatch(fetchMovementSummaryRequest({ period }));
+  }, [dispatch, period]);
+
+  useEffect(() => {
+    dispatch(fetchMovementReportRequest({ inventoryType, period }));
+  }, [dispatch, inventoryType, period]);
 
   const summary = data.movementSummaries[0];
   const movementSummary = summary
@@ -102,24 +112,19 @@ const ProductMovementsReportPage: React.FC = () => {
       <Toolbar>
         <FilterSelect
           defaultValue={PERIOD_OPTIONS[0].value.toString()}
-          onValueChange={(value) => {
-            dispatch(fetchMovementSummaryRequest({ period: value }));
-          }}
+          value={String(period)}
+          onValueChange={(value) => setPeriod(Number(value) as Period)}
           placeholder={PERIOD_OPTIONS[0].label}
           triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
           options={PERIOD_OPTIONS}
         />
         <FilterSelect
-          defaultValue="all"
-          placeholder="All"
+          defaultValue={INVENTORY_TYPE_OPTIONS[0].value.toString()}
+          value={String(inventoryType)}
+          onValueChange={(value) => setInventoryType(Number(value) as InventoryType)}
+          placeholder={INVENTORY_TYPE_OPTIONS[0].label}
           triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
-          options={[
-            { value: 'all', label: 'All' },
-            { value: 'receipt', label: 'Receipt' },
-            { value: 'shipment', label: 'Shipment' },
-            { value: 'movement', label: 'Movement' },
-            { value: 'inventory', label: 'Inventory' },
-          ]}
+          options={INVENTORY_TYPE_OPTIONS}
         />
         <ToolbarInput type="text" placeholder="Search by criteria" />
       </Toolbar>
