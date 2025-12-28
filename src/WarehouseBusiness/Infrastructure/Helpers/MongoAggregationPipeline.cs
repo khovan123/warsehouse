@@ -15,11 +15,7 @@ namespace Infrastructure.Helpers
       _aggregate = _mongoCollection.Aggregate();
     }
 
-
     public IAggregateFluent<TCollection> GetCurrentAggregate() => _aggregate;
-
-    public static string TmpCollectionName(string collectionName) => $"tmp_{collectionName}";
-    public static string RefField(string collectionName, string field) => $"${TmpCollectionName(collectionName)}.{field}";
 
     public MongoAggregationPipeline<TCollection> Reset(AggregateOptions? options = null)
     {
@@ -33,37 +29,36 @@ namespace Infrastructure.Helpers
       return this;
     }
 
-    public MongoAggregationPipeline<TCollection> Lookup(string fromCollection, string localField, string foreignField = "_id")
+    public MongoAggregationPipeline<TCollection> Lookup(string fromCollection, string localField, string asAlias, string foreignField = "_id")
     {
       _aggregate = _aggregate.AppendStage<TCollection>(
           new BsonDocument("$lookup", new BsonDocument
           {
-                    { "from", fromCollection },
-                    { "localField", localField },
-                    { "foreignField", foreignField },
-                    { "as", TmpCollectionName(fromCollection) }
+            { "from", fromCollection },
+            { "localField", localField },
+            { "foreignField", foreignField },
+            { "as", asAlias }
           })
       );
-
       return this;
     }
 
-    public MongoAggregationPipeline<TCollection> Unwind(string fromCollection, bool preserveNullAndEmptyArrays = false)
+    public MongoAggregationPipeline<TCollection> Unwind(string path, bool preserveNullAndEmptyArrays = true)
     {
+
       _aggregate = _aggregate.AppendStage<TCollection>(
           new BsonDocument("$unwind", new BsonDocument
           {
-                    { "path", $"${TmpCollectionName(fromCollection)}" },
-                    { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
+            { "path", $"${path.Replace("$","")}" },
+            { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
           })
       );
-
       return this;
     }
 
-    public MongoAggregationPipeline<TCollection> LookupAndUnwind(string fromCollection, string localField, string foreignField = "_id")
-        => Lookup(fromCollection, localField, foreignField)
-           .Unwind(fromCollection);
+    public MongoAggregationPipeline<TCollection> LookupAndUnwind(string fromCollection, string localField, string asAlias, string foreignField = "_id", bool preserveNullAndEmptyArrays = true)
+        => Lookup(fromCollection, localField, asAlias, foreignField)
+           .Unwind(asAlias, preserveNullAndEmptyArrays);
 
     public MongoAggregationPipeline<TCollection> Project(BsonDocument projectSpec)
     {
@@ -83,7 +78,24 @@ namespace Infrastructure.Helpers
       return this;
     }
 
-    public IAggregateFluent<TResult> As<TResult>() => _aggregate.As<TResult>();
+    public MongoAggregationPipeline<TCollection> Group(BsonDocument groupSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$group", groupSpec));
+      return this;
+    }
 
+    public MongoAggregationPipeline<TCollection> Sort(BsonDocument sortSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$sort", sortSpec));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Match(BsonDocument matchSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$match", matchSpec));
+      return this;
+    }
+
+    public IAggregateFluent<TResult> As<TResult>() => _aggregate.As<TResult>();
   }
 }
