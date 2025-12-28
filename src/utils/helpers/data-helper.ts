@@ -6,7 +6,7 @@ import type { Movement, MovementLine } from '@/state/ducks/movement/type';
 export type FlatedMovement = Omit<Movement, 'lines'> & MovementLine;
 export type FlattedGoodTransaction = Omit<GoodTransaction, 'lines'> & GoodTransactionLine;
 
-export const flatMovementData = (movements: Movement[] | []): FlatedMovement[] => {
+export const flattenMovementData = (movements: Movement[] | []): FlatedMovement[] => {
   return movements.flatMap((movement) => {
     const { lines, ...rest } = movement;
     return (lines ?? []).map((line) => {
@@ -15,7 +15,7 @@ export const flatMovementData = (movements: Movement[] | []): FlatedMovement[] =
   });
 };
 
-export const flatGoodTransactionData = (transactions: GoodTransaction[] | []) => {
+export const flattenGoodTransactionData = (transactions: GoodTransaction[] | []) => {
   return transactions.flatMap((transaction) => {
     const { lines, ...rest } = transaction;
     return (lines ?? []).map((line) => {
