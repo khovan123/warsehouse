@@ -17,7 +17,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { useMovementSelector } from '@/state/ducks/movement/selectors';
 import { fetchMovementRequest } from '@/state/ducks/movement/slice';
-import { flatMovementData, type FlatedMovement } from '@/utils/helpers/data-helper';
+import { flattenMovementData, type FlatedMovement } from '@/utils/helpers/data-helper';
 
 const columns: ColumnDef<FlatedMovement>[] = [
   {
@@ -46,27 +46,27 @@ const columns: ColumnDef<FlatedMovement>[] = [
     header: 'Document No.',
   },
   {
+    accessorKey: 'productName',
     header: 'Product',
-    accessorKey: 'productId',
   },
   {
     accessorKey: 'movementDate',
     header: 'Movement Date',
   },
   {
-    accessorKey: 'fromWarehouse',
+    accessorKey: 'fromWarehouseName',
     header: 'From Warehouse',
   },
   {
-    accessorKey: 'toWarehouse',
+    accessorKey: 'toWarehouseName',
     header: 'To Warehouse',
   },
   {
-    accessorKey: 'fromBin',
+    accessorKey: 'fromBinName',
     header: 'From Bin',
   },
   {
-    accessorKey: 'toBin',
+    accessorKey: 'toBinName',
     header: 'To Bin',
   },
   // {
@@ -100,7 +100,7 @@ const GoodsMovementPage: React.FC = () => {
 
   const tableProps: DataTableProps<FlatedMovement, unknown> = {
     columns,
-    data: flatMovementData(movementSelector.data.movements),
+    data: flattenMovementData(movementSelector.data.movements),
   };
 
   useEffect(() => {

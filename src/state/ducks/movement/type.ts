@@ -6,7 +6,9 @@ export type Movement = {
   docNo: string;
   movementDate: string;
   fromWarehouse: string;
+  fromWarehouseName: string;
   toWarehouse: string;
+  toWarehouseName: string;
   status: string;
   reason: string;
   createdBy: string;
@@ -15,9 +17,12 @@ export type Movement = {
 
 export type MovementLine = {
   productId: string;
+  productName: string;
   qty: number;
   fromBin: string;
+  fromBinName: string;
   toBin: string;
+  toBinName: string;
 };
 
 export type MovementReport = {

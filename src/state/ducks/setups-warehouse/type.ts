@@ -10,6 +10,7 @@ export type Warehouse = {
 export type Bin = {
   id: string;
   warehouseId: string;
+  warehouseName: string;
   code: string;
   description?: string;
 };

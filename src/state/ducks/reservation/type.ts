@@ -3,8 +3,10 @@ import type { ApiError } from '@/apis/type';
 export type Reservation = {
   id: string;
   reservationNo: string;
-  rroductId: string;
+  productId: string;
+  productName: string;
   warehouseId: string;
+  warehouseName: string;
   reservedQty: number;
   uom: string;
   promisedDate: Date;

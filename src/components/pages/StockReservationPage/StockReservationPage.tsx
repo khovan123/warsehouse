@@ -24,11 +24,11 @@ const columns: ColumnDef<Reservation>[] = [
     header: 'Reservation No.',
   },
   {
-    accessorKey: 'productId',
+    accessorKey: 'productName',
     header: 'Product',
   },
   {
-    accessorKey: 'warehouseId',
+    accessorKey: 'warehouseName',
     header: 'Warehouse',
   },
   {
