@@ -1,75 +1,30 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
 import MetricCard from '@/components/molecules/MetricCard/MetricCard';
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import AppPagination from '@/components/organisms/AppPagination/AppPagination';
 import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
 import { Toolbar, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useMovementSelector } from '@/state/ducks/movement/selectors';
+import {
+  fetchMovementReportRequest,
+  fetchMovementSummaryRequest,
+} from '@/state/ducks/movement/slice';
+import type { MovementReport } from '@/state/ducks/movement/type';
+import type { InventoryType, Period } from '@/utils/constants';
+import { INVENTORY_TYPE_OPTIONS, PERIOD_OPTIONS } from '@/utils/constants';
 
-type Movement = {
-  reference: string;
-  movementDate: string;
-  product: string;
-  warehouse: string;
-  type: string;
-  qty: number;
-  bin: string;
-};
-
-const movementSummary = [
-  { label: 'Inbound Today', value: '+140', detail: 'Receipts + returns' },
-  { label: 'Outbound Today', value: '-95', detail: 'Shipments + transfers' },
-  { label: 'Net Variation', value: '+45', detail: 'Inventory increased' },
-];
-
-const movements: Movement[] = [
+const columns: ColumnDef<MovementReport>[] = [
   {
-    reference: 'PO-240012',
-    movementDate: '2025-11-16',
-    product: 'SKU-1001 Cotton T-Shirt Blue M',
-    warehouse: 'Main DC',
-    type: 'Receipt',
-    qty: 50,
-    bin: 'A-01-01',
-  },
-  {
-    reference: 'SO-240110',
-    movementDate: '2025-11-16',
-    product: 'SKU-1001 Cotton T-Shirt Blue M',
-    warehouse: 'Main DC',
-    type: 'Shipment',
-    qty: -30,
-    bin: 'A-01-01',
-  },
-  {
-    reference: 'MV-240045',
-    movementDate: '2025-11-16',
-    product: 'SKU-2001 Running Shoes 42',
-    warehouse: 'Main DC → Store 01',
-    type: 'Movement',
-    qty: -20,
-    bin: 'B-01-03',
-  },
-  {
-    reference: 'PI-240010',
-    movementDate: '2025-11-15',
-    product: 'Cycle count Aisle A',
-    warehouse: 'Main DC',
-    type: 'Inventory',
-    qty: 5,
-    bin: 'A-03-01',
-  },
-];
-
-const columns: ColumnDef<Movement>[] = [
-  {
-    accessorKey: 'reference',
+    accessorKey: 'docNo',
     header: 'Reference',
   },
   {
@@ -81,8 +36,13 @@ const columns: ColumnDef<Movement>[] = [
     header: 'Product / Description',
   },
   {
-    accessorKey: 'warehouse',
+    id: 'warehouse',
     header: 'Warehouse / Route',
+    cell: ({ row }) => {
+      const fromWarehouse = row.original.fromWarehouse;
+      const toWarehouse = row.original.toWarehouse;
+      return fromWarehouse === toWarehouse ? fromWarehouse : `${fromWarehouse} → ${toWarehouse}`;
+    },
   },
   {
     accessorKey: 'type',
@@ -101,25 +61,47 @@ const columns: ColumnDef<Movement>[] = [
 
 const ProductMovementsReportPage: React.FC = () => {
   const isMobile = useIsMobile();
+  const dispatch = useDispatch();
+  const { data, reportLoading } = useMovementSelector();
 
-  const tableProps: DataTableProps<Movement, unknown> = {
-    columns,
-    data: movements,
-  };
-
-  const Footer = () => (
-    <div
-      className={cn(
-        'border-t border-border bg-card text-[11px] flex',
-        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
-      )}
-    >
-      <span>
-        1 - {movements.length} of {movements.length} movements
-      </span>
-      <span>Auto refresh every 2 min</span>
-    </div>
+  const [period, setPeriod] = useState<Period>(PERIOD_OPTIONS[0].value as Period);
+  const [inventoryType, setInventoryType] = useState<InventoryType>(
+    INVENTORY_TYPE_OPTIONS[0].value as InventoryType
   );
+
+  useEffect(() => {
+    dispatch(fetchMovementSummaryRequest({ period }));
+  }, [dispatch, period]);
+
+  useEffect(() => {
+    dispatch(fetchMovementReportRequest({ inventoryType, period }));
+  }, [dispatch, inventoryType, period]);
+
+  const summary = data.movementSummaries[0];
+  const movementSummary = summary
+    ? [
+        {
+          label: 'Inbound',
+          value: `+${summary.inbound}`,
+          detail: 'Receipts + returns',
+        },
+        {
+          label: 'Outbound',
+          value: `${summary.outbound}`,
+          detail: 'Shipments + transfers',
+        },
+        {
+          label: 'Net Variation',
+          value: `${summary.total}`,
+          detail: summary.total >= 0 ? 'Inventory increased' : 'Inventory decreased',
+        },
+      ]
+    : [];
+
+  const tableProps: DataTableProps<MovementReport, unknown> = {
+    columns,
+    data: data.movementReports,
+  };
 
   return (
     <PageOverview>
@@ -129,26 +111,20 @@ const ProductMovementsReportPage: React.FC = () => {
       />
       <Toolbar>
         <FilterSelect
-          defaultValue="today"
-          placeholder="Period: Today"
+          defaultValue={PERIOD_OPTIONS[0].value.toString()}
+          value={String(period)}
+          onValueChange={(value) => setPeriod(Number(value) as Period)}
+          placeholder={PERIOD_OPTIONS[0].label}
           triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
-          options={[
-            { value: 'today', label: 'Period: Today' },
-            { value: 'week', label: 'This week' },
-            { value: 'month', label: 'This month' },
-          ]}
+          options={PERIOD_OPTIONS}
         />
         <FilterSelect
-          defaultValue="all"
-          placeholder="Movement type: All"
-          triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
-          options={[
-            { value: 'all', label: 'Movement type: All' },
-            { value: 'receipt', label: 'Receipt' },
-            { value: 'shipment', label: 'Shipment' },
-            { value: 'movement', label: 'Movement' },
-            { value: 'inventory', label: 'Inventory' },
-          ]}
+          defaultValue={INVENTORY_TYPE_OPTIONS[0].value.toString()}
+          value={String(inventoryType)}
+          onValueChange={(value) => setInventoryType(Number(value) as InventoryType)}
+          placeholder={INVENTORY_TYPE_OPTIONS[0].label}
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
+          options={INVENTORY_TYPE_OPTIONS}
         />
         <ToolbarInput type="text" placeholder="Search by criteria" />
       </Toolbar>
@@ -166,10 +142,10 @@ const ProductMovementsReportPage: React.FC = () => {
             ))}
           </div>
 
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={reportLoading} />
         </div>
       </PageContent>
-      <Footer />
+      <AppPagination />
     </PageOverview>
   );
 };
