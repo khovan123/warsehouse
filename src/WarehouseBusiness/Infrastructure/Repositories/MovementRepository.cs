@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
       return await _movement.Find(filter).FirstOrDefaultAsync(ct);
     }
 
-    public async Task<List<MovementReport>> GetAllWithDetails(InventoryType? type, CancellationToken ct)
+    public async Task<List<MovementReport>> GetAllWithDetails(InventoryType? type, SummaryPeriod period, CancellationToken ct)
     {
       static BsonDocument BuildProjection()
       {
@@ -64,7 +64,12 @@ namespace Infrastructure.Repositories
         );
       }
 
+      (DateTime startUtc, DateTime endUtc) = BsonDocumentExpression.RangeUtc(period);
+      var startDate = DateOnly.FromDateTime(startUtc);
+      var endDate = DateOnly.FromDateTime(endUtc);
+
       var pipeline = new MongoAggregationPipeline<Movement>(_movement)
+        .Match(m => m.MovementDate >= startDate && m.MovementDate < endDate)
         .Unwind("lines", false)
         .Lookup(MongoCollections.Products, "lines.product", $"tmp_{MongoCollections.Products}")
         .Lookup(MongoCollections.Warehouses, "fromWarehouse", "tmp_fromWarehouses")
@@ -110,16 +115,16 @@ namespace Infrastructure.Repositories
           { "outbound", BsonDocumentExpression.Sum(
             BsonDocumentExpression.Conditional(
               BsonDocumentExpression.Lt("$calculatedQty", 0),
-              BsonDocumentExpression.Abs("$calculatedQty"),
+              "$calculatedQty",
               0)
           ) },
           { "inbound", BsonDocumentExpression.Sum(
             BsonDocumentExpression.Conditional(
               BsonDocumentExpression.Gt("$calculatedQty", 0),
-              BsonDocumentExpression.Abs("$calculatedQty"),
+              "$calculatedQty",
               0)
           ) },
-          { "total", BsonDocumentExpression.Sum(BsonDocumentExpression.Abs("$calculatedQty")) }
+          { "total", BsonDocumentExpression.Sum("$calculatedQty") }
         };
       }
 

@@ -23,9 +23,12 @@ namespace API.Controllers
     }
     
     [HttpGet("report")]
-    public async Task<IActionResult> GetMovementReport([FromQuery] InventoryType? type, CancellationToken ct)
+    public async Task<IActionResult> GetMovementReport(
+      [FromQuery] InventoryType? type, 
+      [FromQuery] SummaryPeriod period, 
+      CancellationToken ct = default)
     {
-      return ApiBuilder.Result(await _movementService.GetAsReport(type, ct));
+      return ApiBuilder.Result(await _movementService.GetAsReport(type, period, ct));
     }
     
     [HttpGet("summary")]
