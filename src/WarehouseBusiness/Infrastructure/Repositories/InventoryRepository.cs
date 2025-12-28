@@ -4,8 +4,6 @@ using Domain.Repositories;
 using Infrastructure.Constants;
 using Infrastructure.DB;
 using Infrastructure.Helpers;
-
-// using Infrastructure.Helpers;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -19,33 +17,28 @@ namespace Infrastructure.Repositories
         {
             _inventory = context.Inventories;
         }
-        // public async Task<List<Inventory>> GetAll(CancellationToken ct)
-        // {
-        //     var filter = Builders<Inventory>.Filter.Empty;
-        //     return await _inventory.Find(filter).ToListAsync(ct);
-        // }
 
         public async Task<InventoryDetails> GetById(string id, CancellationToken ct)
         {
             var pipeline = new MongoAggregationPipeline<Inventory>(_inventory)
                 .Match(i => string.Equals(i.Id, id, StringComparison.OrdinalIgnoreCase))
-                .LookupAndUnwind(MongoCollections.Warehouses, "warehouseId")
-                .LookupAndUnwind(MongoCollections.Bins, "binId")
-                .LookupAndUnwind(MongoCollections.Products, "productId")
-                .LookupAndUnwind(MongoCollections.BusinessPartners, "bpartnerId")
+                .LookupAndUnwind(MongoCollections.Warehouses, "warehouseId", $"tmp_{MongoCollections.Warehouses}")
+                .LookupAndUnwind(MongoCollections.Bins, "binId", $"tmp_{MongoCollections.Bins}")
+                .LookupAndUnwind(MongoCollections.Products, "productId", $"tmp_{MongoCollections.Products}")
+                .LookupAndUnwind(MongoCollections.BusinessPartners, "bpartnerId", $"tmp_{MongoCollections.BusinessPartners}")
                 .SetFields(
-                    new BsonDocument{
-                        { "WarehouseName", MongoAggregationPipeline<Inventory>.RefField(MongoCollections.Warehouses,"name") },
-                        { "BinName", MongoAggregationPipeline<Inventory>.RefField(MongoCollections.Bins,"code") },
-                        { "ProductName", MongoAggregationPipeline<Inventory>.RefField(MongoCollections.Products,"description") },
-                        { "BusinessPartnerName", MongoAggregationPipeline<Inventory>.RefField(MongoCollections.BusinessPartners,"name") }
+                        new BsonDocument{
+                        { "WarehouseName", $"$tmp_{MongoCollections.Warehouses}.name" },
+                        { "BinName", $"$tmp_{MongoCollections.Bins}.code" },
+                        { "ProductName", $"$tmp_{MongoCollections.Products}.description" },
+                        { "BusinessPartnerName", $"$tmp_{MongoCollections.BusinessPartners}.name" }
                     })
                 .Project(
                     new BsonDocument{
-                        {MongoAggregationPipeline<Inventory>.TmpCollectionName(MongoCollections.Warehouses), 0},
-                        {MongoAggregationPipeline<Inventory>.TmpCollectionName(MongoCollections.Bins), 0},
-                        {MongoAggregationPipeline<Inventory>.TmpCollectionName(MongoCollections.Products), 0},
-                        {MongoAggregationPipeline<Inventory>.TmpCollectionName(MongoCollections.BusinessPartners), 0}
+                        {$"tmp_{MongoCollections.Warehouses}", 0},
+                        {$"tmp_{MongoCollections.Bins}", 0},
+                        {$"tmp_{MongoCollections.Products}", 0},
+                        {$"tmp_{MongoCollections.BusinessPartners}", 0}
                     })
                 .As<InventoryDetails>();
 
@@ -56,23 +49,23 @@ namespace Infrastructure.Repositories
         {
             var pipeline = new MongoAggregationPipeline<Inventory>(_inventory)
                 .Match(i => true)
-                .LookupAndUnwind(MongoCollections.Warehouses, "warehouseId")
-                .LookupAndUnwind(MongoCollections.Bins, "binId")
-                .LookupAndUnwind(MongoCollections.Products, "productId")
-                .LookupAndUnwind(MongoCollections.BusinessPartners, "bpartnerId")
+                .LookupAndUnwind(MongoCollections.Warehouses, "warehouseId", $"tmp_{MongoCollections.Warehouses}")
+                .LookupAndUnwind(MongoCollections.Bins, "binId", $"tmp_{MongoCollections.Bins}")
+                .LookupAndUnwind(MongoCollections.Products, "productId", $"tmp_{MongoCollections.Products}")
+                .LookupAndUnwind(MongoCollections.BusinessPartners, "bpartnerId", $"tmp_{MongoCollections.BusinessPartners}")
                 .SetFields(
                     new BsonDocument{
-                        { "WarehouseName", MongoAggregationPipeline<Inventory>.RefField(MongoCollections.Warehouses,"name") },
-                        { "BinName", MongoAggregationPipeline<Inventory>.RefField(MongoCollections.Bins,"code") },
-                        { "ProductName", MongoAggregationPipeline<Inventory>.RefField(MongoCollections.Products,"description") },
-                        { "BusinessPartnerName", MongoAggregationPipeline<Inventory>.RefField(MongoCollections.BusinessPartners,"name") }
+                        { "WarehouseName", $"$tmp_{MongoCollections.Warehouses}.name" },
+                        { "BinName", $"$tmp_{MongoCollections.Bins}.code" },
+                        { "ProductName", $"$tmp_{MongoCollections.Products}.description" },
+                        { "BusinessPartnerName", $"$tmp_{MongoCollections.BusinessPartners}.name" }
                     })
                 .Project(
                     new BsonDocument{
-                        {MongoAggregationPipeline<Inventory>.TmpCollectionName(MongoCollections.Warehouses), 0},
-                        {MongoAggregationPipeline<Inventory>.TmpCollectionName(MongoCollections.Bins), 0},
-                        {MongoAggregationPipeline<Inventory>.TmpCollectionName(MongoCollections.Products), 0},
-                        {MongoAggregationPipeline<Inventory>.TmpCollectionName(MongoCollections.BusinessPartners), 0}
+                        {$"tmp_{MongoCollections.Warehouses}", 0},
+                        {$"tmp_{MongoCollections.Bins}", 0},
+                        {$"tmp_{MongoCollections.Products}", 0},
+                        {$"tmp_{MongoCollections.BusinessPartners}", 0}
                     })
                 .As<InventoryDetails>();
 
