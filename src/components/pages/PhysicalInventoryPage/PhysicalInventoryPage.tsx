@@ -56,15 +56,15 @@ const columns: ColumnDef<Inventory>[] = [
     header: 'Movement Date',
   },
   {
-    accessorKey: 'warehouseId',
+    accessorKey: 'warehouseName',
     header: 'Warehouse',
   },
   {
-    accessorKey: 'productId',
+    accessorKey: 'productName',
     header: 'Product',
   },
   {
-    accessorKey: 'binId',
+    accessorKey: 'binName',
     header: 'Bin',
   },
   {
@@ -88,7 +88,7 @@ const columns: ColumnDef<Inventory>[] = [
   //   },
   // },
   {
-    accessorKey: 'bpartnerId',
+    accessorKey: 'businessPartnerName',
     header: 'Business partner',
   },
 ];

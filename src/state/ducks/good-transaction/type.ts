@@ -4,6 +4,7 @@ export type GoodTransaction = {
   id: string;
   docNo: string;
   warehouseId: string;
+  warehouseName: string;
   countDate: Date;
   description?: string;
   status: string;
@@ -13,10 +14,12 @@ export type GoodTransaction = {
 
 export type GoodTransactionLine = {
   productId: string;
+  productName: string;
   expectedQty: number;
   countedQty: number;
   difference: number;
   binId: string;
+  binName: string;
   uom: string;
 };
 

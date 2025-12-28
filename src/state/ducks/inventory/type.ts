@@ -7,12 +7,16 @@ export type Inventory = {
   type: string;
   movementDate: string;
   productId: string;
+  productName: string;
   warehouseId: string;
+  warehouseName: string;
   binId: string;
+  binName: string;
   qty: number;
   uom: string;
   cost: number;
   bpartnerId: string;
+  businessPartnerName: string;
 };
 
 export type InventoryState = {
