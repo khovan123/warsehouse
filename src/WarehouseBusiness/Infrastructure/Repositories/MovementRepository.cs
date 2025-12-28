@@ -1,7 +1,7 @@
 using Domain.Entities;
+using Domain.Entities.Weak;
 using Domain.Entities.Weak.Movement;
 using Domain.Enums;
-using Domain.Helpers;
 using Domain.Repositories;
 using Infrastructure.Constants;
 using Infrastructure.DB;
@@ -20,16 +20,90 @@ namespace Infrastructure.Repositories
       _movement = context.Movements;
     }
 
-    public async Task<List<Movement>> GetAll(CancellationToken ct)
+    public async Task<List<MovementDetails>> GetAll(CancellationToken ct)
     {
-      var filter = Builders<Movement>.Filter.Empty;
-      return await _movement.Find(filter).ToListAsync(ct);
+      var pipeline = new MongoAggregationPipeline<Movement>(_movement)
+        .Match(m => true)
+        .Unwind("$lines", false)
+        .LookupAndUnwind(MongoCollections.Warehouses, "fromWarehouse", $"tmp_from{MongoCollections.Warehouses}")
+        .LookupAndUnwind(MongoCollections.Warehouses, "toWarehouse", $"tmp_to{MongoCollections.Warehouses}")
+        .LookupAndUnwind(MongoCollections.Products, "lines.product", $"tmp_{MongoCollections.Products}")
+        .LookupAndUnwind(MongoCollections.Bins, "lines.fromBin", $"tmp_from{MongoCollections.Bins}")
+        .LookupAndUnwind(MongoCollections.Bins, "lines.toBin", $"tmp_to{MongoCollections.Bins}")
+        .SetFields(new BsonDocument
+        {
+          {"lines.productName",$"$tmp_{MongoCollections.Products}.description"},
+          {"fromWarehouseName",$"$tmp_from{MongoCollections.Warehouses}.name"},
+          {"toWarehouseName",$"$tmp_to{MongoCollections.Warehouses}.name"},
+          {"lines.fromBinName",$"$tmp_from{MongoCollections.Bins}.code"},
+          {"lines.toBinName",$"$tmp_to{MongoCollections.Bins}.code"},
+        })
+        .Unset(new BsonArray {
+          $"tmp_{MongoCollections.Products}",
+          $"tmp_from{MongoCollections.Warehouses}",
+          $"tmp_to{MongoCollections.Warehouses}",
+          $"tmp_from{MongoCollections.Bins}",
+          $"tmp_to{MongoCollections.Bins}"
+        })
+        .Group(new BsonDocument
+        {
+          { "_id", "$_id" },
+          { "docNo", new BsonDocument("$first", "$docNo") },
+          { "movementDate", new BsonDocument("$first", "$movementDate") },
+          { "fromWarehouse", new BsonDocument("$first", "$fromWarehouse") },
+          { "fromWarehouseName", new BsonDocument("$first", "$fromWarehouseName") },
+          { "toWarehouse", new BsonDocument("$first", "$toWarehouse") },
+          { "toWarehouseName", new BsonDocument("$first", "$toWarehouseName") },
+          { "status", new BsonDocument("$first", "$status") },
+          { "reason", new BsonDocument("$first", "$reason") },
+          { "createdBy", new BsonDocument("$first", "$createdBy") },
+          { "lines", new BsonDocument("$push", "$lines") }
+        })
+        .As<MovementDetails>();
+      return await pipeline.ToListAsync(ct);
     }
 
-    public async Task<Movement> GetById(string id, CancellationToken ct)
+    public async Task<MovementDetails> GetById(string id, CancellationToken ct)
     {
-      var filter = Builders<Movement>.Filter.Eq(m => m.Id, id);
-      return await _movement.Find(filter).FirstOrDefaultAsync(ct);
+      var pipelne = new MongoAggregationPipeline<Movement>(_movement)
+        .Match(m => string.Equals(m.Id, id, StringComparison.OrdinalIgnoreCase))
+        .Unwind("$lines", false)
+        .LookupAndUnwind(MongoCollections.Warehouses, "fromWarehouse", $"tmp_from{MongoCollections.Warehouses}")
+        .LookupAndUnwind(MongoCollections.Warehouses, "toWarehouse", $"tmp_to{MongoCollections.Warehouses}")
+        .LookupAndUnwind(MongoCollections.Products, "lines.product", $"tmp_{MongoCollections.Products}")
+        .LookupAndUnwind(MongoCollections.Bins, "lines.fromBin", $"tmp_from{MongoCollections.Bins}")
+        .LookupAndUnwind(MongoCollections.Bins, "lines.toBin", $"tmp_to{MongoCollections.Bins}")
+        .SetFields(new BsonDocument
+        {
+          {"lines.productName",$"$tmp_{MongoCollections.Products}.description"},
+          {"fromWarehouseName",$"$tmp_from{MongoCollections.Warehouses}.name"},
+          {"toWarehouseName",$"$tmp_to{MongoCollections.Warehouses}.name"},
+          {"lines.fromBinName",$"$tmp_from{MongoCollections.Bins}.code"},
+          {"lines.toBinName",$"$tmp_to{MongoCollections.Bins}.code"},
+        })
+        .Unset(new BsonArray {
+          $"tmp_{MongoCollections.Products}",
+          $"tmp_from{MongoCollections.Warehouses}",
+          $"tmp_to{MongoCollections.Warehouses}",
+          $"tmp_from{MongoCollections.Bins}",
+          $"tmp_to{MongoCollections.Bins}"
+        })
+        .Group(new BsonDocument
+        {
+          { "_id", "$_id" },
+          { "docNo", new BsonDocument("$first", "$docNo") },
+          { "movementDate", new BsonDocument("$first", "$movementDate") },
+          { "fromWarehouse", new BsonDocument("$first", "$fromWarehouse") },
+          { "fromWarehouseName", new BsonDocument("$first", "$fromWarehouseName") },
+          { "toWarehouse", new BsonDocument("$first", "$toWarehouse") },
+          { "toWarehouseName", new BsonDocument("$first", "$toWarehouseName") },
+          { "status", new BsonDocument("$first", "$status") },
+          { "reason", new BsonDocument("$first", "$reason") },
+          { "createdBy", new BsonDocument("$first", "$createdBy") },
+          { "lines", new BsonDocument("$push", "$lines") }
+        })
+        .As<MovementDetails>();
+      return await pipelne.FirstOrDefaultAsync(ct);
     }
 
     public async Task<List<MovementReport>> GetAllWithDetails(InventoryType? type, SummaryPeriod period, CancellationToken ct)
