@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-import type { Period, InventoryType } from '@/utils/constants';
+import type { InventoryType, Period } from '@/utils/constants';
 
-import { INIT_MOVEMENT_STATE, type MovementState } from './type';
+import { INIT_MOVEMENT_STATE, type MovementReportSuccessPayload, type MovementState } from './type';
 
 export const movementSlice = createSlice({
   name: 'movement',
@@ -23,27 +23,33 @@ export const movementSlice = createSlice({
       state,
       _action: PayloadAction<{ inventoryType?: InventoryType; period?: Period }>
     ) => {
-      state.reportLoading = true;
+      state.loading = true;
     },
-    fetchMovementReportSuccess: (state, action: PayloadAction<Pick<MovementState, 'data'>>) => {
-      state.reportLoading = false;
-      state.data.movementReports = action.payload.data.movementReports;
+    fetchMovementReportSuccess: (state, action: PayloadAction<MovementReportSuccessPayload>) => {
+      const { movementReports, movementSummaries } = action.payload;
+      state.loading = false;
+      if (movementReports) {
+        state.data.movementReports = movementReports;
+      }
+      if (movementSummaries) {
+        state.data.movementSummaries = movementSummaries;
+      }
     },
     fetchMovementReportFailure: (state, action: PayloadAction<Pick<MovementState, 'error'>>) => {
-      state.reportLoading = false;
+      state.loading = false;
       state.error = action.payload.error;
     },
-    fetchMovementSummaryRequest: (state, _action: PayloadAction<{ period: Period }>) => {
-      state.summaryLoading = true;
-    },
-    fetchMovementSummarySuccess: (state, action: PayloadAction<Pick<MovementState, 'data'>>) => {
-      state.summaryLoading = false;
-      state.data.movementSummaries = action.payload.data.movementSummaries;
-    },
-    fetchMovementSummaryFailure: (state, action: PayloadAction<Pick<MovementState, 'error'>>) => {
-      state.summaryLoading = false;
-      state.error = action.payload.error;
-    },
+    // fetchMovementSummaryRequest: (state) => {
+    //   state.summaryLoading = true;
+    // },
+    // fetchMovementSummarySuccess: (state, action: PayloadAction<Pick<MovementState, 'data'>>) => {
+    //   state.summaryLoading = false;
+    //   state.data.movementSummaries = action.payload.data.movementSummaries;
+    // },
+    // fetchMovementSummaryFailure: (state, action: PayloadAction<Pick<MovementState, 'error'>>) => {
+    //   state.summaryLoading = false;
+    //   state.error = action.payload.error;
+    // },
   },
 });
 
@@ -54,9 +60,9 @@ export const {
   fetchMovementReportRequest,
   fetchMovementReportSuccess,
   fetchMovementReportFailure,
-  fetchMovementSummaryRequest,
-  fetchMovementSummarySuccess,
-  fetchMovementSummaryFailure,
+  // fetchMovementSummaryRequest,
+  // fetchMovementSummarySuccess,
+  // fetchMovementSummaryFailure,
 } = movementSlice.actions;
 
 export default movementSlice.reducer;
