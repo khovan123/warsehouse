@@ -45,8 +45,6 @@ export type MovementSummary = {
 
 export type MovementState = {
   loading: boolean;
-  reportLoading: boolean;
-  summaryLoading: boolean;
   data: {
     movements: Movement[] | [];
     movementReports: MovementReport[] | [];
@@ -55,10 +53,13 @@ export type MovementState = {
   error: ApiError | null;
 };
 
+export type MovementReportSuccessPayload = {
+  movementReports?: MovementReport[] | [];
+  movementSummaries?: MovementSummary[] | [];
+};
+
 export const INIT_MOVEMENT_STATE: MovementState = {
   loading: false,
-  reportLoading: false,
-  summaryLoading: false,
   data: {
     movements: [],
     movementReports: [],

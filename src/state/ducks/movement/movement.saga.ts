@@ -7,7 +7,7 @@ import {
   fetchMovementSummaryApi,
 } from '@/apis/movement/movement';
 import type { ApiError, Unwrap } from '@/apis/type';
-import type { Period, InventoryType } from '@/utils/constants';
+import type { InventoryType, Period } from '@/utils/constants';
 
 import type {
   FetchMovementReportResponse,
@@ -21,9 +21,6 @@ import {
   fetchMovementReportSuccess,
   fetchMovementRequest,
   fetchMovementSuccess,
-  fetchMovementSummaryFailure,
-  fetchMovementSummaryRequest,
-  fetchMovementSummarySuccess,
 } from './slice';
 
 function* fetchMovementFlow() {
@@ -40,17 +37,24 @@ function* fetchMovementFlow() {
 }
 
 function* fetchMovementReportFlow(
-  action: PayloadAction<{ inventoryType?: InventoryType; period?: Period }>
+  action: PayloadAction<{ inventoryType?: InventoryType; period: Period }>
 ) {
   try {
-    const res: Unwrap<FetchMovementReportResponse> = yield call(
+    const { inventoryType, period } = action.payload;
+    const res_summary: Unwrap<FetchMovementSummaryResponse> = yield call(
+      fetchMovementSummaryApi,
+      period
+    );
+
+    const res_report: Unwrap<FetchMovementReportResponse> = yield call(
       fetchMovementReportApi,
-      action.payload.inventoryType,
-      action.payload.period
+      inventoryType,
+      period
     );
     yield put(
       fetchMovementReportSuccess({
-        data: { movements: [], movementReports: res.movementReports, movementSummaries: [] },
+        movementSummaries: res_summary.movementSummaries,
+        movementReports: res_report.movementReports,
       })
     );
   } catch (error) {
@@ -58,30 +62,9 @@ function* fetchMovementReportFlow(
   }
 }
 
-function* fetchMovementSummaryFlow(action: PayloadAction<{ period: Period }>) {
-  try {
-    const res: Unwrap<FetchMovementSummaryResponse> = yield call(
-      fetchMovementSummaryApi,
-      action.payload.period
-    );
-    yield put(
-      fetchMovementSummarySuccess({
-        data: {
-          movements: [],
-          movementReports: [],
-          movementSummaries: res.movementSummaries,
-        },
-      })
-    );
-  } catch (error) {
-    yield put(fetchMovementSummaryFailure({ error: error as ApiError }));
-  }
-}
-
 function* watchMovementFlows() {
   yield takeLatest(fetchMovementRequest.type, fetchMovementFlow);
   yield takeLatest(fetchMovementReportRequest.type, fetchMovementReportFlow);
-  yield takeLatest(fetchMovementSummaryRequest.type, fetchMovementSummaryFlow);
 }
 
 export function* movementSaga() {
