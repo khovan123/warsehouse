@@ -1,4 +1,4 @@
-import type { Period, InventoryType } from '@/utils/constants';
+import type { InventoryType, Period } from '@/utils/constants';
 
 import { MOVEMENT_REPORT_PATH, MOVEMENT_REQUEST_PATH, MOVEMENT_SUMMARY_PATH } from '../constants';
 import { getClient } from '../request';
