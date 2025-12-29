@@ -1,10 +1,9 @@
-/* eslint-disable no-console */
 import axios, { AxiosError } from 'axios';
-import Cookies from 'js-cookie';
 
 import type { RefreshTokenResponse } from '@/@types/refresh-token';
 import type { HttpClientInstance, HttpResponse, RequestConfig } from '@/@types/request';
 import { logout, setToken } from '@/state/ducks/auth/slice';
+import { showToast } from '@/state/ducks/toast/slice';
 import store from '@/state/store';
 
 import { REFRESH_TOKEN_PATH, UNAUTHORIZED_STATUS_CODE } from './constants';
@@ -25,9 +24,9 @@ class HttpClient {
   //   document.cookie = `x-sharex-context-hash=${newHash}; path=/; secure;`;
   // }
 
-  private getCookieValue(key: string) {
-    return Cookies.get(key);
-  }
+  // private getCookieValue(key: string) {
+  //   return Cookies.get(key);
+  // }
 
   // private restoreContextHash(): void {
   //   this.contextHash = this.getCookieValue('x-sharex-context-hash');
@@ -142,9 +141,6 @@ class HttpClient {
 
   private async refreshAccessToken(client: ReturnType<typeof axios.create>): Promise<string> {
     if (!this.refreshPromise) {
-      console.log(
-        `Call refresh token at path: ${REFRESH_TOKEN_PATH}, with refresh-token: ${this.getCookieValue('refresh-token')}`
-      );
       this.refreshPromise = (async () => {
         const res: RefreshTokenResponse = await client.post(REFRESH_TOKEN_PATH, null, {
           withCredentials: true,
@@ -153,7 +149,11 @@ class HttpClient {
         const accessToken = res.data?.accessToken;
 
         if (!accessToken) {
-          throw new Error('Missing accessToken from refresh response');
+          store.dispatch({
+            type: showToast.type,
+            payload: { type: 'error', message: 'Session Expired' },
+          });
+          throw new Error('Missing access token');
         }
 
         store.dispatch({ type: setToken.type, payload: accessToken });
@@ -170,7 +170,6 @@ class HttpClient {
   private createClient(): HttpClientInstance {
     const client = axios.create({ ...this.config, withCredentials: true });
     // this.restoreContextHash();
-    console.log(`Call api with refresh-token: ${this.getCookieValue('refresh-token')}`);
     client.interceptors.request.use((config) => {
       const newConfig = { ...config };
       const token = store.getState().auth.data?.token;
