@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IParetoService
     {
-        Task<ApiResponse<ParetoDTO.Response>> GetAll(CancellationToken ct);
+        Task<ApiResponse<ParetoDTO.Response>?> GetAllAsync(CancellationToken ct);
     }
 }

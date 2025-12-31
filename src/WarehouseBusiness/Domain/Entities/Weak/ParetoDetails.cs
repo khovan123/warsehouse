@@ -5,24 +5,24 @@ using Domain.Enums;
 namespace Domain.Entities.Weak
 {
     [BsonIgnoreExtraElements]
-    public class ParetoReport : Pareto
+    public class ParetoDetails : Pareto
     {
         [BsonElement("product")]
         [JsonIgnore]
         public Product? ProductEntity { get; set; }
-        
+
         [BsonElement("category")]
         [JsonIgnore]
         public Category? CategoryEntity { get; set; }
-        
+
         [BsonIgnore]
         [JsonIgnore]
         public List<Product>? Products { get; set; }
-        
+
         [BsonIgnore]
         [JsonIgnore]
         public List<Category>? Categories { get; set; }
-        
+
         [BsonIgnore]
         [JsonPropertyName("product")]
         public string Product => ProductEntity != null ? $"{ProductEntity.Sku} {ProductEntity.Description}" : "Unknown Product";

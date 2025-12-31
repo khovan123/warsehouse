@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IWarehouseService
     {
-        Task<ApiResponse<WarehouseDTO.Response>> GetAll(CancellationToken ct);
+        Task<ApiResponse<WarehouseDTO.Response>?> GetAllAsync(CancellationToken ct);
     }
 }

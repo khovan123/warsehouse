@@ -102,6 +102,13 @@ namespace Infrastructure.Helpers
       return this;
     }
 
+    public MongoAggregationPipeline<TCollection> Optional(BsonDocument? bsons, bool condition = true)
+    {
+      if (condition && bsons is not null)
+        _aggregate = _aggregate.AppendStage<TCollection>(bsons);
+      return this;
+    }
+
     public IAggregateFluent<TResult> As<TResult>() => _aggregate.As<TResult>();
   }
 }

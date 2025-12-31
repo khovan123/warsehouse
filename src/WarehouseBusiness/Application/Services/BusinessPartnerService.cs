@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -14,9 +13,9 @@ namespace Application.Services
         {
             _businessPartnetRepository = businessPartnetRepository;
         }
-        public async Task<ApiResponse<BusinessPartnerDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<BusinessPartnerDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var businessPartners = await _businessPartnetRepository.GetAll(ct);
+            var businessPartners = await _businessPartnetRepository.GetAllAsync(ct);
             var data = new BusinessPartnerDTO.Response(businessPartners);
 
             return new ApiResponse<BusinessPartnerDTO.Response>(data);

@@ -6,7 +6,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("/api/v1/setups")]
-    public class SetupsController:ControllerBase
+    public class SetupsController : ControllerBase
     {
         private readonly ISetupsService _setupsService;
 
@@ -17,7 +17,7 @@ namespace API.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            return ApiBuilder.Result(await _setupsService.GetAll(ct));
+            return ApiBuilder.Result(await _setupsService.GetAllAsync(ct));
         }
     }
 }

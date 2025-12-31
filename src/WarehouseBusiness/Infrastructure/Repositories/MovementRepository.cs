@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
       _movement = context.Movements;
     }
 
-    public async Task<List<MovementDetails>> GetAll(CancellationToken ct)
+    public async Task<List<MovementDetails>> GetAllAsync(CancellationToken ct)
     {
       var pipeline = new MongoAggregationPipeline<Movement>(_movement)
         .Match(m => true)
@@ -63,9 +63,9 @@ namespace Infrastructure.Repositories
       return await pipeline.ToListAsync(ct);
     }
 
-    public async Task<MovementDetails> GetById(string id, CancellationToken ct)
+    public async Task<MovementDetails> GetByIdAsync(string id, CancellationToken ct)
     {
-      var pipelne = new MongoAggregationPipeline<Movement>(_movement)
+      var pipeline = new MongoAggregationPipeline<Movement>(_movement)
         .Match(m => string.Equals(m.Id, id, StringComparison.OrdinalIgnoreCase))
         .Unwind("$lines", false)
         .LookupAndUnwind(MongoCollections.Warehouses, "fromWarehouse", $"tmp_from{MongoCollections.Warehouses}")
@@ -103,42 +103,21 @@ namespace Infrastructure.Repositories
           { "lines", new BsonDocument("$push", "$lines") }
         })
         .As<MovementDetails>();
-      return await pipelne.FirstOrDefaultAsync(ct);
+      return await pipeline.FirstOrDefaultAsync(ct);
     }
 
-    public async Task<List<MovementReport>> GetAllWithDetails(InventoryType? type, SummaryPeriod period, CancellationToken ct)
+    public async Task<List<MovementReport>> GetAllWithDetailsAsync(InventoryType? type, SummaryPeriod period, CancellationToken ct)
     {
-      static BsonDocument BuildProjection()
-      {
-        var inventoryType = BsonDocumentExpression.GetField("type", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}"));
+      var inventoryTypeDoc = BsonDocumentExpression.GetField("type", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}"));
 
-        return new BsonDocument
-        {
-          { "docNo", 1 },
-          { "movementDate", 1 },
-          { "productEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}") },
-          { "fromWarehouse", BsonDocumentExpression.GetField("code",BsonDocumentExpression.ArrayElemAt("tmp_fromWarehouses")) },
-          { "toWarehouse", BsonDocumentExpression.GetField("code",BsonDocumentExpression.ArrayElemAt("tmp_toWarehouses")) },
-          { "binEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Bins}")},
-          { "type", inventoryType },
-          { "qty", BsonDocumentExpression.Conditional(
-            BsonDocumentExpression.In(inventoryType, new BsonArray { MongoFields.Movement, MongoFields.Shipment }),
-            BsonDocumentExpression.Multiply("$lines.qty", -1),
-            "$lines.qty"
-          ) }
-        };
-      }
-
-      BsonDocument? BuildMatchFilter(InventoryType? filterType)
-      {
-        return BsonDocumentExpression.MatchEnumInArrayField(
-          filterType,
+      var matchTypeDoc = BsonDocumentExpression.MatchInArrayField(
+          type,
           $"tmp_{MongoCollections.Inventory}",
           "type"
         );
-      }
 
-      (DateTime startUtc, DateTime endUtc) = BsonDocumentExpression.RangeUtc(period);
+      (DateTime startUtc, DateTime endUtc) = DateHelper.CreateDateRangeUtc(period: period);
+
       var startDate = DateOnly.FromDateTime(startUtc);
       var endDate = DateOnly.FromDateTime(endUtc);
 
@@ -149,28 +128,33 @@ namespace Infrastructure.Repositories
         .Lookup(MongoCollections.Warehouses, "fromWarehouse", "tmp_fromWarehouses")
         .Lookup(MongoCollections.Warehouses, "toWarehouse", "tmp_toWarehouses")
         .Lookup(MongoCollections.Bins, "lines.fromBin", $"tmp_{MongoCollections.Bins}")
-        .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId");
-
-      var matchFilter = BuildMatchFilter(type);
-      if (matchFilter != null)
-      {
-        pipeline = pipeline.Match(matchFilter);
-      }
-
-      var result = pipeline
-        .Project(BuildProjection())
+        .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId")
+        .Optional(matchTypeDoc)
+        .Project(new BsonDocument
+        {
+          { "docNo", 1 },
+          { "movementDate", 1 },
+          { "productEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}") },
+          { "fromWarehouse", BsonDocumentExpression.GetField("code",BsonDocumentExpression.ArrayElemAt("tmp_fromWarehouses")) },
+          { "toWarehouse", BsonDocumentExpression.GetField("code",BsonDocumentExpression.ArrayElemAt("tmp_toWarehouses")) },
+          { "binEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Bins}")},
+          { "type", inventoryTypeDoc },
+          { "qty", BsonDocumentExpression.Conditional(
+            BsonDocumentExpression.In(inventoryTypeDoc, new BsonArray { MongoFields.Movement, MongoFields.Shipment }),
+            BsonDocumentExpression.Multiply("$lines.qty", -1),
+            "$lines.qty"
+          ) }
+        })
         .As<MovementReport>();
 
-      return await result.ToListAsync(ct);
+      return await pipeline.ToListAsync(ct);
     }
 
-    public async Task<List<MovementSummary>> GetSummary(SummaryPeriod period, CancellationToken ct)
+    public async Task<List<MovementSummary>> GetSummaryAsync(SummaryPeriod period, CancellationToken ct)
     {
-      BsonDocument CalculatedQtyProjection()
-      {
-        var inventoryType = BsonDocumentExpression.GetField("type", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}"));
+      var inventoryType = BsonDocumentExpression.GetField("type", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}"));
 
-        return new BsonDocument
+      var calculatedQtyDoc = new BsonDocument
         {
           { "movementDate", 1 },
           { "calculatedQty", BsonDocumentExpression.Conditional(
@@ -179,30 +163,8 @@ namespace Infrastructure.Repositories
             "$lines.qty"
           ) }
         };
-      }
 
-      BsonDocument GroupSpecByMovementDate()
-      {
-        return new BsonDocument
-        {
-          { "_id", BsonDocumentExpression.BuildGroupIdByDateField(period, "movementDate") },
-          { "outbound", BsonDocumentExpression.Sum(
-            BsonDocumentExpression.Conditional(
-              BsonDocumentExpression.Lt("$calculatedQty", 0),
-              "$calculatedQty",
-              0)
-          ) },
-          { "inbound", BsonDocumentExpression.Sum(
-            BsonDocumentExpression.Conditional(
-              BsonDocumentExpression.Gt("$calculatedQty", 0),
-              "$calculatedQty",
-              0)
-          ) },
-          { "total", BsonDocumentExpression.Sum("$calculatedQty") }
-        };
-      }
-
-      (DateTime startUtc, DateTime endUtc) = BsonDocumentExpression.RangeUtc(period);
+      (DateTime startUtc, DateTime endUtc) = DateHelper.CreateDateRangeUtc(period: period);
 
       var startDate = DateOnly.FromDateTime(startUtc);
       var endDate = DateOnly.FromDateTime(endUtc);
@@ -211,8 +173,18 @@ namespace Infrastructure.Repositories
         .Match(m => m.MovementDate >= startDate && m.MovementDate < endDate)
         .Unwind("$lines", false)
         .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId")
-        .Project(CalculatedQtyProjection())
-        .Group(GroupSpecByMovementDate())
+        .Project(calculatedQtyDoc)
+        .Group(new BsonDocument
+        {
+          { "_id", BsonDocumentExpression.BuildGroupIdByDateField(period, "movementDate") },
+          { "outbound", BsonDocumentExpression.Sum(
+            BsonDocumentExpression.Conditional( BsonDocumentExpression.Lt("$calculatedQty", 0), "$calculatedQty", 0))
+          },
+          { "inbound", BsonDocumentExpression.Sum(
+            BsonDocumentExpression.Conditional( BsonDocumentExpression.Gt("$calculatedQty", 0),"$calculatedQty", 0))
+          },
+          { "total", BsonDocumentExpression.Sum("$calculatedQty") }
+        })
         .Sort(new BsonDocument("_id", 1))
         .Project(new BsonDocument
         {

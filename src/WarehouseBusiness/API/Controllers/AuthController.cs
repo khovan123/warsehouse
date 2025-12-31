@@ -53,7 +53,7 @@ namespace API.Controllers
 
             var tokenHash = Hash.Sha256(rawRefreshToken);
 
-            var res = await _authService.RefreshAccessToken(tokenHash, ct);
+            var res = await _authService.RefreshAccessTokenAsync(tokenHash, ct);
 
             if (res is ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken> and not null)
             {

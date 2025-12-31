@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IProductService
     {
-        Task<ApiResponse<ProductDTO.Response>> GetAll(CancellationToken ct);
+        Task<ApiResponse<ProductDTO.Response>?> GetAllAsync(CancellationToken ct);
     }
 }

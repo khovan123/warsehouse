@@ -17,24 +17,24 @@ namespace API.Controllers
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAllMovements(CancellationToken ct)
+    public async Task<IActionResult> GetAll(CancellationToken ct)
     {
-      return ApiBuilder.Result(await _movementService.GetAll(ct));
+      return ApiBuilder.Result(await _movementService.GetAllAsync(ct));
     }
-    
+
     [HttpGet("report")]
-    public async Task<IActionResult> GetMovementReport(
-      [FromQuery] InventoryType? type, 
-      [FromQuery] SummaryPeriod period, 
+    public async Task<IActionResult> GetAllWithDetails(
+      [FromQuery] InventoryType? type,
+      [FromQuery] SummaryPeriod period,
       CancellationToken ct = default)
     {
-      return ApiBuilder.Result(await _movementService.GetAsReport(type, period, ct));
+      return ApiBuilder.Result(await _movementService.GetAllWithDetailsAsync(type, period, ct));
     }
-    
+
     [HttpGet("summary")]
-    public async Task<IActionResult> GetMovementSummary([FromQuery] SummaryPeriod period, CancellationToken ct)
+    public async Task<IActionResult> GetSummary([FromQuery] SummaryPeriod period, CancellationToken ct)
     {
-      return ApiBuilder.Result(await _movementService.GetAsSummary(period, ct));
+      return ApiBuilder.Result(await _movementService.GetSummaryAsync(period, ct));
     }
   }
 }

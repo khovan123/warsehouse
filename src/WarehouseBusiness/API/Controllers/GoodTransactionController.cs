@@ -16,9 +16,9 @@ namespace API.Controllers
     }
 
     [HttpGet("")]
-    public async Task<IActionResult> GetAllGoodTransaction(CancellationToken ct)
+    public async Task<IActionResult> GetAll(CancellationToken ct)
     {
-      return ApiBuilder.Result(await _goodTransactionService.GetAll(ct));
+      return ApiBuilder.Result(await _goodTransactionService.GetAllAsync(ct));
     }
   }
 }

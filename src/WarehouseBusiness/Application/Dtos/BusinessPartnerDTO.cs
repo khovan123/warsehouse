@@ -2,11 +2,8 @@
 
 namespace Application.Dtos
 {
-    public record BusinessPartnerDTO
+    public sealed record BusinessPartnerDTO
     {
-        public record Response(List<BusinessPartner>? BusinessPartners = default!)
-        {
-            public List<BusinessPartner>? BusinessPartners { get; set; } = BusinessPartners;
-        }
+        public sealed record Response(List<BusinessPartner>? BusinessPartners = default!);
     }
 }

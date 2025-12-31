@@ -8,18 +8,19 @@ namespace API.Controllers
     //[Authorize]
     [ApiController]
     [Route("/api/v1/products")]
-    public class ProductController: ControllerBase
+    public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
 
-        public ProductController(IProductService productService) { 
+        public ProductController(IProductService productService)
+        {
             _productService = productService;
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetAllProduct(CancellationToken ct)
+        public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            return ApiBuilder.Result(await _productService.GetAll(ct));
+            return ApiBuilder.Result(await _productService.GetAllAsync(ct));
         }
     }
 }

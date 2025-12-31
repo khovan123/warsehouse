@@ -13,9 +13,9 @@ namespace Application.Services
     {
       _goodTransactionRepository = goodTransactionRepository;
     }
-    public async Task<ApiResponse<GoodTransactionDTO.Response>> GetAll(CancellationToken ct)
+    public async Task<ApiResponse<GoodTransactionDTO.Response>?> GetAllAsync(CancellationToken ct)
     {
-      var goodTransactions = await _goodTransactionRepository.GetAll(ct);
+      var goodTransactions = await _goodTransactionRepository.GetAllAsync(ct);
       var data = new GoodTransactionDTO.Response(goodTransactions);
       return new ApiResponse<GoodTransactionDTO.Response>(data);
     }

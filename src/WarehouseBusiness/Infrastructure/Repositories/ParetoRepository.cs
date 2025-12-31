@@ -21,19 +21,7 @@ namespace Infrastructure.Repositories
             _categories = context.Categories;
         }
 
-        public async Task<List<Pareto>> GetAll(CancellationToken ct)
-        {
-            var filter = Builders<Pareto>.Filter.Empty;
-            return await _paretos.Find(filter).ToListAsync(ct);
-        }
-
-        public async Task<Pareto> GetById(string id, CancellationToken ct)
-        {
-            var filter = Builders<Pareto>.Filter.Eq(p => p.Id, id);
-            return await _paretos.Find(filter).FirstOrDefaultAsync(ct);
-        }
-
-        public async Task<List<ParetoReport>> GetAllWithDetails(CancellationToken ct)
+        public async Task<List<ParetoDetails>> GetAllAsync(CancellationToken ct)
         {
             var pipeline = _paretos.Aggregate()
                 .Match(p => true)
@@ -61,9 +49,42 @@ namespace Infrastructure.Repositories
                     { "product", new BsonDocument("$arrayElemAt", new BsonArray { "$products", 0 }) },
                     { "category", new BsonDocument("$arrayElemAt", new BsonArray { "$categories", 0 }) }
                 }))
-                .As<ParetoReport>();
+                .As<ParetoDetails>();
 
             return await pipeline.ToListAsync(ct);
+        }
+
+        public async Task<ParetoDetails> GetByIdAsync(string id, CancellationToken ct)
+        {
+            var pipeline = _paretos.Aggregate()
+               .Match(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase))
+               .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
+               {
+                    { "from", MongoCollections.Products },
+                    { "localField", "productId" },
+                    { "foreignField", "_id" },
+                    { "as", "products" }
+               }))
+               .AppendStage<BsonDocument>(new BsonDocument("$lookup", new BsonDocument
+               {
+                    { "from", MongoCollections.Categories },
+                    { "localField", "categoryId" },
+                    { "foreignField", "_id" },
+                    { "as", "categories" }
+               }))
+               .AppendStage<BsonDocument>(new BsonDocument("$project", new BsonDocument
+               {
+                    { "productId", 1 },
+                    { "categoryId", 1 },
+                    { "annualConsumption", 1 },
+                    { "value", 1 },
+                    { "tag", 1 },
+                    { "product", new BsonDocument("$arrayElemAt", new BsonArray { "$products", 0 }) },
+                    { "category", new BsonDocument("$arrayElemAt", new BsonArray { "$categories", 0 }) }
+               }))
+               .As<ParetoDetails>();
+
+            return await pipeline.FirstOrDefaultAsync(ct);
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Application.Services
             _stockRepository = stockRepository;
         }
 
-        public async Task<ApiResponse<StockDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<StockDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var stockReports = await _stockRepository.GetAllWithDetails(ct);
+            var stockReports = await _stockRepository.GetAllAsync(ct);
 
             var data = new StockDTO.Response(stockReports);
             return new ApiResponse<StockDTO.Response>(data);
