@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IBinService
     {
-        Task<ApiResponse<BinDTO.Response>> GetAll(CancellationToken ct);
+        Task<ApiResponse<BinDTO.Response>?> GetAllAsync(CancellationToken ct);
     }
 }

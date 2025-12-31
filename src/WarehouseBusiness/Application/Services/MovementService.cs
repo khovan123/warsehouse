@@ -1,10 +1,8 @@
 using Application.Dtos;
 using Application.Interfaces;
 using Contract.Responses;
-using Domain.Entities.Weak;
 using Domain.Enums;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -16,24 +14,24 @@ namespace Application.Services
     {
       _movementRepository = movementRepository;
     }
-    
-    public async Task<ApiResponse<MovementDTO.Response>> GetAll(CancellationToken ct)
+
+    public async Task<ApiResponse<MovementDTO.Response>?> GetAllAsync(CancellationToken ct)
     {
-      var movements = await _movementRepository.GetAll(ct);
+      var movements = await _movementRepository.GetAllAsync(ct);
       var data = new MovementDTO.Response(movements);
       return new ApiResponse<MovementDTO.Response>(data);
     }
-    
-    public async Task<ApiResponse<MovementDTO.ReportResponse>> GetAsReport(InventoryType? type, SummaryPeriod period, CancellationToken ct)
+
+    public async Task<ApiResponse<MovementDTO.ReportResponse>?> GetAllWithDetailsAsync(InventoryType? type, SummaryPeriod period, CancellationToken ct)
     {
-      var movementReports = await _movementRepository.GetAllWithDetails(type, period, ct);
+      var movementReports = await _movementRepository.GetAllWithDetailsAsync(type, period, ct);
       var data = new MovementDTO.ReportResponse(movementReports);
       return new ApiResponse<MovementDTO.ReportResponse>(data);
     }
-    
-    public async Task<ApiResponse<MovementDTO.SummaryResponse>> GetAsSummary(SummaryPeriod period, CancellationToken ct)
+
+    public async Task<ApiResponse<MovementDTO.SummaryResponse>?> GetSummaryAsync(SummaryPeriod period, CancellationToken ct)
     {
-      var movementSummaries = await _movementRepository.GetSummary(period, ct);
+      var movementSummaries = await _movementRepository.GetSummaryAsync(period, ct);
       var data = new MovementDTO.SummaryResponse(movementSummaries);
       return new ApiResponse<MovementDTO.SummaryResponse>(data);
     }

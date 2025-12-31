@@ -22,11 +22,11 @@ namespace Application.Services
             this._refreshTokenRepository = refreshTokenRepository;
             this._config = _config;
         }
-        public async Task<ApiResponse<LoginDTO.ResponseWithRefreshToken>> LoginAsync(LoginDTO.Request requestPayload, CancellationToken ct)
+        public async Task<ApiResponse<LoginDTO.ResponseWithRefreshToken>?> LoginAsync(LoginDTO.Request requestPayload, CancellationToken ct)
         {
-            await DoCheckValidation(requestPayload, ct);
+            await DoCheckValidationAsync(requestPayload, ct);
 
-            var user = await _userRepository.GetByUsername(requestPayload.Username, ct);
+            var user = await _userRepository.GetByUsernameAsync(requestPayload.Username, ct);
             if (user is null)
             {
                 throw new UnauthorizedException("Invalid username");
@@ -57,7 +57,7 @@ namespace Application.Services
                 ExpiresAt = DateTime.UtcNow.AddDays(1),
             };
 
-            _refreshTokenRepository.CreateOne(refreshToken, ct);
+            _refreshTokenRepository.CreateOneAsync(refreshToken, ct);
 
             var data = new LoginDTO.ResponseWithRefreshToken(
                 new LoginDTO.UserDTO(user.Id, user.Username, user.Email),
@@ -69,13 +69,12 @@ namespace Application.Services
             return new ApiResponse<LoginDTO.ResponseWithRefreshToken>(data, "Login successfully!");
         }
 
-        public async Task<ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>> RefreshAccessToken(string token_hash, CancellationToken ct)
+        public async Task<ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>?> RefreshAccessTokenAsync(string token_hash, CancellationToken ct)
         {
-            var refreshtoken = await _refreshTokenRepository.GetByTokenHash(token_hash, ct);
+            var refreshtoken = await _refreshTokenRepository.GetByTokenHashAsync(token_hash, ct);
             if (refreshtoken is null || refreshtoken.ExpiresAt <= DateTime.UtcNow)
             {
                 throw new UnauthorizedException();
-                // return new ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>.FailedBuilder("Unauthorized", ApiErrorCode.Unauthorized, StatusCodes.Status401Unauthorized);
             }
 
             var newRaw = Hash.GenerateRefreshToken();
@@ -84,7 +83,7 @@ namespace Application.Services
             refreshtoken.RevokedAt = DateTime.UtcNow;
             refreshtoken.ReplacedByTokenHash = newHash;
 
-            _refreshTokenRepository.UpdateOne(refreshtoken, ct);
+            _refreshTokenRepository.UpdateOneAsync(refreshtoken, ct);
 
 
             var newTokenEntity = new RefreshToken
@@ -95,7 +94,7 @@ namespace Application.Services
                 ExpiresAt = DateTime.UtcNow.AddDays(1),
             };
 
-            _refreshTokenRepository.CreateOne(newTokenEntity, ct);
+            _refreshTokenRepository.CreateOneAsync(newTokenEntity, ct);
 
             var newJwt = Hash.GenerateJWT(_config);
 

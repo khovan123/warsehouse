@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Repositories;
 using Infrastructure.DB;
 using MongoDB.Driver;
@@ -23,9 +22,9 @@ namespace Infrastructure.Repositories
             )
         );
 
-        public void CreateOne(RefreshToken refreshToken, CancellationToken ct) => _refreshToken.InsertOne(refreshToken, cancellationToken: ct);
+        public void CreateOneAsync(RefreshToken refreshToken, CancellationToken ct) => _refreshToken.InsertOne(refreshToken, cancellationToken: ct);
 
-        public async Task<RefreshToken> GetByTokenHash(string token_hash, CancellationToken ct)
+        public async Task<RefreshToken?> GetByTokenHashAsync(string token_hash, CancellationToken ct)
         {
             var exp = Builders<RefreshToken>.Filter;
 
@@ -36,7 +35,7 @@ namespace Infrastructure.Repositories
             return await _refreshToken.Find(filter).FirstOrDefaultAsync(ct);
         }
 
-        public void UpdateOne(RefreshToken refreshToken, CancellationToken ct)
+        public void UpdateOneAsync(RefreshToken refreshToken, CancellationToken ct)
         {
             var exp = Builders<RefreshToken>.Filter;
 

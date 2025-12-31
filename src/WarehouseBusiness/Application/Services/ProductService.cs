@@ -15,9 +15,9 @@ namespace Application.Services
         {
             _productRepository = productRepository;
         }
-        public async Task<ApiResponse<ProductDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<ProductDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var products = await _productRepository.GetAll(ct);
+            var products = await _productRepository.GetAllAsync(ct);
 
             var data = new ProductDTO.Response(products);
 

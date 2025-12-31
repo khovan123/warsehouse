@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface ICategoryService
     {
-        Task<ApiResponse<CategoryDTO.Response>> GetAll(CancellationToken ct);
+        Task<ApiResponse<CategoryDTO.Response>?> GetAllAsync(CancellationToken ct);
     }
 }

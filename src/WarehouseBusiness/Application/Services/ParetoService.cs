@@ -3,6 +3,7 @@ using Application.DTOs;
 using Application.Helper;
 using Application.Interfaces;
 using Contract.Responses;
+using Domain.Entities.Weak;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Http;
 
@@ -17,9 +18,9 @@ namespace Application.Services
             _paretoRepository = paretoRepository;
         }
 
-        public async Task<ApiResponse<ParetoDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<ParetoDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var paretoReports = await _paretoRepository.GetAllWithDetails(ct);
+            var paretoReports = await _paretoRepository.GetAllAsync(ct);
 
             var classifications = GetClassificationsFromParetoReports(paretoReports);
 
@@ -33,7 +34,7 @@ namespace Application.Services
         }
 
         private static List<ParetoDTO.Classification> GetClassificationsFromParetoReports(
-            List<Domain.Entities.Weak.ParetoReport> paretoReports)
+            List<ParetoDetails> paretoReports)
         {
             var totalCount = paretoReports.Count;
             var totalValue = paretoReports.Sum(p => p.Value);

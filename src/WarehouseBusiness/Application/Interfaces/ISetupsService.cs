@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface ISetupsService
     {
-        Task<ApiResponse<SetupsDTO.Response>> GetAll(CancellationToken ct);
+        Task<ApiResponse<SetupsDTO.Response>?> GetAllAsync(CancellationToken ct);
     }
 }

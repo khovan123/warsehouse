@@ -6,18 +6,18 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("/api/v1/bins")]
-    public class BinController: ControllerBase
+    public class BinController : ControllerBase
     {
         private readonly IBinService _binService;
-        
+
         public BinController(IBinService binService)
         {
             _binService = binService;
         }
         [HttpGet("")]
-        public async Task<IActionResult> GetAllBins(CancellationToken ct)
+        public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            return ApiBuilder.Result(await _binService.GetAll(ct));
+            return ApiBuilder.Result(await _binService.GetAllAsync(ct));
         }
     }
 }

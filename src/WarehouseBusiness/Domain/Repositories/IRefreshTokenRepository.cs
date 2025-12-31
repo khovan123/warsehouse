@@ -4,10 +4,10 @@ namespace Domain.Repositories
 {
     public interface IRefreshTokenRepository
     {
-        Task<RefreshToken> GetByTokenHash(string token_hash, CancellationToken ct);
+        Task<RefreshToken?> GetByTokenHashAsync(string token_hash, CancellationToken ct);
 
-        void CreateOne(RefreshToken refreshToken, CancellationToken ct);
+        void CreateOneAsync(RefreshToken refreshToken, CancellationToken ct);
 
-        void UpdateOne(RefreshToken refreshToken, CancellationToken ct);
+        void UpdateOneAsync(RefreshToken refreshToken, CancellationToken ct);
     }
 }

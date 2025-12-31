@@ -14,9 +14,9 @@ namespace Application.Services
       _reservationRepository = reservationRepository;
     }
 
-    public async Task<ApiResponse<ReservationDTO.Response>> GetAll(CancellationToken ct)
+    public async Task<ApiResponse<ReservationDTO.Response>?> GetAllAsync(CancellationToken ct)
     {
-      var reservations = await _reservationRepository.GetAll(ct);
+      var reservations = await _reservationRepository.GetAllAsync(ct);
       var data = new ReservationDTO.Response(reservations);
       return new ApiResponse<ReservationDTO.Response>(data);
     }

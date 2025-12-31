@@ -4,6 +4,6 @@ namespace Domain.Repositories
 {
     public interface IUserRepository
     {
-        Task<User?> GetByUsername (string username, CancellationToken ct = default);
+        Task<User?> GetByUsernameAsync(string username, CancellationToken ct = default);
     }
 }

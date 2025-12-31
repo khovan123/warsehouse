@@ -2,32 +2,19 @@
 
 namespace Application.Dtos
 {
-    public class LoginDTO
+    public sealed record LoginDTO
     {
-        public class Request : IFlagValidatableRequest
+        public sealed record Request(string Username = default!, string Password = default!) : IFlagValidatableRequest;
+
+        public sealed record Response(UserDTO UserDTO = default!, string Token = default!);
+
+        public sealed record ResponseWithRefreshToken(UserDTO UserDTO = default!, string Token = default!, string RefreshToken = default!)
         {
-            public string Username { get; set; } = default!;
-            public string Password { get; set; } = default!;
+            public Response Response { get; set; } = new Response(UserDTO, Token);
+            public string RefreshToken { get; set; } = RefreshToken;
         }
 
-        public class Response(UserDTO userDTO = default!, string token = default!)
-        {
-            public UserDTO User { get; set; } = userDTO;
-            public string Token { get; set; } = token;
-        }
-
-        public class ResponseWithRefreshToken(UserDTO userDTO = default!, string token = default!, string refreshToken = default!) : Response
-        {
-            public Response Response { get; set; } = new Response(userDTO, token);
-            public string RefreshToken { get; set; } = refreshToken;
-        }
-
-        public class UserDTO(string id = default!, string username = default!, string email = default!)
-        {
-            public string Id { get; set; } = id;
-            public string Username { get; set; } = username;
-            public string Email { get; set; } = email;
-        }
+        public sealed record UserDTO(string Id = default!, string Username = default!, string Email = default!);
 
     }
 }

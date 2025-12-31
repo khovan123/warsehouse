@@ -1,13 +1,9 @@
-﻿using Domain.Entities;
-using Domain.Entities.Weak;
+﻿using Domain.Entities.Weak;
 
 namespace Application.Dtos
 {
-    public record BinDTO
+    public sealed record BinDTO
     {
-        public record Response(List<BinDetails>? Bins = default!)
-        {
-            public List<BinDetails>? Bins { get; set; } = Bins;
-        }
+        public sealed record Response(List<BinDetails>? Bins = default!);
     }
 }

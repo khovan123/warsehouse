@@ -15,9 +15,9 @@ namespace API.Controllers
             _warehouseService = warehouseService;
         }
         [HttpGet("")]
-        public async Task<IActionResult> GetAllWarehouses(CancellationToken ct)
+        public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            return ApiBuilder.Result(await _warehouseService.GetAll(ct));
-        }       
+            return ApiBuilder.Result(await _warehouseService.GetAllAsync(ct));
+        }
     }
 }

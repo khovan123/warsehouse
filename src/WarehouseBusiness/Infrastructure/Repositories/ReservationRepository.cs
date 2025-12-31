@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
     {
       _reservation = context.Reservations;
     }
-    public async Task<List<ReservationDetails>> GetAll(CancellationToken ct)
+    public async Task<List<ReservationDetails>> GetAllAsync(CancellationToken ct)
     {
       var pipeline = new MongoAggregationPipeline<Reservation>(_reservation)
         .Match(r => true)
@@ -33,7 +33,7 @@ namespace Infrastructure.Repositories
       return await pipeline.ToListAsync(ct);
     }
 
-    public async Task<ReservationDetails> GetById(string id, CancellationToken ct)
+    public async Task<ReservationDetails> GetByIdAsync(string id, CancellationToken ct)
     {
       var pipeline = new MongoAggregationPipeline<Reservation>(_reservation)
        .Match(r => string.Equals(r.Id, id, StringComparison.OrdinalIgnoreCase))

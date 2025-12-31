@@ -15,7 +15,7 @@ namespace Application.Services
       _sp = sp;
     }
 
-    public async Task RunValidation<TRequest>(TRequest request, CancellationToken ct)
+    public async Task RunValidationAsync<TRequest>(TRequest request, CancellationToken ct)
     {
       if (request is null) return;
 
