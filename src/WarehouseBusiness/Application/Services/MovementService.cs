@@ -35,5 +35,12 @@ namespace Application.Services
       var data = new MovementDTO.SummaryResponse(movementSummaries);
       return new ApiResponse<MovementDTO.SummaryResponse>(data);
     }
+
+    public async Task<ApiResponse<MovementDTO.MaterialTransactionResponse>> GetMaterialTransactionAsync(InventoryType? type, string? warehouseId, CancellationToken ct)
+    {
+      var materialReports = await _movementRepository.GetMaterialTransactionAsync(type, warehouseId, ct);
+      var data = new MovementDTO.MaterialTransactionResponse(materialReports);
+      return new ApiResponse<MovementDTO.MaterialTransactionResponse>(data);
+    }
   }
 }

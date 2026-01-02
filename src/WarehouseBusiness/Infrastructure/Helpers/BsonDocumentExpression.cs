@@ -61,11 +61,27 @@ namespace Infrastructure.Helpers
         public static BsonDocument Eq(BsonValue ref__value_document, BsonValue value)
             => new("$eq", new BsonArray { ref__value_document, value });
 
+        public static BsonDocument Let(string name, BsonValue value)
+            => new() { { name, value } };
+
+        public static BsonArray LookupMatchById(string varName)
+            => new BsonArray
+            {
+                new BsonDocument("$match", new BsonDocument("$expr",
+                    new BsonDocument("$eq", new BsonArray
+                    {
+                        "$_id",
+                        $"$${varName}"
+                    })
+                ))
+            };
+
+
         public static BsonDocument? MatchInArrayField<TValue>(
-            TValue? value,
-            string arrayField,
-            string fieldName,
-            int arrayIndex = 0) where TValue : struct, Enum
+                    TValue? value,
+                    string arrayField,
+                    string fieldName,
+                    int arrayIndex = 0) where TValue : struct, Enum
         {
             if (!value.HasValue)
                 return null;

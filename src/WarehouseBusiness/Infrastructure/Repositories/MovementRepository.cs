@@ -198,5 +198,88 @@ namespace Infrastructure.Repositories
 
       return await result.ToListAsync(ct);
     }
+
+    public async Task<List<MaterialTransaction>> GetMaterialTransactionAsync(InventoryType? type, string? warehouseId, CancellationToken ct)
+    {
+      static BsonDocument BuildProjection()
+      {
+        return new BsonDocument
+        {
+          { "document", "$docNo" },
+          { "movementDate", 1 },
+          { "type", BsonDocumentExpression.GetField("type", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}")) },
+          { "productEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}") },
+          { "fromWarehouse", BsonDocumentExpression.GetField("code", BsonDocumentExpression.ArrayElemAt("tmp_fromWarehouses")) },
+          { "binEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Bins}") },
+          { "qty", "$lines.qty" },
+          { "cost", BsonDocumentExpression.GetField("cost", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}")) },
+          { "uom", BsonDocumentExpression.GetField("baseUom", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}")) },
+          { "businessPartner", BsonDocumentExpression.GetField("name", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.BusinessPartners}")) }
+        };
+      }
+
+      BsonDocument? BuildTypeMatchFilter(InventoryType? filterType)
+      {
+        return BsonDocumentExpression.MatchInArrayField(
+          filterType,
+          $"tmp_{MongoCollections.Inventory}",
+          "type"
+        );
+      }
+
+      var pipeline = new MongoAggregationPipeline<Movement>(_movement);
+
+      if (!string.IsNullOrEmpty(warehouseId))
+      {
+        pipeline = pipeline.Match(m => m.FromWarehouse == warehouseId);
+      }
+      else
+      {
+        pipeline = pipeline.Match(m => true);
+      }
+
+      pipeline = pipeline
+        .Unwind("lines", "lineIndex", false)
+        .Lookup(MongoCollections.Products, "lines.product", $"tmp_{MongoCollections.Products}")
+        .Lookup(MongoCollections.Warehouses, "fromWarehouse", "tmp_fromWarehouses")
+        .Lookup(MongoCollections.Bins, "lines.fromBin", $"tmp_{MongoCollections.Bins}")
+        .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId");
+
+      var inventoryTypeMatchFilter = BuildTypeMatchFilter(type);
+      if (inventoryTypeMatchFilter != null)
+      {
+        pipeline = pipeline.Match(inventoryTypeMatchFilter);
+      }
+
+      var result = pipeline
+        .LookupWithPipeline(
+          MongoCollections.BusinessPartners,
+          BsonDocumentExpression.Let(
+            "bpId",
+            BsonDocumentExpression.GetField(
+              "bpartnerId",
+              BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}")
+            )
+          ),
+          BsonDocumentExpression.LookupMatchById("bpId"),
+          $"tmp_{MongoCollections.BusinessPartners}"
+        )
+        .Project(BuildProjection())
+        .Sort(new BsonDocument("movementDate", 1))
+        .SetWindowFields(
+          new BsonDocument
+          {
+            { "sortBy", new BsonDocument("movementDate", 1) },
+            { "output", new BsonDocument
+              {
+                { "line", new BsonDocument("$documentNumber", new BsonDocument()) }
+              }
+            }
+          }
+        )
+        .As<MaterialTransaction>();
+
+      return await result.ToListAsync(ct);
+    }
   }
 }

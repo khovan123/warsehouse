@@ -43,6 +43,27 @@ namespace Infrastructure.Helpers
       return this;
     }
 
+    public MongoAggregationPipeline<TCollection> LookupWithPipeline(
+      string fromCollection,
+      BsonDocument letVariables,
+      BsonArray pipeline,
+      string asAlias
+    )
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(
+        new BsonDocument("$lookup", new BsonDocument
+        {
+          { "from", fromCollection },
+          { "let", letVariables },
+          { "pipeline", pipeline },
+          { "as", asAlias }
+        })
+      );
+
+      return this;
+    }
+
+
     public MongoAggregationPipeline<TCollection> Unwind(string path, bool preserveNullAndEmptyArrays = true)
     {
 
@@ -54,6 +75,29 @@ namespace Infrastructure.Helpers
           })
       );
       return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Unwind(
+        string path,
+        string? includeArrayIndex,
+        bool preserveNullAndEmptyArrays = true)
+    {
+        var unwind = new BsonDocument
+        {
+            { "path", $"${path.Replace("$", "")}" },
+            { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
+        };
+
+        if (!string.IsNullOrWhiteSpace(includeArrayIndex))
+        {
+            unwind.Add("includeArrayIndex", includeArrayIndex);
+        }
+
+        _aggregate = _aggregate.AppendStage<TCollection>(
+            new BsonDocument("$unwind", unwind)
+        );
+
+        return this;
     }
 
     public MongoAggregationPipeline<TCollection> LookupAndUnwind(string fromCollection, string localField, string asAlias, string foreignField = "_id", bool preserveNullAndEmptyArrays = true)
@@ -102,11 +146,20 @@ namespace Infrastructure.Helpers
       return this;
     }
 
+
     public MongoAggregationPipeline<TCollection> Optional(BsonDocument? bsons, bool condition = true)
     {
       if (condition && bsons is not null)
         _aggregate = _aggregate.AppendStage<TCollection>(bsons);
       return this;
+     }
+
+    public MongoAggregationPipeline<TCollection> SetWindowFields(BsonDocument spec)
+    {
+        _aggregate = _aggregate.AppendStage<TCollection>(
+            new BsonDocument("$setWindowFields", spec)
+        );
+        return this;
     }
 
     public IAggregateFluent<TResult> As<TResult>() => _aggregate.As<TResult>();
