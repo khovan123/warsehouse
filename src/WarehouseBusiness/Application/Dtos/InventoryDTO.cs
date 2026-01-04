@@ -1,5 +1,4 @@
-﻿using Domain.Entities;
-using Domain.Entities.Weak;
+﻿using Domain.Entities.Weak;
 
 namespace Application.Dtos
 {

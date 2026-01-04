@@ -21,10 +21,11 @@ namespace Domain.Entities
         [BsonElement("overBook")]
         public bool IsOverBook { get; set; } = default!;
         [BsonElement("availability")]
-        public string Availability {  get; set; } = default!;
+        public string Availability { get; set; } = default!;
         [BsonElement("categoryId")]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string CategoryId { get; set; } = default!;
-
+        [BsonElement("embedding")]
+        public float[] Embedding { get; set; } = default!;
     }
 }

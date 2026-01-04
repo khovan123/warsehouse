@@ -30,22 +30,12 @@ namespace Application.Services
             if (user is null)
             {
                 throw new UnauthorizedException("Invalid username");
-                // return new ApiResponse<LoginDTO.ResponseWithRefreshToken>.FailedBuilder(
-                //     "Invalid username",
-                //     ApiErrorCode.AuthenticationFailed,
-                //     StatusCodes.Status401Unauthorized
-                //     );
             }
 
 
             if (!BCrypt.Net.BCrypt.Verify(requestPayload.Password, user.Password))
             {
                 throw new UnauthorizedException("Invalid password");
-                // return new ApiResponse<LoginDTO.ResponseWithRefreshToken>.FailedBuilder(
-                //     "Invalid password",
-                //     ApiErrorCode.AuthenticationFailed,
-                //     StatusCodes.Status401Unauthorized
-                //     );
             }
             var token = Hash.GenerateJWT(_config);
             var rawRefreshToken = Hash.GenerateRefreshToken();
@@ -57,7 +47,7 @@ namespace Application.Services
                 ExpiresAt = DateTime.UtcNow.AddDays(1),
             };
 
-            _refreshTokenRepository.CreateOneAsync(refreshToken, ct);
+            await _refreshTokenRepository.CreateOneAsync(refreshToken, ct);
 
             var data = new LoginDTO.ResponseWithRefreshToken(
                 new LoginDTO.UserDTO(user.Id, user.Username, user.Email),
@@ -83,7 +73,7 @@ namespace Application.Services
             refreshtoken.RevokedAt = DateTime.UtcNow;
             refreshtoken.ReplacedByTokenHash = newHash;
 
-            _refreshTokenRepository.UpdateOneAsync(refreshtoken, ct);
+            await _refreshTokenRepository.UpdateOneAsync(refreshtoken, ct);
 
 
             var newTokenEntity = new RefreshToken
@@ -94,7 +84,7 @@ namespace Application.Services
                 ExpiresAt = DateTime.UtcNow.AddDays(1),
             };
 
-            _refreshTokenRepository.CreateOneAsync(newTokenEntity, ct);
+            await _refreshTokenRepository.CreateOneAsync(newTokenEntity, ct);
 
             var newJwt = Hash.GenerateJWT(_config);
 
