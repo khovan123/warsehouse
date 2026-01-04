@@ -18,10 +18,6 @@ namespace Domain.Entities.Weak
         [JsonIgnore]
         public Bin? BinEntity { get; set; }
 
-        [BsonElement("category")]
-        [JsonIgnore]
-        public Category? CategoryEntity { get; set; }
-
         [BsonIgnore]
         [JsonIgnore]
         public List<Product>? Products { get; set; }
@@ -49,9 +45,5 @@ namespace Domain.Entities.Weak
         [BsonIgnore]
         [JsonPropertyName("bin")]
         public string Bin => BinEntity?.Code ?? "Unknown Bin";
-
-        [BsonIgnore]
-        [JsonPropertyName("category")]
-        public string Category => CategoryEntity?.Name ?? "Unknown Category";
     }
 }

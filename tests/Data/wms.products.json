@@ -1,0 +1,202 @@
+[
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6101"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 1",
+    "sku": "SKU-001",
+    "baseUom": "EA",
+    "description": "Test product 1",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600a"
+    },
+    "embedding": [
+      0.01,
+      0.02,
+      0.03
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6102"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 2",
+    "sku": "SKU-002",
+    "baseUom": "EA",
+    "description": "Test product 2",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600b"
+    },
+    "embedding": [
+      0.02,
+      0.04,
+      0.06
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6103"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 3",
+    "sku": "SKU-003",
+    "baseUom": "EA",
+    "description": "Test product 3",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600c"
+    },
+    "embedding": [
+      0.03,
+      0.06,
+      0.09
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6104"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 4",
+    "sku": "SKU-004",
+    "baseUom": "EA",
+    "description": "Test product 4",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600a"
+    },
+    "embedding": [
+      0.04,
+      0.08,
+      0.12
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6105"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 5",
+    "sku": "SKU-005",
+    "baseUom": "EA",
+    "description": "Test product 5",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600b"
+    },
+    "embedding": [
+      0.05,
+      0.1,
+      0.15
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6106"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 6",
+    "sku": "SKU-006",
+    "baseUom": "EA",
+    "description": "Test product 6",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600c"
+    },
+    "embedding": [
+      0.06,
+      0.12,
+      0.18
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6107"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 7",
+    "sku": "SKU-007",
+    "baseUom": "EA",
+    "description": "Test product 7",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600a"
+    },
+    "embedding": [
+      0.07,
+      0.14,
+      0.21
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6108"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 8",
+    "sku": "SKU-008",
+    "baseUom": "EA",
+    "description": "Test product 8",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600b"
+    },
+    "embedding": [
+      0.08,
+      0.16,
+      0.24
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6109"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 9",
+    "sku": "SKU-009",
+    "baseUom": "EA",
+    "description": "Test product 9",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600c"
+    },
+    "embedding": [
+      0.09,
+      0.18,
+      0.27
+    ]
+  },
+  {
+    "_id": {
+      "$oid": "692efc6750984629c7fe6110"
+    },
+    "accountId": "4046664115021",
+    "label": "Product 10",
+    "sku": "SKU-010",
+    "baseUom": "EA",
+    "description": "Test product 10",
+    "overBook": false,
+    "availability": "Available",
+    "categoryId": {
+      "$oid": "692efc6750984629c7fe600a"
+    },
+    "embedding": [
+      0.1,
+      0.2,
+      0.3
+    ]
+  }
+]

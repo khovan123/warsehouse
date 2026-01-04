@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using Domain.Entities.Weak;
 using Domain.Repositories;
 using Infrastructure.Constants;
@@ -70,6 +71,18 @@ namespace Infrastructure.Repositories
                 .As<InventoryDetails>();
 
             return await pipeline.ToListAsync(ct);
+        }
+
+
+        public async Task InsertAsync(Inventory inv, CancellationToken ct)
+        {
+            await _inventory.InsertOneAsync(inv, cancellationToken: ct);
+        }
+
+        public async Task<Inventory?> GetRawByIdAsync(string id, CancellationToken ct)
+        {
+            var filter = Builders<Inventory>.Filter.Eq(x => x.Id, id);
+            return await _inventory.Find(filter).FirstOrDefaultAsync(ct);
         }
     }
 }

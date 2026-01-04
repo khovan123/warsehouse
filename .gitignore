@@ -430,3 +430,5 @@ WARP.md
 appsettings.Development.json
 appsettings.Production.json
 .nuget/
+
+*.zip

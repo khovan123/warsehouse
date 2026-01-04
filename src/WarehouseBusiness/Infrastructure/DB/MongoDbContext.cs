@@ -31,5 +31,14 @@ namespace Infrastructure.DB
         public IMongoCollection<GoodTransaction> GoodTransactions => _database.GetCollection<GoodTransaction>(MongoCollections.GoodTransactions);
         public IMongoCollection<Reservation> Reservations => _database.GetCollection<Reservation>(MongoCollections.Reservations);
         public IMongoCollection<Pareto> Paretos => _database.GetCollection<Pareto>(MongoCollections.Paretos);
+        public IMongoCollection<InventoryLedger> InventoryLedgers => _database.GetCollection<InventoryLedger>("inventory_ledger");
+        public IMongoCollection<CostState> CostStates => _database.GetCollection<CostState>("cost_state");
+        public IMongoCollection<ValuationEntry> Valuations => _database.GetCollection<ValuationEntry>("valuation_entry");
+        public IMongoCollection<AccountingJournal> Journals => _database.GetCollection<AccountingJournal>("accounting_journal");
+        public IMongoCollection<OutboxEvent> Outbox => _database.GetCollection<OutboxEvent>("outbox");
+        public IMongoCollection<TransferCostLink> TransferLinks => _database.GetCollection<TransferCostLink>("transfer_cost_link");
+        public IMongoCollection<Counter> Counters => _database.GetCollection<Counter>("counters");
+        public IMongoCollection<CostingCheckpoint> CostingCheckpoints => _database.GetCollection<CostingCheckpoint>("costing_checkpoint");
+
     }
 }
