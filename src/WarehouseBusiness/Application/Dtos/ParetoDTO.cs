@@ -1,6 +1,6 @@
 using Domain.Entities.Weak;
 
-namespace Application.DTOs
+namespace Application.Dtos
 {
     public sealed record ParetoDTO
     {

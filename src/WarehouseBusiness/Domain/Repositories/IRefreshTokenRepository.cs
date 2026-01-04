@@ -6,8 +6,8 @@ namespace Domain.Repositories
     {
         Task<RefreshToken?> GetByTokenHashAsync(string token_hash, CancellationToken ct);
 
-        void CreateOneAsync(RefreshToken refreshToken, CancellationToken ct);
+        Task CreateOneAsync(RefreshToken refreshToken, CancellationToken ct);
 
-        void UpdateOneAsync(RefreshToken refreshToken, CancellationToken ct);
+        Task UpdateOneAsync(RefreshToken refreshToken, CancellationToken ct);
     }
 }

@@ -12,17 +12,21 @@ namespace Infrastructure.Repositories
         public RefreshTokenRepository(MongoDbContext context)
         {
             _refreshToken = context.RefreshTokens;
-            CreateTTLIndexForAtomicDelete();
+            _ = CreateTTLIndexForAtomicDelete();
         }
 
-        private void CreateTTLIndexForAtomicDelete() => _refreshToken.Indexes.CreateOneAsync(
+        private async Task<string> CreateTTLIndexForAtomicDelete() => await _refreshToken.Indexes.CreateOneAsync(
             new CreateIndexModel<RefreshToken>(
                 Builders<RefreshToken>.IndexKeys.Ascending(x => x.ExpiresAt),
                 new CreateIndexOptions { ExpireAfter = TimeSpan.Zero }
             )
         );
 
-        public void CreateOneAsync(RefreshToken refreshToken, CancellationToken ct) => _refreshToken.InsertOne(refreshToken, cancellationToken: ct);
+        public Task CreateOneAsync(RefreshToken refreshToken, CancellationToken ct)
+        {
+            _refreshToken.InsertOne(refreshToken, cancellationToken: ct);
+            return Task.CompletedTask;
+        }
 
         public async Task<RefreshToken?> GetByTokenHashAsync(string token_hash, CancellationToken ct)
         {
@@ -35,7 +39,7 @@ namespace Infrastructure.Repositories
             return await _refreshToken.Find(filter).FirstOrDefaultAsync(ct);
         }
 
-        public void UpdateOneAsync(RefreshToken refreshToken, CancellationToken ct)
+        public Task UpdateOneAsync(RefreshToken refreshToken, CancellationToken ct)
         {
             var exp = Builders<RefreshToken>.Filter;
 
@@ -52,6 +56,7 @@ namespace Infrastructure.Repositories
                 .Set(r => r.DeviceId, refreshToken.DeviceId);
 
             _refreshToken.UpdateOne(filter, update, cancellationToken: ct);
+            return Task.CompletedTask;
         }
     }
 }
