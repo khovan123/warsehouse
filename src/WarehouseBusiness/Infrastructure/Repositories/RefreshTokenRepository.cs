@@ -12,10 +12,10 @@ namespace Infrastructure.Repositories
         public RefreshTokenRepository(MongoDbContext context)
         {
             _refreshToken = context.RefreshTokens;
-            CreateTTLIndexForAtomicDelete();
+            _ = CreateTTLIndexForAtomicDelete();
         }
 
-        private Task<string> CreateTTLIndexForAtomicDelete() => _refreshToken.Indexes.CreateOneAsync(
+        private async Task<string> CreateTTLIndexForAtomicDelete() => await _refreshToken.Indexes.CreateOneAsync(
             new CreateIndexModel<RefreshToken>(
                 Builders<RefreshToken>.IndexKeys.Ascending(x => x.ExpiresAt),
                 new CreateIndexOptions { ExpireAfter = TimeSpan.Zero }
