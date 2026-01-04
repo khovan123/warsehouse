@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Application.DTOs;
+﻿using Application.Dtos;
 using Application.Helper;
 using Application.Interfaces;
 using Contract.Responses;
