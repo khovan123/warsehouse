@@ -3,6 +3,7 @@ import { all } from 'redux-saga/effects';
 import { authSaga } from './auth/auth.saga';
 import { goodTransactionSaga } from './good-transaction/good-transaction.saga';
 import { inventorySaga } from './inventory/inventory.saga';
+import { materialTransactionSaga } from './material-transaction/material.saga';
 import { movementSaga } from './movement/movement.saga';
 import { paretoSaga } from './pareto/pareto.saga';
 import { productSaga } from './product/product.saga';
@@ -21,6 +22,7 @@ export default function* rootSaga() {
     setupsWarehouseSaga(),
     inventorySaga(),
     movementSaga(),
+    materialTransactionSaga(),
     goodTransactionSaga(),
     reservationSaga(),
   ]);
