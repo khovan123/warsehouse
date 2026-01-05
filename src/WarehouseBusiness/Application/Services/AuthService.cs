@@ -1,12 +1,13 @@
 ﻿using Application.Dtos;
 using Application.Exceptions;
 using Application.Helper;
+using Application.Helper.Options;
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Application.Services
 {
@@ -14,13 +15,13 @@ namespace Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly IConfiguration _config;
+        private readonly JwtOptions _jwt;
 
-        public AuthService(IUserRepository _userRepository, IRefreshTokenRepository refreshTokenRepository, IConfiguration _config, IValidationRunner validation) : base(validation)
+        public AuthService(IUserRepository _userRepository, IRefreshTokenRepository _refreshTokenRepository, IOptions<JwtOptions> jwtOptions, IValidationRunner validation) : base(validation)
         {
             this._userRepository = _userRepository;
-            this._refreshTokenRepository = refreshTokenRepository;
-            this._config = _config;
+            this._refreshTokenRepository = _refreshTokenRepository;
+            _jwt = jwtOptions.Value;
         }
         public async Task<ApiResponse<LoginDTO.ResponseWithRefreshToken>?> LoginAsync(LoginDTO.Request requestPayload, CancellationToken ct)
         {
@@ -37,7 +38,7 @@ namespace Application.Services
             {
                 throw new UnauthorizedException("Invalid password");
             }
-            var token = Hash.GenerateJWT(_config);
+            var token = Hash.GenerateJWT(_jwt, user.Id!, user.Username);
             var rawRefreshToken = Hash.GenerateRefreshToken();
             var refreshToken = new RefreshToken
             {
@@ -61,10 +62,10 @@ namespace Application.Services
 
         public async Task<ApiResponse<RefreshTokenDTO.ResponseWithRefreshToken>?> RefreshAccessTokenAsync(string token_hash, CancellationToken ct)
         {
-            var refreshtoken = await _refreshTokenRepository.GetByTokenHashAsync(token_hash, ct);
-            if (refreshtoken is null || refreshtoken.ExpiresAt <= DateTime.UtcNow)
+            var refreshtoken = await _refreshTokenRepository.GetByTokenHashAsync(token_hash, ct) ?? throw new InvalidRefreshTokenException();
+            if (refreshtoken.ExpiresAt <= DateTime.UtcNow)
             {
-                throw new UnauthorizedException();
+                throw new InvalidRefreshTokenException();
             }
 
             var newRaw = Hash.GenerateRefreshToken();
@@ -86,7 +87,7 @@ namespace Application.Services
 
             await _refreshTokenRepository.CreateOneAsync(newTokenEntity, ct);
 
-            var newJwt = Hash.GenerateJWT(_config);
+            var newJwt = Hash.GenerateJWT(_jwt, refreshtoken.UserId);
 
             var data = new RefreshTokenDTO.ResponseWithRefreshToken
             {

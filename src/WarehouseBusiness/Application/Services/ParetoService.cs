@@ -1,4 +1,5 @@
 ﻿using Application.Dtos;
+using Application.Exceptions;
 using Application.Helper;
 using Application.Interfaces;
 using Contract.Responses;
@@ -19,7 +20,7 @@ namespace Application.Services
 
         public async Task<ApiResponse<ParetoDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var paretoReports = await _paretoRepository.GetAllAsync(ct);
+            var paretoReports = await _paretoRepository.GetAllAsync(ct) ?? throw new NotFoundException();
 
             var classifications = GetClassificationsFromParetoReports(paretoReports);
 
