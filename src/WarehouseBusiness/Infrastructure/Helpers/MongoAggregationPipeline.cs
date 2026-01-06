@@ -63,41 +63,27 @@ namespace Infrastructure.Helpers
       return this;
     }
 
-
-    public MongoAggregationPipeline<TCollection> Unwind(string path, bool preserveNullAndEmptyArrays = true)
+    public MongoAggregationPipeline<TCollection> Unwind(
+      string path,
+      bool preserveNullAndEmptyArrays = true,
+      string? includeArrayIndex = null)
     {
+      var unwind = new BsonDocument
+      {
+        { "path", $"${path.Replace("$", "")}" },
+        { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
+      };
+
+      if (!string.IsNullOrWhiteSpace(includeArrayIndex))
+      {
+        unwind.Add("includeArrayIndex", includeArrayIndex);
+      }
 
       _aggregate = _aggregate.AppendStage<TCollection>(
-          new BsonDocument("$unwind", new BsonDocument
-          {
-            { "path", $"${path.Replace("$","")}" },
-            { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
-          })
+        new BsonDocument("$unwind", unwind)
       );
+
       return this;
-    }
-
-    public MongoAggregationPipeline<TCollection> Unwind(
-        string path,
-        string? includeArrayIndex,
-        bool preserveNullAndEmptyArrays = true)
-    {
-        var unwind = new BsonDocument
-        {
-            { "path", $"${path.Replace("$", "")}" },
-            { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
-        };
-
-        if (!string.IsNullOrWhiteSpace(includeArrayIndex))
-        {
-            unwind.Add("includeArrayIndex", includeArrayIndex);
-        }
-
-        _aggregate = _aggregate.AppendStage<TCollection>(
-            new BsonDocument("$unwind", unwind)
-        );
-
-        return this;
     }
 
     public MongoAggregationPipeline<TCollection> LookupAndUnwind(string fromCollection, string localField, string asAlias, string foreignField = "_id", bool preserveNullAndEmptyArrays = true)

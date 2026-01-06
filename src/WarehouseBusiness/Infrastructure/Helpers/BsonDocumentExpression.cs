@@ -89,10 +89,7 @@ namespace Infrastructure.Helpers
             var enumString = value.Value.ToString();
             var targetField = GetField(fieldName, ArrayElemAt(arrayField, arrayIndex));
 
-            return new BsonDocument
-            {
-                { "$expr", Eq(targetField, enumString) }
-            };
+            return Match(Expr(Eq(targetField, enumString)));
         }
 
         public static BsonDocument? MatchEnumField<TEnum>(
@@ -109,6 +106,25 @@ namespace Infrastructure.Helpers
                 { fieldName, enumString }
             };
         }
+
+        public static BsonDocument? MatchObjectIdField(
+            string? objectIdValue,
+            string fieldName)
+        {
+            if (string.IsNullOrEmpty(objectIdValue))
+                return null;
+
+            if (!ObjectId.TryParse(objectIdValue, out var objectId))
+                return null;
+
+            return Match(new BsonDocument
+            {
+                { fieldName, new BsonObjectId(objectId) }
+            });
+        }
+
+        public static BsonDocument Match(BsonDocument matchSpec)
+            => new("$match", matchSpec);
 
         public static BsonDocument And(BsonArray array)
             => new("$and", array);

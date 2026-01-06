@@ -218,40 +218,22 @@ namespace Infrastructure.Repositories
         };
       }
 
-      BsonDocument? BuildTypeMatchFilter(InventoryType? filterType)
-      {
-        return BsonDocumentExpression.MatchInArrayField(
-          filterType,
-          $"tmp_{MongoCollections.Inventory}",
-          "type"
-        );
-      }
+      var warehouseMatchFilter = BsonDocumentExpression.MatchObjectIdField(warehouseId, "fromWarehouse");
+      var inventoryTypeMatchFilter = BsonDocumentExpression.MatchInArrayField(
+        type,
+        $"tmp_{MongoCollections.Inventory}",
+        "type"
+      );
 
-      var pipeline = new MongoAggregationPipeline<Movement>(_movement);
-
-      if (!string.IsNullOrEmpty(warehouseId))
-      {
-        pipeline = pipeline.Match(m => m.FromWarehouse == warehouseId);
-      }
-      else
-      {
-        pipeline = pipeline.Match(m => true);
-      }
-
-      pipeline = pipeline
-        .Unwind("lines", "lineIndex", false)
+      var result = new MongoAggregationPipeline<Movement>(_movement)
+        .Match(m => true)
+        .Optional(warehouseMatchFilter)
+        .Unwind("lines", false, "lineIndex")
         .Lookup(MongoCollections.Products, "lines.product", $"tmp_{MongoCollections.Products}")
         .Lookup(MongoCollections.Warehouses, "fromWarehouse", "tmp_fromWarehouses")
         .Lookup(MongoCollections.Bins, "lines.fromBin", $"tmp_{MongoCollections.Bins}")
-        .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId");
-
-      var inventoryTypeMatchFilter = BuildTypeMatchFilter(type);
-      if (inventoryTypeMatchFilter != null)
-      {
-        pipeline = pipeline.Match(inventoryTypeMatchFilter);
-      }
-
-      var result = pipeline
+        .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId")
+        .Optional(inventoryTypeMatchFilter)
         .LookupWithPipeline(
           MongoCollections.BusinessPartners,
           BsonDocumentExpression.Let(
@@ -261,7 +243,7 @@ namespace Infrastructure.Repositories
               BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}")
             )
           ),
-          BsonDocumentExpression.LookupMatchById("$$bpId", true),
+          BsonDocumentExpression.LookupMatchById("$bpId", true),
           $"tmp_{MongoCollections.BusinessPartners}"
         )
         .Project(BuildProjection())
