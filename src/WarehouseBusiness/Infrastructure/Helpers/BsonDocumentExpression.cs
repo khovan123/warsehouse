@@ -64,14 +64,14 @@ namespace Infrastructure.Helpers
         public static BsonDocument Let(string name, BsonValue value)
             => new() { { name, value } };
 
-        public static BsonArray LookupMatchById(string varName)
+        public static BsonArray LookupMatchById(string varName, bool is_variable = false)
             => new BsonArray
             {
                 new BsonDocument("$match", new BsonDocument("$expr",
                     new BsonDocument("$eq", new BsonArray
                     {
                         "$_id",
-                        $"$${varName}"
+                        $"{varName.Replace("$",(is_variable ? "$$" : "$"))}"
                     })
                 ))
             };

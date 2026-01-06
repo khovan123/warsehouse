@@ -261,7 +261,7 @@ namespace Infrastructure.Repositories
               BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}")
             )
           ),
-          BsonDocumentExpression.LookupMatchById("bpId"),
+          BsonDocumentExpression.LookupMatchById("$$bpId", true),
           $"tmp_{MongoCollections.BusinessPartners}"
         )
         .Project(BuildProjection())
