@@ -21,7 +21,7 @@ namespace Application.Services
 
       if (request is not IFlagValidatableRequest) return;
 
-      var validators = _sp.GetServices<IValidator<TRequest>>().ToList();
+      var validators = _sp.GetServices<IValidator<TRequest>>()?.ToList() ?? new List<IValidator<TRequest>>();
       if (validators.Count == 0) return;
 
       var failures = new List<ValidationFailure>();

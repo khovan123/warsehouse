@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
             _inventory = context.Inventories;
         }
 
-        public async Task<InventoryDetails> GetByIdAsync(string id, CancellationToken ct)
+        public async Task<InventoryDetails?> GetByIdAsync(string id, CancellationToken ct)
         {
             var pipeline = new MongoAggregationPipeline<Inventory>(_inventory)
                 .Match(i => string.Equals(i.Id, id, StringComparison.OrdinalIgnoreCase))
@@ -45,7 +45,7 @@ namespace Infrastructure.Repositories
             return await pipeline.FirstOrDefaultAsync(ct);
         }
 
-        public async Task<List<InventoryDetails>> GetAllAsync(CancellationToken ct)
+        public async Task<List<InventoryDetails>?> GetAllAsync(CancellationToken ct)
         {
             var pipeline = new MongoAggregationPipeline<Inventory>(_inventory)
                 .Match(i => true)

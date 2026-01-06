@@ -14,13 +14,13 @@ namespace Infrastructure.Repositories
             _warehouses = context.Warehouses;
         }
 
-        public async Task<List<Warehouse>> GetAllAsync(CancellationToken ct)
+        public async Task<List<Warehouse>?> GetAllAsync(CancellationToken ct)
         {
             var filter = Builders<Warehouse>.Filter.Eq(w => w.IsActive, true);
             return await _warehouses.Find(filter).ToListAsync(ct);
         }
 
-        public async Task<Warehouse> GetByIdAsync(string id, CancellationToken ct)
+        public async Task<Warehouse?> GetByIdAsync(string id, CancellationToken ct)
         {
             var exp = Builders<Warehouse>.Filter;
             var filter = exp.And(

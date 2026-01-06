@@ -1,3 +1,5 @@
+using Serilog.Context;
+
 namespace API.Middlewares
 {
   public sealed class CorrelationCheckMiddleware
@@ -17,7 +19,10 @@ namespace API.Middlewares
       context.Items[HeaderName] = correlationId;
       context.Response.Headers[HeaderName] = correlationId;
 
-      await _next(context);
+      using (LogContext.PushProperty("CorrelationId", correlationId))
+      {
+        await _next(context);
+      }
     }
   }
 }

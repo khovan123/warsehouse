@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories
       _movement = context.Movements;
     }
 
-    public async Task<List<MovementDetails>> GetAllAsync(CancellationToken ct)
+    public async Task<List<MovementDetails>?> GetAllAsync(CancellationToken ct)
     {
       var pipeline = new MongoAggregationPipeline<Movement>(_movement)
         .Match(m => true)
@@ -63,7 +63,7 @@ namespace Infrastructure.Repositories
       return await pipeline.ToListAsync(ct);
     }
 
-    public async Task<MovementDetails> GetByIdAsync(string id, CancellationToken ct)
+    public async Task<MovementDetails?> GetByIdAsync(string id, CancellationToken ct)
     {
       var pipeline = new MongoAggregationPipeline<Movement>(_movement)
         .Match(m => string.Equals(m.Id, id, StringComparison.OrdinalIgnoreCase))

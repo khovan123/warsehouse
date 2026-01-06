@@ -1,4 +1,7 @@
 using System.Text;
+using API.Common;
+using Application.Helper.Options;
+using Contract.Responses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -8,8 +11,16 @@ namespace API.Extensions
   {
     public static IServiceCollection AddAuthenticationByJwtBearer(this IServiceCollection services, IConfiguration configuration)
     {
-      var jwtSection = configuration.GetSection("JWT");
-      var keyBytes = Encoding.UTF8.GetBytes(jwtSection["SECRET_KEY"]!);
+
+      services.AddOptions<JwtOptions>()
+              .Bind(configuration.GetSection("JWT"))
+              .ValidateDataAnnotations()
+              .Validate(o => !string.IsNullOrWhiteSpace(o.SecretKey), "JWT:SECRET_KEY is required!")
+              .ValidateOnStart();
+
+      var jwt = configuration.GetSection("JWT").Get<JwtOptions>()
+               ?? throw new InvalidOperationException("JWT configuration section is missing");
+      var keyBytes = Encoding.UTF8.GetBytes(jwt.SecretKey);
 
       services
           .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -20,8 +31,8 @@ namespace API.Extensions
               ValidateIssuer = true,
               ValidateAudience = true,
               ValidateIssuerSigningKey = true,
-              ValidIssuer = jwtSection["ISSUER"],
-              ValidAudience = jwtSection["AUDIENCE"],
+              ValidIssuer = jwt.Issuer,
+              ValidAudience = jwt.Audience,
               IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
             };
 
@@ -30,33 +41,12 @@ namespace API.Extensions
               OnChallenge = async context =>
               {
                 context.HandleResponse();
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                context.Response.ContentType = "application/json";
-                var payload = new
-                {
-                  success = false,
-                  message = "Unauthorized",
-                  errorCode = "UNAUTHORIZED",
-                  statusCode = 401
-                };
-
-                await context.Response.WriteAsJsonAsync(payload);
-
+                await Writer.WriteProblem(context, StatusCodes.Status401Unauthorized, ApiErrorCode.Unauthorized);
               },
 
               OnForbidden = async context =>
               {
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                context.Response.ContentType = "application/json";
-                var payload = new
-                {
-                  success = false,
-                  message = "Forbidden",
-                  errorCode = "FORBIDDEN",
-                  statusCode = 403
-                };
-
-                await context.Response.WriteAsJsonAsync(payload);
+                await Writer.WriteProblem(context, StatusCodes.Status403Forbidden, ApiErrorCode.Forbidden);
               }
             };
           });

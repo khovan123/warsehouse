@@ -12,5 +12,7 @@
         public const string InternalServerError = "INTERNAL_SERVER_ERROR";
         public const string UnHandledException = "UNHANDED_EXCEPTION";
         public const string TooManyRequests = "TOO_MANY_REQUESTS";
+        public const string InvalidRefreshToken = "INVALID_REFRESH_TOKEN";
+        public const string TokenExpired = "TOKEN_EXPIRED";
     }
 }
