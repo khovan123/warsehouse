@@ -15,7 +15,8 @@ warehouse-api-dotnet
 │     │  ├─ appsettings.json
 │     │  ├─ Common
 │     │  │  ├─ ApiBuilder.cs
-│     │  │  └─ Constants.cs
+│     │  │  ├─ Constants.cs
+│     │  │  └─ Writer.cs
 │     │  ├─ Controllers
 │     │  │  ├─ AuthController.cs
 │     │  │  ├─ BinController.cs
@@ -25,6 +26,7 @@ warehouse-api-dotnet
 │     │  │  ├─ GoodTransactionController.cs
 │     │  │  ├─ InventoryController.cs
 │     │  │  ├─ MovementController.cs
+│     │  │  ├─ ParetoController.cs
 │     │  │  ├─ ProductController.cs
 │     │  │  ├─ ReservationController.cs
 │     │  │  ├─ SetupsController.cs
@@ -56,6 +58,7 @@ warehouse-api-dotnet
 │     │  │  ├─ InventoryDTO.cs
 │     │  │  ├─ LoginDTO.cs
 │     │  │  ├─ MovementDTO.cs
+│     │  │  ├─ ParetoDTO.cs
 │     │  │  ├─ ProductDTO.cs
 │     │  │  ├─ RefreshTokenDTO.cs
 │     │  │  ├─ ReservationDTO.cs
@@ -65,7 +68,10 @@ warehouse-api-dotnet
 │     │  ├─ Exceptions
 │     │  │  └─ DomainException.cs
 │     │  ├─ Helper
-│     │  │  └─ Hash.cs
+│     │  │  ├─ Calculator.cs
+│     │  │  ├─ Hash.cs
+│     │  │  └─ Options
+│     │  │     └─ JwtOptions.cs
 │     │  ├─ Interfaces
 │     │  │  ├─ IAuthService.cs
 │     │  │  ├─ IBinService.cs
@@ -75,6 +81,7 @@ warehouse-api-dotnet
 │     │  │  ├─ IHealthService.cs
 │     │  │  ├─ IInventoryService.cs
 │     │  │  ├─ IMovementService.cs
+│     │  │  ├─ IParetoService.cs
 │     │  │  ├─ IProductService.cs
 │     │  │  ├─ IReservationService.cs
 │     │  │  ├─ ISetupsService.cs
@@ -91,6 +98,7 @@ warehouse-api-dotnet
 │     │  │  ├─ HealthService.cs
 │     │  │  ├─ InventoryService.cs
 │     │  │  ├─ MovementService.cs
+│     │  │  ├─ ParetoService.cs
 │     │  │  ├─ ProductService.cs
 │     │  │  ├─ ReservationService.cs
 │     │  │  ├─ SetupsService.cs
@@ -117,6 +125,7 @@ warehouse-api-dotnet
 │     │  │  ├─ GoodTransaction.cs
 │     │  │  ├─ Inventory.cs
 │     │  │  ├─ Movement.cs
+│     │  │  ├─ Pareto.cs
 │     │  │  ├─ Product.cs
 │     │  │  ├─ RefreshToken.cs
 │     │  │  ├─ Reservation.cs
@@ -124,8 +133,23 @@ warehouse-api-dotnet
 │     │  │  ├─ User.cs
 │     │  │  ├─ Warehouse.cs
 │     │  │  └─ Weak
-│     │  │     ├─ ProductWithCategory.cs
-│     │  │     └─ StockReport.cs
+│     │  │     ├─ BinDetails.cs
+│     │  │     ├─ GoodTransactionDetails.cs
+│     │  │     ├─ InventoryDetails.cs
+│     │  │     ├─ Movement
+│     │  │     │  ├─ MovementReport.cs
+│     │  │     │  └─ MovementSummary.cs
+│     │  │     ├─ MovementDetails.cs
+│     │  │     ├─ ParetoDetails.cs
+│     │  │     ├─ ProductDetails.cs
+│     │  │     ├─ ReservationDetails.cs
+│     │  │     └─ StockDetails.cs
+│     │  ├─ Enums
+│     │  │  ├─ InventoryType.cs
+│     │  │  ├─ ParetoTag.cs
+│     │  │  └─ SummaryPeriod.cs
+│     │  ├─ Helpers
+│     │  │  └─ MongoDateFormats.cs
 │     │  ├─ Properties
 │     │  └─ Repositories
 │     │     ├─ IBaseRepository.cs
@@ -135,6 +159,7 @@ warehouse-api-dotnet
 │     │     ├─ IGoodTransactionRepository.cs
 │     │     ├─ IInventoryRepository.cs
 │     │     ├─ IMovementRepository.cs
+│     │     ├─ IParetoRepository.cs
 │     │     ├─ IProductRepository.cs
 │     │     ├─ IRefreshTokenRepository.cs
 │     │     ├─ IReservationRepository.cs
@@ -143,12 +168,17 @@ warehouse-api-dotnet
 │     │     └─ IWarehouseRepository.cs
 │     └─ Infrastructure
 │        ├─ Constants
-│        │  └─ MongoCollections.cs
+│        │  ├─ MongoCollections.cs
+│        │  └─ MongoFields.cs
 │        ├─ DB
 │        │  ├─ MongoDBConfig.cs
 │        │  ├─ MongoDbContext.cs
 │        │  ├─ RedisConfig.cs
 │        │  └─ RedisContext.cs
+│        ├─ Helpers
+│        │  ├─ BsonDocumentExpression.cs
+│        │  ├─ DateHelper.cs
+│        │  └─ MongoAggregationPipeline.cs
 │        ├─ Infrastructure.csproj
 │        └─ Repositories
 │           ├─ BinRepository.cs
@@ -157,12 +187,31 @@ warehouse-api-dotnet
 │           ├─ GoodTransactionRepository.cs
 │           ├─ InventoryRepository.cs
 │           ├─ MovementRepository.cs
+│           ├─ ParetoRepository.cs
 │           ├─ ProductRepository.cs
 │           ├─ RefreshTokenRepository.cs
 │           ├─ ReservationRepository.cs
 │           ├─ StockRepository.cs
 │           ├─ UserRepository.cs
 │           └─ WarehouseRepository.cs
+├─ tests
+│  └─ WarehouseBusiness.UnitTests
+│     ├─ API.UnitTests
+│     │  ├─ API.UnitTests.csproj
+│     │  ├─ appsettings.json
+│     │  ├─ Program.cs
+│     │  └─ Properties
+│     │     └─ launchSettings.json
+│     └─ Application.UnitTests
+│        ├─ Application.UnitTests.csproj
+│        ├─ Dtos
+│        │  └─ LoginTestDTO.cs
+│        ├─ Properties
+│        ├─ Services
+│        │  ├─ AuthServiceTests.cs
+│        │  └─ ValidationRunnerTest.cs
+│        └─ Validators
+│           └─ LoginRequestValidatorTest.cs
 └─ warehouse-api-dotnet.sln
 
 ```
