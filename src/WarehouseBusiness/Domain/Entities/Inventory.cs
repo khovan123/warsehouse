@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using Domain.Enums;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities
 {
@@ -13,7 +14,7 @@ namespace Domain.Entities
         [BsonElement("line")]
         public int Line { get; set; } = default!;
         [BsonElement("type")]
-        public string Type { get; set; } = default!;
+        public InventoryType Type { get; set; } = default!;
         [BsonElement("movementDate")]
         public DateOnly MovementDate { get; set; } = default!;
         [BsonElement("productId")]
