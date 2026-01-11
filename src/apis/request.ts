@@ -6,7 +6,7 @@ export const getClient = () => {
   // const userId = localStorage.getItem("loginId");
   if (instance === null) {
     instance = new HttpClient({
-      baseURL: import.meta.env.VITE_API_URL,
+      baseURL: import.meta.env.VITE_API_PREFIX,
       timeout: Number.parseInt(import.meta.env.VITE_API_TIMEOUT, 10),
       responseType: 'json',
       withCredentials: true,
