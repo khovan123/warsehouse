@@ -1,0 +1,192 @@
+[
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea31"
+    },
+    "reservationNo": "RSV-0001",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6101"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "reservedQty": 2,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-14T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1001"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea32"
+    },
+    "reservationNo": "RSV-0002",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6102"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "reservedQty": 3,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-15T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1002"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea33"
+    },
+    "reservationNo": "RSV-0003",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6103"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "reservedQty": 4,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-16T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1003"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea34"
+    },
+    "reservationNo": "RSV-0004",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6104"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "reservedQty": 5,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-17T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1004"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea35"
+    },
+    "reservationNo": "RSV-0005",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6105"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "reservedQty": 1,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-18T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1005"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea36"
+    },
+    "reservationNo": "RSV-0006",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6106"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "reservedQty": 2,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-19T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1006"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea37"
+    },
+    "reservationNo": "RSV-0007",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6107"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "reservedQty": 3,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-20T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1007"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea38"
+    },
+    "reservationNo": "RSV-0008",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6108"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "reservedQty": 4,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-21T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1008"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea39"
+    },
+    "reservationNo": "RSV-0009",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6109"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "reservedQty": 5,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-22T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1009"
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4ea40"
+    },
+    "reservationNo": "RSV-0010",
+    "productId": {
+      "$oid": "692efc6750984629c7fe6110"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "reservedQty": 1,
+    "uom": "EA",
+    "promisedDate": {
+      "$date": "2026-01-23T00:00:00.000Z"
+    },
+    "status": "Open",
+    "orderRef": "SO-1010"
+  }
+]

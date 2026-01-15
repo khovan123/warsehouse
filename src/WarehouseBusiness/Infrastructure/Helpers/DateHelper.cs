@@ -90,5 +90,8 @@ namespace Infrastructure.Helpers
 
       return CreateDateRangeUtc(startOffsetTimes, endOffsetTimes, option);
     }
+
+    public static DateTime ToUtcDateTime(this DateOnly d)
+      => d.ToDateTime(TimeOnly.MinValue, DateTimeKind.Utc);
   }
 }

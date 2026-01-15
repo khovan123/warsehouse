@@ -8,6 +8,7 @@ namespace Domain.Enums
     Receipt = 0,
     Shipment = 1,
     Movement = 2,
-    Inventory = 3
+    Inventory = 3,
+    Adjustment = 4
   }
 }

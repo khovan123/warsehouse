@@ -1,4 +1,5 @@
 ﻿using API.Common;
+using Application.Dtos;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,5 +21,13 @@ namespace API.Controllers
         {
             return ApiBuilder.Result(await _inventoryService.GetAllAsync(ct));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] InventoryDTO.CreateRequest request, CancellationToken ct)
+     => ApiBuilder.Result(await _inventoryService.CreateAsync(request, ct));
+
+        [HttpPost("{id}/post")]
+        public async Task<IActionResult> Post([FromRoute] string id, CancellationToken ct)
+          => ApiBuilder.Result(await _inventoryService.PostAsync(id, ct));
     }
 }

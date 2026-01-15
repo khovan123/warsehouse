@@ -1,3 +1,7 @@
+using Application.Exceptions;
+using Domain.Entities;
+using Domain.Enums;
+
 namespace Application.Helper
 {
     public static class Calculator
@@ -16,6 +20,30 @@ namespace Application.Helper
                 return 0;
 
             return Math.Round((double)part / total * 100, decimalPlaces);
+        }
+
+        public static Stock CalculateStock(Inventory inventory, Stock stock, GoodTransaction goodTransaction)
+        {
+            Stock stockUpdated = stock;
+            switch (inventory.Type)
+            {
+                case InventoryType.Receipt:
+                    stockUpdated.OnHand += inventory.Qty;
+                    break;
+                case InventoryType.Movement:
+                    break;
+                case InventoryType.Shipment:
+                    stockUpdated.OnHand -= inventory.Qty;
+                    break;
+                case InventoryType.Inventory:
+                    break;
+                case InventoryType.Adjustment:
+                    break;
+                default:
+                    throw new InvalidValueType();
+            }
+            stockUpdated.InventoryValue = stockUpdated.AverageCost * stockUpdated.OnHand;
+            return stockUpdated;
         }
     }
 }

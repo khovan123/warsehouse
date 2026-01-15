@@ -25,22 +25,11 @@ namespace Infrastructure.Repositories
                 .Lookup(MongoCollections.Products, "productId", $"tmp_{MongoCollections.Products}")
                 .Lookup(MongoCollections.Warehouses, "warehouseId", $"tmp_{MongoCollections.Warehouses}")
                 .Lookup(MongoCollections.Bins, "binId", $"tmp_{MongoCollections.Bins}")
-                .Lookup(MongoCollections.Categories, "categoryId", $"tmp_{MongoCollections.Categories}")
                 .Project(new BsonDocument
                 {
-                    { "productId", 1 },
-                    { "warehouseId", 1 },
-                    { "binId", 1 },
-                    { "categoryId", 1 },
-                    { "onHand", 1 },
-                    { "reserved", 1 },
-                    { "available", 1 },
-                    { "averageCost", 1 },
-                    { "inventoryValue", 1 },
                     { "product", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}", 0) },
                     { "warehouse",BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Warehouses}", 0) },
                     { "bin", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Bins}", 0) },
-                    { "category", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Categories}", 0) }
                 })
                 .As<StockDetails>();
 
@@ -54,26 +43,78 @@ namespace Infrastructure.Repositories
                .Lookup(MongoCollections.Products, "productId", $"tmp_{MongoCollections.Products}")
                .Lookup(MongoCollections.Warehouses, "warehouseId", $"tmp_{MongoCollections.Warehouses}")
                .Lookup(MongoCollections.Bins, "binId", $"tmp_{MongoCollections.Bins}")
-               .Lookup(MongoCollections.Categories, "categoryId", $"tmp_{MongoCollections.Categories}")
                .Project(new BsonDocument
                {
-                    { "productId", 1 },
-                    { "warehouseId", 1 },
-                    { "binId", 1 },
-                    { "categoryId", 1 },
-                    { "onHand", 1 },
-                    { "reserved", 1 },
-                    { "available", 1 },
-                    { "averageCost", 1 },
-                    { "inventoryValue", 1 },
                     { "product", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}", 0) },
                     { "warehouse",BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Warehouses}", 0) },
                     { "bin", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Bins}", 0) },
-                    { "category", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Categories}", 0) }
                })
                .As<StockDetails>();
 
             return await pipeline.FirstOrDefaultAsync(ct);
         }
+
+        public async Task ApplyOnHandDeltaAsync(string productId, string warehouseId, string binId, int delta, CancellationToken ct)
+        {
+            var filter = Builders<Stock>.Filter.Where(x =>
+              x.ProductId == productId && x.WarehouseId == warehouseId && x.BinId == binId);
+
+            var update = Builders<Stock>.Update
+              .SetOnInsert(x => x.ProductId, productId)
+              .SetOnInsert(x => x.WarehouseId, warehouseId)
+              .SetOnInsert(x => x.BinId, binId)
+              .Inc(x => x.OnHand, delta);
+
+            await _stocks.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true }, ct);
+        }
+
+        public async Task ApplyReservedDeltaAsync(string productId, string warehouseId, string binId, int delta, CancellationToken ct)
+        {
+            var filter = Builders<Stock>.Filter.Where(x =>
+              x.ProductId == productId && x.WarehouseId == warehouseId && x.BinId == binId);
+
+            var update = Builders<Stock>.Update
+              .SetOnInsert(x => x.ProductId, productId)
+              .SetOnInsert(x => x.WarehouseId, warehouseId)
+              .SetOnInsert(x => x.BinId, binId)
+              .Inc(x => x.Reserved, delta);
+
+            await _stocks.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = true }, ct);
+        }
+
+        public async Task UpdateCostProjectionAsync(string productId, string warehouseId, string binId, decimal avgCost, int onHandQty, CancellationToken ct)
+        {
+            var filter = Builders<Stock>.Filter.Where(x =>
+              x.ProductId == productId && x.WarehouseId == warehouseId && x.BinId == binId);
+
+            var update = Builders<Stock>.Update
+              .Set(x => x.AverageCost, avgCost)
+              .Set(x => x.InventoryValue, avgCost * onHandQty);
+
+            await _stocks.UpdateOneAsync(filter, update, new UpdateOptions { IsUpsert = false }, ct);
+        }
+
+        public async Task<StockDetails?> GetAsync(string productId, string warehouseId, string binId, CancellationToken ct)
+        {
+            var pipeline = new MongoAggregationPipeline<Stock>(_stocks)
+              .Match(s =>
+                    string.Equals(s.ProductId, productId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(s.WarehouseId, warehouseId, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(s.BinId, binId, StringComparison.OrdinalIgnoreCase)
+              )
+              .Lookup(MongoCollections.Products, "productId", $"tmp_{MongoCollections.Products}")
+              .Lookup(MongoCollections.Warehouses, "warehouseId", $"tmp_{MongoCollections.Warehouses}")
+              .Lookup(MongoCollections.Bins, "binId", $"tmp_{MongoCollections.Bins}")
+              .Project(new BsonDocument
+              {
+                    { "product", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}", 0) },
+                    { "warehouse",BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Warehouses}", 0) },
+                    { "bin", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Bins}", 0) },
+              })
+              .As<StockDetails>();
+
+            return await pipeline.FirstOrDefaultAsync(ct);
+        }
+
     }
 }

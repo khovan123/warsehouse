@@ -1,6 +1,8 @@
 ﻿using System.Reflection;
 using Application.DependencyInjection;
+using Application.Helper.Options;
 using Application.Services;
+using Application.Workers;
 using Infrastructure.Repositories;
 using MongoDB.Driver;
 
@@ -13,7 +15,13 @@ namespace API.DependencyInjection
             services.AddApplicationDependencies();
             services.AddApplicationServices();
             services.AddInfrastructureRepositories();
-            return services;
+            services.Configure<CostingWorkerOptions>(opt =>
+            {
+                opt.BatchSize = 200;
+                opt.PollDelayMs = 500;
+                opt.ErrorDelayMs = 2000;
+            });
+            services.AddHostedService<CostingBackgroundService>(); return services;
         }
 
         private static IServiceCollection AddApplicationServices(this IServiceCollection services)

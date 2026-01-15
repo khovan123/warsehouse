@@ -54,7 +54,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Product?> GetByIdAsync(string id, CancellationToken ct)
         {
-            var filter = Builders<Product>.Filter.Eq(p => p.Id, id);
+            var filter = Builders<Product>.Filter.Where(p => p.Id == id);
             return await _products.Find(filter).FirstOrDefaultAsync(ct);
         }
     }

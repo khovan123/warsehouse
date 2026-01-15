@@ -1,0 +1,322 @@
+[
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e921"
+    },
+    "docNo": "GT-0001",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 1",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6104"
+        },
+        "expectedQty": 20,
+        "countedQty": 18,
+        "difference": -2,
+        "binId": {
+          "$oid": "6963614e080c92b3372b8985"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e922"
+    },
+    "docNo": "GT-0002",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 2",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6107"
+        },
+        "expectedQty": 20,
+        "countedQty": 21,
+        "difference": 1,
+        "binId": {
+          "$oid": "692efc6750984629c7fe6011"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e923"
+    },
+    "docNo": "GT-0003",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 3",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6110"
+        },
+        "expectedQty": 20,
+        "countedQty": 18,
+        "difference": -2,
+        "binId": {
+          "$oid": "6963614e080c92b3372b8985"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e924"
+    },
+    "docNo": "GT-0004",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 4",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6103"
+        },
+        "expectedQty": 20,
+        "countedQty": 21,
+        "difference": 1,
+        "binId": {
+          "$oid": "692efc6750984629c7fe6011"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e925"
+    },
+    "docNo": "GT-0005",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 5",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6106"
+        },
+        "expectedQty": 20,
+        "countedQty": 18,
+        "difference": -2,
+        "binId": {
+          "$oid": "6963614e080c92b3372b8985"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e926"
+    },
+    "docNo": "GT-0006",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 6",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6109"
+        },
+        "expectedQty": 20,
+        "countedQty": 21,
+        "difference": 1,
+        "binId": {
+          "$oid": "692efc6750984629c7fe6011"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e927"
+    },
+    "docNo": "GT-0007",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 7",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6102"
+        },
+        "expectedQty": 20,
+        "countedQty": 18,
+        "difference": -2,
+        "binId": {
+          "$oid": "6963614e080c92b3372b8985"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e928"
+    },
+    "docNo": "GT-0008",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 8",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6105"
+        },
+        "expectedQty": 20,
+        "countedQty": 21,
+        "difference": 1,
+        "binId": {
+          "$oid": "692efc6750984629c7fe6011"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e929"
+    },
+    "docNo": "GT-0009",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 9",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6108"
+        },
+        "expectedQty": 20,
+        "countedQty": 18,
+        "difference": -2,
+        "binId": {
+          "$oid": "6963614e080c92b3372b8985"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e930"
+    },
+    "docNo": "GT-0010",
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "postedAt": {
+      "$date": "2026-01-12T00:00:00.000Z"
+    },
+    "description": "Count test 10",
+    "status": 1,
+    "createdBy": {
+      "$oid": "69270372384f60e34ba40fb3"
+    },
+    "lines": [
+      {
+        "productId": {
+          "$oid": "692efc6750984629c7fe6101"
+        },
+        "expectedQty": 20,
+        "countedQty": 21,
+        "difference": 1,
+        "binId": {
+          "$oid": "692efc6750984629c7fe6011"
+        },
+        "uom": "EA"
+      }
+    ],
+    "__v": 0
+  }
+]

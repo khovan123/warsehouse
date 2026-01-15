@@ -34,3 +34,8 @@ public sealed class InvalidRefreshTokenException : DomainException
 {
   public InvalidRefreshTokenException(string message = "Refresh token is invalid or expired") : base(message) { }
 }
+
+public sealed class InvalidValueType : DomainException
+{
+  public InvalidValueType(string message = "Invalid value type") : base(message) { }
+}
