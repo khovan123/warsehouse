@@ -49,7 +49,7 @@ namespace Infrastructure.Repositories
         {
           { "_id", "$_id" },
           { "docNo", new BsonDocument("$first", "$docNo") },
-          { "movementDate", new BsonDocument("$first", "$movementDate") },
+          { "postedAt", new BsonDocument("$first", "$postedAt") },
           { "fromWarehouse", new BsonDocument("$first", "$fromWarehouse") },
           { "fromWarehouseName", new BsonDocument("$first", "$fromWarehouseName") },
           { "toWarehouse", new BsonDocument("$first", "$toWarehouse") },
@@ -92,7 +92,7 @@ namespace Infrastructure.Repositories
         {
           { "_id", "$_id" },
           { "docNo", new BsonDocument("$first", "$docNo") },
-          { "movementDate", new BsonDocument("$first", "$movementDate") },
+          { "postedAt", new BsonDocument("$first", "$postedAt") },
           { "fromWarehouse", new BsonDocument("$first", "$fromWarehouse") },
           { "fromWarehouseName", new BsonDocument("$first", "$fromWarehouseName") },
           { "toWarehouse", new BsonDocument("$first", "$toWarehouse") },
@@ -132,7 +132,7 @@ namespace Infrastructure.Repositories
         .Optional(matchTypeDoc)
         .Project(new BsonDocument
         {
-
+          {"docNo", 1},
           { "productEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}") },
           { "fromWarehouse", BsonDocumentExpression.GetField("code",BsonDocumentExpression.ArrayElemAt("tmp_fromWarehouses")) },
           { "toWarehouse", BsonDocumentExpression.GetField("code",BsonDocumentExpression.ArrayElemAt("tmp_toWarehouses")) },
@@ -155,7 +155,7 @@ namespace Infrastructure.Repositories
 
       var calculatedQtyDoc = new BsonDocument
         {
-          { "movementDate", 1 },
+          { "postedAt", 1 },
           { "calculatedQty", BsonDocumentExpression.Conditional(
             BsonDocumentExpression.In(inventoryType, new BsonArray { MongoFields.Movement, MongoFields.Shipment }),
             BsonDocumentExpression.Multiply("$lines.qty", -1),
@@ -175,7 +175,7 @@ namespace Infrastructure.Repositories
         .Project(calculatedQtyDoc)
         .Group(new BsonDocument
         {
-          { "_id", BsonDocumentExpression.BuildGroupIdByDateField(period, "movementDate") },
+          { "_id", BsonDocumentExpression.BuildGroupIdByDateField(period, "postedAt") },
           { "outbound", BsonDocumentExpression.Sum(
             BsonDocumentExpression.Conditional( BsonDocumentExpression.Lt("$calculatedQty", 0), "$calculatedQty", 0))
           },

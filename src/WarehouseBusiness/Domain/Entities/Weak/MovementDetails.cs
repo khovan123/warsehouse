@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using Domain.Enums;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Domain.Entities.Weak
 {
@@ -10,8 +11,8 @@ namespace Domain.Entities.Weak
         public string Id { get; set; } = default!;
         [BsonElement("docNo")]
         public string DocNo { get; set; } = default!;
-        [BsonElement("movementDate")]
-        public DateOnly MovementDate { get; set; } = default!;
+        [BsonElement("postedAt")]
+        public DateOnly PostedAt { get; set; } = default!;
         [BsonElement("fromWarehouse")]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string FromWarehouse { get; set; } = default!;
@@ -19,7 +20,7 @@ namespace Domain.Entities.Weak
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string ToWarehouse { get; set; } = default!;
         [BsonElement("status")]
-        public string Status { get; set; } = default!;
+        public FlowStatus Status { get; set; } = default!;
         [BsonElement("reason")]
         public string Reason { get; set; } = default!;
         [BsonElement("createdBy")]

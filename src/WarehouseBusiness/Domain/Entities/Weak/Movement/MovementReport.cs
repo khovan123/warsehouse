@@ -10,9 +10,9 @@ namespace Domain.Entities.Weak.Movement
     [JsonPropertyName("docNo")]
     public string DocNo { get; set; } = default!;
     
-    [BsonElement("movementDate")]
-    [JsonPropertyName("movementDate")]
-    public DateOnly MovementDate { get; set; }
+    [BsonElement("postedAt")]
+    [JsonPropertyName("postedAt")]
+    public DateOnly PostedAt { get; set; }
     
     [BsonElement("productEntity")]
     [JsonIgnore]
