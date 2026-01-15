@@ -1,6 +1,7 @@
 using Domain.Entities;
 using Domain.Entities.Weak;
 using Domain.Repositories;
+using Domain.Enums;
 using Infrastructure.Constants;
 using Infrastructure.DB;
 using Infrastructure.Helpers;
@@ -86,6 +87,31 @@ namespace Infrastructure.Repositories
          })
          .As<GoodTransactionDetails>();
       return await pipeline.FirstOrDefaultAsync(ct);
+    }
+
+
+    public async Task InsertAsync(GoodTransaction gt, CancellationToken ct)
+    {
+      await _goodTransaction.InsertOneAsync(gt, cancellationToken: ct);
+    }
+
+    public async Task<GoodTransaction?> GetRawByIdAsync(string id, CancellationToken ct)
+    {
+      var filter = Builders<GoodTransaction>.Filter.Eq(x => x.Id, id);
+      return await _goodTransaction.Find(filter).FirstOrDefaultAsync(ct);
+    }
+
+    public async Task UpdateStatusAsync(string id, FlowStatus status, CancellationToken ct)
+    {
+      var filter = Builders<GoodTransaction>.Filter.Eq(x => x.Id, id);
+      var update = Builders<GoodTransaction>.Update.Set(x => x.Status, status);
+      await _goodTransaction.UpdateOneAsync(filter, update, cancellationToken: ct);
+    }
+
+    public async Task UpdateAsync(GoodTransaction gt, CancellationToken ct)
+    {
+      var filter = Builders<GoodTransaction>.Filter.Eq(x => x.Id, gt.Id);
+      await _goodTransaction.ReplaceOneAsync(filter, gt, cancellationToken: ct);
     }
   }
 }
