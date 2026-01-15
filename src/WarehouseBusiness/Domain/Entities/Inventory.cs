@@ -15,8 +15,8 @@ namespace Domain.Entities
                 public int Line { get; set; } = default!;
                 [BsonElement("type")]
                 public InventoryType Type { get; set; } = default!;
-                [BsonElement("movementDate")]
-                public DateOnly MovementDate { get; set; } = default!;
+                [BsonElement("postedAt")]
+                public DateOnly PostedAt { get; set; } = default!;
                 [BsonElement("productId")]
                 [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
                 public string ProductId { get; set; } = default!;
@@ -30,8 +30,8 @@ namespace Domain.Entities
                 public int Qty { get; set; } = default!;
                 [BsonElement("uom")]
                 public string Uom { get; set; } = default!;
-                [BsonElement("cost")]
-                public double Cost { get; set; } = default!;
+                [BsonElement("unitCost")]
+                public decimal UnitCost { get; set; } = default!;
                 [BsonElement("bpartnerId")]
                 [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
                 public string BpartnerId { get; set; } = default!;
