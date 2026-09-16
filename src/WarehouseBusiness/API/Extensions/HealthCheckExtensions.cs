@@ -15,7 +15,8 @@ namespace API.Extensions
                  var config = sp.GetRequiredService<IOptions<MongoDBConfig>>().Value;
                  return config.DatabaseName;
                },
-               name: "mongodb"
+               name: "mongodb",
+               timeout: TimeSpan.FromMinutes(10)
            );
       return services;
     }
