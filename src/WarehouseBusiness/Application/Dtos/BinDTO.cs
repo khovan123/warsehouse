@@ -6,7 +6,7 @@ namespace Application.DTOs
     {
         public record Response(List<Bin>? Bins = default!)
         {
-            public List<Bin>? Bins = Bins;
+            public List<Bin>? Bins { get; set; } = Bins;
         }
     }
 }
