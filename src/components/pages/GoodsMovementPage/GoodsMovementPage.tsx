@@ -1,10 +1,12 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import { Minus, Plus } from 'lucide-react';
-import React from 'react';
+import { Plus } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import AppPagination from '@/components/organisms/AppPagination/AppPagination';
 import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -13,42 +15,11 @@ import { Toolbar, ToolbarButton, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useMovementSelectors } from '@/state/ducks/movement/selectors';
+import { fetchMovementRequest } from '@/state/ducks/movement/slice';
+import { flatMovementData, type FlatedMovement } from '@/utils/helpers/data-helper';
 
-type Movement = {
-  docNo: string;
-  movementDate: string;
-  fromWarehouse: string;
-  toWarehouse: string;
-  lines: number;
-  totalQty: number;
-  status: 'Completed' | 'Draft';
-  reason: string;
-};
-
-const movements: Movement[] = [
-  {
-    docNo: 'MV-240045',
-    movementDate: '2025-11-16',
-    fromWarehouse: 'Main DC',
-    toWarehouse: 'Store 01',
-    lines: 5,
-    totalQty: 200,
-    status: 'Completed',
-    reason: 'Replenishment',
-  },
-  {
-    docNo: 'MV-240046',
-    movementDate: '2025-11-16',
-    fromWarehouse: 'Main DC',
-    toWarehouse: 'Store 02',
-    lines: 3,
-    totalQty: 120,
-    status: 'Draft',
-    reason: 'Initial stock',
-  },
-];
-
-const columns: ColumnDef<Movement>[] = [
+const columns: ColumnDef<FlatedMovement>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -75,6 +46,10 @@ const columns: ColumnDef<Movement>[] = [
     header: 'Document No.',
   },
   {
+    header: 'Product',
+    accessorKey: 'productId',
+  },
+  {
     accessorKey: 'movementDate',
     header: 'Movement Date',
   },
@@ -87,14 +62,22 @@ const columns: ColumnDef<Movement>[] = [
     header: 'To Warehouse',
   },
   {
-    accessorKey: 'lines',
-    header: () => <div className="text-right">Lines</div>,
-    cell: ({ row }) => <div className="text-right">{row.getValue('lines')}</div>,
+    accessorKey: 'fromBin',
+    header: 'From Bin',
   },
   {
-    accessorKey: 'totalQty',
-    header: () => <div className="text-right">Total Qty</div>,
-    cell: ({ row }) => <div className="text-right">{row.getValue('totalQty')}</div>,
+    accessorKey: 'toBin',
+    header: 'To Bin',
+  },
+  // {
+  //   accessorKey: 'lines',
+  //   header: () => <div className="text-right">Lines</div>,
+  //   cell: ({ row }) => <div className="text-right">{row.getValue('lines')}</div>,
+  // },
+  {
+    accessorKey: 'qty',
+    header: () => <div className="text-right">Qty</div>,
+    cell: ({ row }) => <div className="text-right">{row.getValue('qty')}</div>,
   },
   {
     accessorKey: 'reason',
@@ -112,25 +95,17 @@ const columns: ColumnDef<Movement>[] = [
 
 const GoodsMovementPage: React.FC = () => {
   const isMobile = useIsMobile();
+  const dispatch = useDispatch();
+  const movementSelectors = useMovementSelectors();
 
-  const tableProps: DataTableProps<Movement, unknown> = {
+  const tableProps: DataTableProps<FlatedMovement, unknown> = {
     columns,
-    data: movements,
+    data: flatMovementData(movementSelectors.movements),
   };
 
-  const Footer = () => (
-    <div
-      className={cn(
-        'border-t border-border bg-card text-[11px] flex items-center',
-        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
-      )}
-    >
-      <span className="flex items-center">
-        1 <Minus /> {movements.length} of {movements.length} movements
-      </span>
-      <span>Items per page: 50</span>
-    </div>
-  );
+  useEffect(() => {
+    dispatch(fetchMovementRequest());
+  }, [dispatch]);
 
   return (
     <PageOverview>
@@ -159,7 +134,7 @@ const GoodsMovementPage: React.FC = () => {
           <DataTable {...tableProps} />
         </div>
       </PageContent>
-      <Footer />
+      <AppPagination />
     </PageOverview>
   );
 };
