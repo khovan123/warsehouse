@@ -14,7 +14,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { useGoodTransactionSelector } from '@/state/ducks/good-transaction/selectors';
 import { fetchGoodTransactionRequest } from '@/state/ducks/good-transaction/slice';
-import { flatGoodTransactionData, type FlattedGoodTransaction } from '@/utils/helpers/data-helper';
+import {
+  flattenGoodTransactionData,
+  type FlattedGoodTransaction,
+} from '@/utils/helpers/data-helper';
 
 const columns: ColumnDef<FlattedGoodTransaction>[] = [
   {
@@ -22,15 +25,15 @@ const columns: ColumnDef<FlattedGoodTransaction>[] = [
     header: 'Document No.',
   },
   {
-    accessorKey: 'warehouseId',
+    accessorKey: 'warehouseName',
     header: 'Warehouse',
   },
   {
-    accessorKey: 'productId',
+    accessorKey: 'productName',
     header: 'Product',
   },
   {
-    accessorKey: 'binId',
+    accessorKey: 'binName',
     header: 'Bin',
   },
   {
@@ -68,7 +71,7 @@ const GoodsTransactionPage: React.FC = () => {
 
   const tableProps: DataTableProps<FlattedGoodTransaction, unknown> = {
     columns,
-    data: flatGoodTransactionData(goodTransactionSelector.data.goodTransactions),
+    data: flattenGoodTransactionData(goodTransactionSelector.data.goodTransactions),
   };
 
   return (

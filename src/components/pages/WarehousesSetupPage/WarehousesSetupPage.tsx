@@ -17,10 +17,10 @@ import { fetchSetupsWarehouseRequest } from '@/state/ducks/setups-warehouse/slic
 import type { Bin, Warehouse } from '@/state/ducks/setups-warehouse/type';
 
 const warehouseColumns: ColumnDef<Warehouse>[] = [
-  {
-    accessorKey: 'id',
-    header: 'Warehouse',
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: 'Warehouse',
+  // },
   {
     accessorKey: 'code',
     header: 'Code',
@@ -44,12 +44,12 @@ const warehouseColumns: ColumnDef<Warehouse>[] = [
 ];
 
 const binColumns: ColumnDef<Bin>[] = [
+  // {
+  //   accessorKey: 'id',
+  //   header: 'BinId',
+  // },
   {
-    accessorKey: 'id',
-    header: 'BinId',
-  },
-  {
-    accessorKey: 'warehouseId',
+    accessorKey: 'warehouseName',
     header: 'Warehouse',
   },
   {
