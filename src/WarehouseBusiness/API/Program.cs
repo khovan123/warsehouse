@@ -40,6 +40,8 @@ builder.Services.AddScoped<IBinService, BinService>();
 builder.Services.AddScoped<IBusinessPartnetRepository, BusinessPartnerRepository>();
 builder.Services.AddScoped<IBusinessPartnerService, BusinessPartnerService>();
 builder.Services.AddScoped<ISetupsService, SetupsService>();
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+builder.Services.AddScoped<IInventoryService, InventoryService>();
 
 var jwtSection = builder.Configuration.GetSection("JWT");
 var keyBytes = Encoding.UTF8.GetBytes(jwtSection["SECRET_KEY"]!);

@@ -27,5 +27,6 @@ namespace Infrastructure.DB
 
         public IMongoCollection<BusinessPartner> BusinessPartnets => _database.GetCollection<BusinessPartner>(MongoCollections.BusinessPartners);
 
+        public IMongoCollection<Inventory> Inventories => _database.GetCollection<Inventory>(MongoCollections.Inventory);
     }
 }

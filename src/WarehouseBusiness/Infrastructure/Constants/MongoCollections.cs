@@ -8,5 +8,6 @@
         public const string Categories = "categories";
         public const string BusinessPartners = "businessPartners";
         public const string Products = "products";
+        public const string Inventory = "inventories";
     }
 }
