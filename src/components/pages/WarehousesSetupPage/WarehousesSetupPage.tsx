@@ -12,9 +12,9 @@ import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-import { useSetupsSelectopr } from '@/state/ducks/setups/selectors';
-import { setupsRequest } from '@/state/ducks/setups/slice';
-import type { Bin, Warehouse } from '@/state/ducks/setups/type';
+import { useSetupsSelectopr } from '@/state/ducks/setups-warehouse/selectors';
+import { fetchSetupsWarehouseRequest } from '@/state/ducks/setups-warehouse/slice';
+import type { Bin, Warehouse } from '@/state/ducks/setups-warehouse/type';
 
 const warehouseColumns: ColumnDef<Warehouse>[] = [
   {
@@ -78,7 +78,7 @@ const WarehousesSetupPage: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(setupsRequest());
+    dispatch(fetchSetupsWarehouseRequest());
   }, [dispatch]);
 
   return (

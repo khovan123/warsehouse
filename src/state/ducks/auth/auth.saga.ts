@@ -8,7 +8,7 @@ import { showToast } from '@/state/ducks/toast/slice';
 
 import { loginFailure, loginRequest, loginSuccess } from './slice';
 
-function* handleLogin(action: PayloadAction<LoginCredentials>) {
+function* loginFlow(action: PayloadAction<LoginCredentials>) {
   try {
     // if (action.payload.username === 'openbravo' && action.payload.password === 'openbravo') {
     //   const user: LoginResponse = {
@@ -30,10 +30,10 @@ function* handleLogin(action: PayloadAction<LoginCredentials>) {
   }
 }
 
-function* watchAuth() {
-  yield takeLatest(loginRequest.type, handleLogin);
+function* watchAuthFlows() {
+  yield takeLatest(loginRequest.type, loginFlow);
 }
 
 export function* authSaga() {
-  yield all([fork(watchAuth)]);
+  yield all([fork(watchAuthFlows)]);
 }

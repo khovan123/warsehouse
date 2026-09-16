@@ -4,14 +4,14 @@ import { all, call, fork, takeLatest } from 'redux-saga/effects';
 import { showToast } from './slice';
 import type { ToastPayload } from './type';
 
-function* handleToast(action: PayloadAction<ToastPayload>) {
+function* showToastFlow(action: PayloadAction<ToastPayload>) {
   yield call(showToast, action.payload);
 }
 
-function* watchToast() {
-  yield takeLatest(showToast.type, handleToast);
+function* watchToastFlows() {
+  yield takeLatest(showToast.type, showToastFlow);
 }
 
 export function* toastSaga() {
-  yield all([fork(watchToast)]);
+  yield all([fork(watchToastFlows)]);
 }

@@ -14,7 +14,7 @@ import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { useInventorySelector } from '@/state/ducks/inventory/selectors';
-import { inventoriesRequest } from '@/state/ducks/inventory/slice';
+import { fetchInventoryRequest } from '@/state/ducks/inventory/slice';
 import type { Inventory } from '@/state/ducks/inventory/type';
 
 const columns: ColumnDef<Inventory>[] = [
@@ -99,7 +99,7 @@ const PhysicalInventoryPage: React.FC = () => {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    dispatch(inventoriesRequest());
+    dispatch(fetchInventoryRequest());
   }, [dispatch]);
 
   const tableProps: DataTableProps<Inventory, unknown> = {

@@ -1,6 +1,6 @@
-import type { Bin, Warehouse } from '@/state/ducks/setups/type';
+import type { Bin, Warehouse } from '@/state/ducks/setups-warehouse/type';
 
-export type SetupsResponse = {
+export type FetchSetupsWarehouseResponse = {
   warehouses: Warehouse[];
   bins: Bin[];
 };
