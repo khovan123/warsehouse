@@ -20,12 +20,14 @@ import {
 import { usePageContext } from '@/context/page-context';
 import { cn } from '@/lib/utils';
 import { LANDING_PATH } from '@/routers/route.constants';
+import { useUserSelector } from '@/state/ducks/auth/selectors';
 import { isActivePath } from '@/utils/navigation';
 
 import type { SideBarProps } from './type';
 
 const AppSideBar = ({ activePath, sections, iconSize = 4, ...props }: SideBarProps) => {
   const { setBreadCrumb } = usePageContext();
+  const user = useUserSelector();
   return (
     <Sidebar {...props}>
       <SidebarHeader className="p-0">
@@ -88,7 +90,11 @@ const AppSideBar = ({ activePath, sections, iconSize = 4, ...props }: SideBarPro
         <SidebarMenu>
           <SidebarMenuItem>
             <UserDropdown
-              user={{ name: 'shadcn', email: 'shadcn.io', avatar: 'https://github.com/shadcn.png' }}
+              user={{
+                name: user!.username,
+                email: user!.email,
+                avatar: 'https://github.com/shadcn.png',
+              }}
               inSidebar={true}
             />
           </SidebarMenuItem>
