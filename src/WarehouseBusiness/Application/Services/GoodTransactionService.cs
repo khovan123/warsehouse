@@ -2,15 +2,14 @@ using Application.Dtos;
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
-  public class GoodTransactionSerivce : IGoodTransactionService
+  public class GoodTransactionService : IGoodTransactionService
   {
     private readonly IGoodTransactionRepository _goodTransactionRepository;
 
-    public GoodTransactionSerivce(IGoodTransactionRepository goodTransactionRepository)
+    public GoodTransactionService(IGoodTransactionRepository goodTransactionRepository)
     {
       _goodTransactionRepository = goodTransactionRepository;
     }

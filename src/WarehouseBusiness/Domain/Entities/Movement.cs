@@ -11,7 +11,7 @@ namespace Domain.Entities
     [BsonElement("docNo")]
     public string DocNo { get; set; } = default!;
     [BsonElement("movementDate")]
-    public string MovementDate { get; set; } = default!;
+    public DateOnly MovementDate { get; set; } = default!;
     [BsonElement("fromWarehouse")]
     [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
     public string FromWarehouse { get; set; } = default!;
@@ -23,6 +23,7 @@ namespace Domain.Entities
     [BsonElement("reason")]
     public string Reason { get; set; } = default!;
     [BsonElement("createdBy")]
+    [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
     public string CreatedBy { get; set; } = default!;
     [BsonElement("lines")]
     public List<MovementLine> Lines { get; set; } = default!;
