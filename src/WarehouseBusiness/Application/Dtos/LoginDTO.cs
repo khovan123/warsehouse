@@ -1,10 +1,10 @@
-﻿using Domain.Entities;
+﻿using Contract.Interfaces;
 
 namespace Application.DTOs
 {
     public class LoginDTO
     {
-        public class Request
+        public class Request : IFlagValidatableRequest
         {
             public string Username { get; set; } = default!;
             public string Password { get; set; } = default!;

@@ -1,4 +1,5 @@
 using API.DependencyInjection;
+using API.Middlewares;
 using Infrastructure.DB;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
@@ -56,6 +57,18 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 builder.Services.AddSingleton<MongoDbContext>();
 
 builder.Services.AddProjectDependencies();
+
+builder.Services
+    .AddHealthChecks()
+    .AddMongoDb(
+        clientFactory: sp => sp.GetRequiredService<IMongoClient>(),
+        databaseNameFactory: sp =>
+        {
+            var config = sp.GetRequiredService<IOptions<MongoDBConfig>>().Value;
+            return config.DatabaseName;
+        },
+        name: "mongodb"
+    );
 
 var jwtSection = builder.Configuration.GetSection("JWT");
 var keyBytes = Encoding.UTF8.GetBytes(jwtSection["SECRET_KEY"]!);
@@ -124,6 +137,12 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = "swagger";
     });
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
+
+app.MapHealthChecks("/api/v1/health/live");
+app.MapHealthChecks("/api/v1/health/ready");
+
 
 app.UseHttpsRedirection();
 app.UseCors("Default");

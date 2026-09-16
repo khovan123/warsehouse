@@ -13,7 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\Weak" />
+    <Folder Include="Entities\Weak\" />
+    <Folder Include="Entities\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>
