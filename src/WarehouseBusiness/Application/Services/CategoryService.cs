@@ -19,7 +19,7 @@ namespace Application.Services
         {
             var categories = await _categoryRepository.GetAll(ct);
             var data = new CategoryDTO.Response(categories);
-            return new ApiResponse<CategoryDTO.Response>.SuccessBuilder(data, null, StatusCodes.Status200OK);
+            return new ApiResponse<CategoryDTO.Response>(data);
         }
     }
 }
