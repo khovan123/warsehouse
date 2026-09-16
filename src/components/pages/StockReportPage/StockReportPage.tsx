@@ -97,7 +97,7 @@ const StockReportPage: React.FC = () => {
       </Toolbar>
       <PageContent>
         <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={stockSelector.loading} />
         </div>
       </PageContent>
       <AppPagination />

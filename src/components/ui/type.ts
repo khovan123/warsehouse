@@ -8,4 +8,5 @@ export type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   className?: string;
+  isLoadingData?: boolean;
 };

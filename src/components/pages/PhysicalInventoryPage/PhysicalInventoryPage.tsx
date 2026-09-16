@@ -122,7 +122,7 @@ const PhysicalInventoryPage: React.FC = () => {
       </Toolbar>
       <PageContent>
         <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={inventorySelector.loading} />
         </div>
       </PageContent>
       <AppPagination />

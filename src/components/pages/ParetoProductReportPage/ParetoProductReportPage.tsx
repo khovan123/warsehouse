@@ -15,7 +15,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { useParetoSelector } from '@/state/ducks/pareto/selectors';
 import { fetchParetoRequest } from '@/state/ducks/pareto/slice';
-import type { Pareto, ParetoClassification } from '@/state/ducks/pareto/type';
+import type { Pareto } from '@/state/ducks/pareto/type';
 import { PARETO_CLASS_LABELS, type ParetoClassTag } from '@/utils/constants';
 import { formatDecimalNumber } from '@/utils/helpers/format';
 
@@ -64,8 +64,7 @@ const ParetoProductReportPage: React.FC = () => {
     dispatch(fetchParetoRequest());
   }, [dispatch]);
 
-  const rows: Pareto[] = paretoSelector.paretos || [];
-  const classifications: ParetoClassification[] = paretoSelector.classifications || [];
+  const { paretos: rows, classifications } = paretoSelector.data;
 
   const tableProps: DataTableProps<Pareto, unknown> = {
     columns,
@@ -107,7 +106,7 @@ const ParetoProductReportPage: React.FC = () => {
             {classifications.map((item) => (
               <div
                 key={item.tag}
-                className={`rounded-xl border border-border bg-card px-4 py-3 text-xs bg-primary/20 text-primary`}
+                className={`rounded-xl border border-border px-4 py-3 text-xs bg-primary/20 text-primary`}
               >
                 <p className="text-xs font-semibold">{PARETO_CLASS_LABELS[item.tag]}</p>
                 <p className="mt-2 text-2xl font-bold">
@@ -123,7 +122,7 @@ const ParetoProductReportPage: React.FC = () => {
             ))}
           </div>
 
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={paretoSelector.loading} />
         </div>
       </PageContent>
       <AppPagination />

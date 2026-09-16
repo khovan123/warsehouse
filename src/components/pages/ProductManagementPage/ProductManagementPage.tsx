@@ -120,7 +120,7 @@ const ProductManagementPage: React.FC = () => {
       </Toolbar>
       <PageContent>
         <div className={cn('w-full h-full', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={productSelector.loading} />
         </div>
       </PageContent>
       <AppPagination />

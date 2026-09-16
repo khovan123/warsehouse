@@ -112,7 +112,7 @@ const ValuedStockReportPage: React.FC = () => {
             ))}
           </div>
 
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={stockSelector.loading} />
         </div>
       </PageContent>
       <AppPagination />
