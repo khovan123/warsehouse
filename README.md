@@ -6,13 +6,13 @@
 
 **Inventory · Stock · Goods Movement · Reservations · Reporting · Warehouse Operations**
 
-[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet&logoColor=white)](./warehouse-api-dotnet)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](./warsehouse-web)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](./warsehouse-web)
-[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](./warsehouse-web)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Data-47A248?logo=mongodb&logoColor=white)](./warehouse-api-dotnet)
-[![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?logo=redis&logoColor=white)](./warehouse-api-dotnet)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](./warehouse-api-dotnet)
+[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet&logoColor=white)](./api)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](./web)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)](./web)
+[![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)](./web)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Data-47A248?logo=mongodb&logoColor=white)](./api)
+[![Redis](https://img.shields.io/badge/Redis-Cache-DC382D?logo=redis&logoColor=white)](./api)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](./api)
 
 A full-stack Warehouse Management System (WMS) for managing products, warehouse stock, inventory operations, goods transactions, reservations, movements, costing, and operational reports from one application.
 
@@ -55,12 +55,12 @@ The system is designed around common Warehouse Management System workflows:
 - authenticating users and protecting application routes;
 - exposing operational health and API infrastructure for deployment.
 
-The repository contains two independently structured applications:
+The repository contains two applications:
 
 | Application | Purpose | Location |
 | --- | --- | --- |
-| **Warehouse API** | Business logic, authentication, persistence, reporting APIs and warehouse domain services | [`warehouse-api-dotnet/`](./warehouse-api-dotnet) |
-| **Warsehouse Web** | Browser-based WMS interface for warehouse operations and reports | [`warsehouse-web/`](./warsehouse-web) |
+| **Warehouse API** | Business logic, authentication, persistence, reporting APIs and warehouse domain services | [`api/`](./api) |
+| **Warsehouse Web** | Browser-based WMS interface for warehouse operations and reports | [`web/`](./web) |
 
 ---
 
@@ -138,9 +138,7 @@ Frontend routes:
 
 ### 🧮 Physical Inventory
 
-Physical inventory functionality is available as a transaction workflow.
-
-The backend contains inventory entities, DTOs, repository and application services, including inventory types and inventory details.
+Physical inventory functionality is available as a transaction workflow. The backend contains inventory entities, DTOs, repository and application services, including inventory types and inventory details.
 
 Frontend route:
 
@@ -150,16 +148,7 @@ Frontend route:
 
 ### 🚚 Goods Movement
 
-Goods movement functionality tracks movement of stock within warehouse operations.
-
-The movement domain includes:
-
-- movement records;
-- movement details;
-- movement summaries;
-- movement reports;
-- period-based summary support;
-- dedicated movement APIs and application services.
+Goods movement functionality tracks movement of stock within warehouse operations, including movement records, details, summaries, reports, period-based summary support and dedicated APIs/services.
 
 Frontend route:
 
@@ -169,16 +158,7 @@ Frontend route:
 
 ### 🔄 Goods Transactions
 
-The application contains both query and command-oriented goods transaction API functionality.
-
-The goods transaction module includes:
-
-- goods transaction records;
-- detailed transaction data;
-- transaction APIs;
-- application services;
-- repository persistence;
-- frontend transaction workflow.
+The application contains query and command-oriented goods transaction functionality, covering transaction records, detailed data, APIs, application services, repository persistence and a frontend workflow.
 
 Frontend route:
 
@@ -188,16 +168,7 @@ Frontend route:
 
 ### 🔒 Stock Reservation
 
-Stock reservation allows inventory to be represented as reserved for warehouse operations.
-
-The codebase provides:
-
-- reservation domain entities;
-- reservation details;
-- reservation DTOs;
-- repository access;
-- application service layer;
-- a dedicated reservation UI.
+Stock reservation provides reservation entities, reservation details, DTOs, repository access, application services and a dedicated UI.
 
 Frontend route:
 
@@ -209,50 +180,28 @@ Frontend route:
 
 The WMS includes a dedicated transaction screen for generating average costs.
 
-Frontend route:
-
 ```text
 /wms/transactions/generate-average-costs
 ```
 
-### 📈 Material Transaction Report
+### 📈 Reporting & Analytics
 
-Provides reporting around warehouse material transactions.
+The web application includes dedicated reporting areas for:
 
-Frontend route:
+- material transaction reports;
+- product movement reports;
+- valued stock reports;
+- Pareto product reports;
+- stock reports.
+
+Routes:
 
 ```text
 /wms/analysis/material-transaction-report
-```
-
-### 🔍 Product Movement Report
-
-Provides product-centric movement analysis across warehouse activity.
-
-Frontend route:
-
-```text
 /wms/analysis/product-movements-report
-```
-
-### 💵 Valued Stock Report
-
-Provides stock reporting with valuation-oriented data.
-
-Frontend route:
-
-```text
 /wms/analysis/valued-stock-report
-```
-
-### 📉 Pareto Product Report
-
-The backend contains a dedicated Pareto domain model, repository, service and API controller together with a Pareto tagging model.
-
-Frontend route:
-
-```text
 /wms/analysis/pareto-product-report
+/wms/analysis/stock-report
 ```
 
 ### ❤️ Health & Operational Infrastructure
@@ -292,8 +241,6 @@ flowchart LR
 ```
 
 ### Backend Layering
-
-The backend follows a separated application/domain/infrastructure design:
 
 ```text
 API
@@ -391,7 +338,7 @@ Infrastructure
 ```text
 warsehouse/
 │
-├── warehouse-api-dotnet/             # ASP.NET Core backend
+├── api/                              # ASP.NET Core backend
 │   ├── Dockerfile
 │   ├── docker-compose.yml
 │   ├── warehouse-api-dotnet.sln
@@ -405,7 +352,7 @@ warsehouse/
 │   └── tests/
 │       └── WarehouseBusiness.UnitTests/
 │
-├── warsehouse-web/                   # React + TypeScript frontend
+├── web/                              # React + TypeScript frontend
 │   ├── package.json
 │   ├── vite.config.ts
 │   ├── public/
@@ -422,13 +369,13 @@ warsehouse/
 └── README.md
 ```
 
+> Folder names are intentionally short at the monorepo level. Internal project names such as `warehouse-api-dotnet.sln` and the frontend package name remain unchanged to avoid unnecessary build/configuration changes.
+
 ---
 
 ## Backend
 
 ### Main API Areas
-
-The API currently includes controllers for:
 
 ```text
 Auth
@@ -449,8 +396,6 @@ Warehouse
 
 ### Domain Model
 
-The domain contains entities representing key warehouse concepts such as:
-
 ```text
 Warehouse
 Bin
@@ -469,25 +414,22 @@ Address
 Contact
 ```
 
-Additional detail models support movement reports, summaries, product details, stock details, reservation details and other reporting use cases.
-
 ### Run Backend Locally
 
 ```bash
-cd warehouse-api-dotnet
+cd api
 
 dotnet restore
 dotnet build warehouse-api-dotnet.sln
 dotnet run --project src/WarehouseBusiness/API/API.csproj
 ```
 
-> The API expects its MongoDB/Redis and application configuration to be available through the backend configuration files/environment for the target environment.
+> The API expects its MongoDB/Redis and application configuration to be available through backend configuration files/environment variables for the target environment.
 
 ### Run Backend with Docker
 
 ```bash
-cd warehouse-api-dotnet
-
+cd api
 docker compose up --build
 ```
 
@@ -502,8 +444,6 @@ http://localhost:8081
 ## Frontend
 
 ### Main Web Areas
-
-The private WMS interface currently exposes the following application modules:
 
 ```text
 Product Management
@@ -541,8 +481,7 @@ Generate Average Costs
 ### Run Frontend Locally
 
 ```bash
-cd warsehouse-web
-
+cd web
 npm ci
 npm run dev
 ```
@@ -553,7 +492,7 @@ Production build:
 npm run build
 ```
 
-Preview the production build:
+Preview:
 
 ```bash
 npm run preview
@@ -584,7 +523,7 @@ cd warsehouse
 ### Start the API
 
 ```bash
-cd warehouse-api-dotnet
+cd api
 dotnet restore
 dotnet run --project src/WarehouseBusiness/API/API.csproj
 ```
@@ -592,7 +531,7 @@ dotnet run --project src/WarehouseBusiness/API/API.csproj
 Or:
 
 ```bash
-cd warehouse-api-dotnet
+cd api
 docker compose up --build
 ```
 
@@ -601,7 +540,7 @@ docker compose up --build
 In another terminal:
 
 ```bash
-cd warsehouse-web
+cd web
 npm ci
 npm run dev
 ```
@@ -614,36 +553,25 @@ npm run dev
 
 ```bash
 # Restore dependencies
-dotnet restore warehouse-api-dotnet/warehouse-api-dotnet.sln
+dotnet restore api/warehouse-api-dotnet.sln
 
 # Build
-dotnet build warehouse-api-dotnet/warehouse-api-dotnet.sln
+dotnet build api/warehouse-api-dotnet.sln
 
 # Test
-dotnet test warehouse-api-dotnet/warehouse-api-dotnet.sln
+dotnet test api/warehouse-api-dotnet.sln
 ```
 
 ### Frontend
 
 ```bash
-cd warsehouse-web
+cd web
 
-# Development
 npm run dev
-
-# TypeScript + production build
 npm run build
-
-# ESLint
 npm run lint
-
-# Check formatting
 npm run lint:format
-
-# Format source
 npm run format
-
-# Preview production build
 npm run preview
 ```
 
@@ -651,24 +579,22 @@ npm run preview
 
 ## Testing
 
-The backend includes unit-test projects under:
+Backend tests are located under:
 
 ```text
-warehouse-api-dotnet/tests/WarehouseBusiness.UnitTests/
+api/tests/WarehouseBusiness.UnitTests/
 ```
-
-The repository currently contains tests around areas including authentication services, validation and login request validation.
 
 Run all .NET tests with:
 
 ```bash
-dotnet test warehouse-api-dotnet/warehouse-api-dotnet.sln
+dotnet test api/warehouse-api-dotnet.sln
 ```
 
-Frontend quality checks are available through ESLint, TypeScript compilation and Prettier checks:
+Frontend quality checks:
 
 ```bash
-cd warsehouse-web
+cd web
 npm run lint
 npm run lint:format
 npm run build
@@ -678,7 +604,7 @@ npm run build
 
 ## Security and Reliability
 
-The backend codebase includes several production-oriented controls:
+The backend includes:
 
 - **JWT authentication** for protected API access;
 - **refresh-token domain support**;
@@ -695,11 +621,18 @@ The backend codebase includes several production-oriented controls:
 
 ## Repository History
 
-This repository is a consolidated monorepo created from two GitLab projects:
+This monorepo was consolidated from two GitLab projects:
 
 ```text
 openbravo2/warsehouse/warehouse-api-dotnet
 openbravo2/warsehouse/warsehouse-web
+```
+
+Their application contents now live at:
+
+```text
+api/
+web/
 ```
 
 The original Git histories were imported without rewriting their original commit objects. Historical source branches are preserved in GitHub using namespaces such as:
@@ -709,13 +642,7 @@ api/*
 web/*
 ```
 
-The monorepo default branch is:
-
-```text
-main
-```
-
-This layout keeps the backend and frontend together while preserving the original development history of both applications.
+The monorepo default branch is `main`.
 
 ---
 
