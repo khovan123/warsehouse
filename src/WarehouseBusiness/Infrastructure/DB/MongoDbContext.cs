@@ -26,5 +26,6 @@ namespace Infrastructure.DB
 
         public IMongoCollection<Inventory> Inventories => _database.GetCollection<Inventory>(MongoCollections.Inventory);
         public IMongoCollection<RefreshToken> RefreshTokens => _database.GetCollection<RefreshToken>(MongoCollections.RefreshTokens);
+        public IMongoCollection<Stock> Stocks => _database.GetCollection<Stock>(MongoCollections.Stocks);
     }
 }
