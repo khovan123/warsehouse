@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
             _products = context.Products;
             _categories = context.Categories;
         }
-        public async Task<List<Product>> GetAllAsync(CancellationToken ct)
+        public async Task<List<Product>?> GetAllAsync(CancellationToken ct)
         {
             var filter = Builders<Product>.Filter.Empty;
             return await _products.Find(filter).ToListAsync(ct);
@@ -52,7 +52,7 @@ namespace Infrastructure.Repositories
             return await pipeline.ToListAsync(ct);
         }
 
-        public async Task<Product> GetByIdAsync(string id, CancellationToken ct)
+        public async Task<Product?> GetByIdAsync(string id, CancellationToken ct)
         {
             var filter = Builders<Product>.Filter.Eq(p => p.Id, id);
             return await _products.Find(filter).FirstOrDefaultAsync(ct);

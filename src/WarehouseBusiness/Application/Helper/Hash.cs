@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Application.Helper.Options;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,24 +10,33 @@ namespace Application.Helper
 {
     public static class Hash
     {
-        public static string GenerateJWT(IConfiguration _config)
+        public static string GenerateJWT(JwtOptions options, string subjectUserId, string? username = null, IEnumerable<string>? roles = null)
         {
-            var jwtSection = _config.GetSection("JWT");
-            var secretKey_bytes = Encoding.UTF8.GetBytes(jwtSection["SECRET_KEY"]!);
-            var secretKey = new SymmetricSecurityKey(secretKey_bytes);
+            var keyBytes = Encoding.UTF8.GetBytes(options.SecretKey);
+            var secretKey = new SymmetricSecurityKey(keyBytes);
 
             var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
 
-            //var claims = new[] {
-           
-            //};
+            var claims = new List<Claim> {
+                new(JwtRegisteredClaimNames.Sub, subjectUserId),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N"))
+            };
 
-            var expires = DateTime.UtcNow.AddMinutes(int.Parse(jwtSection["TOKEN_EXPIRES"]!));
+            if (!string.IsNullOrWhiteSpace(username))
+                claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, username));
+
+            if (roles is not null)
+            {
+                foreach (var r in roles.Where(x => !string.IsNullOrWhiteSpace(x)))
+                    claims.Add(new Claim(ClaimTypes.Role, r));
+            }
+
+            var expires = DateTime.UtcNow.AddMinutes(options.TokenExpiresMinutes);
 
             var jwt = new JwtSecurityToken(
-                issuer: jwtSection["ISSUER"],
-                audience: jwtSection["AUDIENCE"],
-                //claims: claims,
+                issuer: options.Issuer,
+                audience: options.Audience,
+                claims: claims,
                 expires: expires,
                 signingCredentials: signingCredentials
             );

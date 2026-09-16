@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace Contract.Responses
+﻿namespace Contract.Responses
 // UPDATE START
 // public abstract record ApiResponse<T>
 // {
@@ -25,7 +23,7 @@ namespace Contract.Responses
         public ApiResponse(
             TData data = default!,
             string? message = "Response successfully!",
-            int? statusCode = StatusCodes.Status200OK)
+            int? statusCode = 200)
         {
             Result = new Result<TData>(data, message);
             StatusCode = statusCode;

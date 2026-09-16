@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
             _stocks = context.Stocks;
         }
 
-        public async Task<List<StockDetails>> GetAllAsync(CancellationToken ct)
+        public async Task<List<StockDetails>?> GetAllAsync(CancellationToken ct)
         {
             var pipeline = new MongoAggregationPipeline<Stock>(_stocks)
                 .Match(s => true)
@@ -47,7 +47,7 @@ namespace Infrastructure.Repositories
             return await pipeline.ToListAsync(ct);
         }
 
-        public async Task<StockDetails> GetByIdAsync(string id, CancellationToken ct)
+        public async Task<StockDetails?> GetByIdAsync(string id, CancellationToken ct)
         {
             var pipeline = new MongoAggregationPipeline<Stock>(_stocks)
                .Match(s => string.Equals(s.Id, id, StringComparison.OrdinalIgnoreCase))

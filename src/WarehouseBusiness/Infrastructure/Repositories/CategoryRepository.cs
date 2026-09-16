@@ -13,13 +13,13 @@ namespace Infrastructure.Repositories
         {
             _categories = context.Categories;
         }
-        public async Task<List<Category>> GetAllAsync(CancellationToken ct)
+        public async Task<List<Category>?> GetAllAsync(CancellationToken ct)
         {
             var filter = Builders<Category>.Filter.Eq(c => c.IsActive, true);
             return await _categories.Find(filter).ToListAsync(ct);
         }
 
-        public async Task<Category> GetByIdAsync(string id, CancellationToken ct)
+        public async Task<Category?> GetByIdAsync(string id, CancellationToken ct)
         {
             var exp = Builders<Category>.Filter;
             var filter = exp.And(

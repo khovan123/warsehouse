@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Wareh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contract", "src\WarehouseBusiness\Contract\Contract.csproj", "{6EA2D1FD-77C1-4868-99EE-930E92F4FF2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API.UnitTests", "tests\WarehouseBusiness.UnitTests\API.UnitTests\API.UnitTests.csproj", "{2DDF280B-1ED6-4674-92D7-61102DAF88A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "tests\WarehouseBusiness.UnitTests\Application.UnitTests\Application.UnitTests.csproj", "{92B3DE0B-2521-4FB5-905B-17A5EFD806B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{6EA2D1FD-77C1-4868-99EE-930E92F4FF2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6EA2D1FD-77C1-4868-99EE-930E92F4FF2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EA2D1FD-77C1-4868-99EE-930E92F4FF2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DDF280B-1ED6-4674-92D7-61102DAF88A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DDF280B-1ED6-4674-92D7-61102DAF88A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DDF280B-1ED6-4674-92D7-61102DAF88A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DDF280B-1ED6-4674-92D7-61102DAF88A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92B3DE0B-2521-4FB5-905B-17A5EFD806B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92B3DE0B-2521-4FB5-905B-17A5EFD806B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92B3DE0B-2521-4FB5-905B-17A5EFD806B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92B3DE0B-2521-4FB5-905B-17A5EFD806B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
