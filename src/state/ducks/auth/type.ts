@@ -1,16 +1,23 @@
+import type { ApiError } from '@/apis/type';
+
 export type LoginData = {
   username: string;
   password: string;
 };
 
 export type User = {
-  name: string;
+  userId: string;
+  username: string;
+  email: string;
 };
 
 export type AuthState = {
-  data: User | null;
+  data: {
+    user: User;
+    token: string;
+  } | null;
   loading: boolean;
-  error: string | null;
+  error: ApiError | null;
   logined: boolean;
 };
 

@@ -1,3 +1,4 @@
+import { GRAPHQL } from './constants';
 import HttpClient from './httpClient';
 
 let instance: HttpClient | null = null;
@@ -15,4 +16,11 @@ export const getClient = () => {
     });
   }
   return instance;
+};
+
+export const callGraphQL = async <T>(
+  query: string,
+  variables?: Record<string, unknown>
+): Promise<T> => {
+  return await getClient().post<T>(GRAPHQL, { query, variables });
 };
