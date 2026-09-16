@@ -15,11 +15,11 @@ namespace Application.Services
             _inventoryRepository = inventoryRepository;
         }
 
-        public async Task<ApiResponse<InventoryDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<InventoryDTO.ResponseDetails>> GetAll(CancellationToken ct)
         {
             var inventories = await _inventoryRepository.GetAll(ct);
-            var data = new InventoryDTO.Response(inventories);
-            return new ApiResponse<InventoryDTO.Response>(data);
+            var data = new InventoryDTO.ResponseDetails(inventories);
+            return new ApiResponse<InventoryDTO.ResponseDetails>(data);
         }
     }
 }
