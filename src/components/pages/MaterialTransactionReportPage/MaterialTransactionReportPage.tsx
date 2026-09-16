@@ -1,73 +1,27 @@
 import { type ColumnDef } from '@tanstack/react-table';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import AppPagination from '@/components/organisms/AppPagination/AppPagination';
 import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
 import { Toolbar, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useMaterialTransactionSelector } from '@/state/ducks/material-transaction/selectors';
+import { fetchMaterialTransactionRequest } from '@/state/ducks/material-transaction/slice';
+import type { MaterialTransaction } from '@/state/ducks/material-transaction/type';
+import { useSetupsSelector } from '@/state/ducks/setups-warehouse/selectors';
+import { fetchSetupsWarehouseRequest } from '@/state/ducks/setups-warehouse/slice';
+import type { Warehouse } from '@/state/ducks/setups-warehouse/type';
+import type { InventoryType } from '@/utils/constants';
+import { INVENTORY_TYPE_OPTIONS } from '@/utils/constants';
 
-type Transaction = {
-  line: number;
-  document: string;
-  movementDate: string;
-  product: string;
-  warehouse: string;
-  bin: string;
-  movementQty: number;
-  uom: string;
-  cost: number;
-  txType: string;
-  bpartner: string;
-};
-
-const transactions: Transaction[] = [
-  {
-    line: 1,
-    document: 'GR-240001',
-    movementDate: '2025-11-16',
-    product: 'SKU-1001 Cotton T-Shirt Blue M',
-    warehouse: 'Main DC',
-    bin: 'A-01-01',
-    movementQty: 50,
-    uom: 'Unit',
-    cost: 9.4,
-    txType: 'Receipt',
-    bpartner: 'Supplier A',
-  },
-  {
-    line: 2,
-    document: 'SO-240098',
-    movementDate: '2025-11-16',
-    product: 'SKU-2001 Running Shoes 42',
-    warehouse: 'Main DC',
-    bin: 'B-01-03',
-    movementQty: -10,
-    uom: 'Pair',
-    cost: 34.2,
-    txType: 'Shipment',
-    bpartner: 'Store 01',
-  },
-  {
-    line: 3,
-    document: 'MV-240045',
-    movementDate: '2025-11-16',
-    product: 'SKU-3001 Travel Backpack',
-    warehouse: 'Main DC',
-    bin: 'C-02-03',
-    movementQty: -5,
-    uom: 'Unit',
-    cost: 21.5,
-    txType: 'Movement',
-    bpartner: 'Store 02',
-  },
-];
-
-const columns: ColumnDef<Transaction>[] = [
+const columns: ColumnDef<MaterialTransaction>[] = [
   {
     accessorKey: 'line',
     header: 'Line',
@@ -77,7 +31,7 @@ const columns: ColumnDef<Transaction>[] = [
     header: 'Document',
   },
   {
-    accessorKey: 'txType',
+    accessorKey: 'type',
     header: 'Type',
   },
   {
@@ -93,14 +47,14 @@ const columns: ColumnDef<Transaction>[] = [
     header: 'Warehouse / Bin',
     cell: ({ row }) => (
       <div>
-        {row.original.warehouse} / {row.original.bin}
+        {row.original.fromWarehouse} / {row.original.bin}
       </div>
     ),
   },
   {
-    accessorKey: 'movementQty',
+    accessorKey: 'qty',
     header: () => <div className="text-right">Qty</div>,
-    cell: ({ row }) => <div className="text-right">{row.getValue('movementQty')}</div>,
+    cell: ({ row }) => <div className="text-right">{row.getValue('qty')}</div>,
   },
   {
     accessorKey: 'uom',
@@ -114,34 +68,35 @@ const columns: ColumnDef<Transaction>[] = [
     ),
   },
   {
-    accessorKey: 'bpartner',
+    accessorKey: 'businessPartner',
     header: 'Business Partner',
   },
 ];
 
 const MaterialTransactionReportPage: React.FC = () => {
   const isMobile = useIsMobile();
-
-  const tableProps: DataTableProps<Transaction, unknown> = {
-    columns,
-    data: transactions,
-  };
-
-  const totalCost = transactions.reduce((sum, tx) => sum + tx.cost * tx.movementQty, 0);
-
-  const Footer = () => (
-    <div
-      className={cn(
-        'border-t border-border bg-card text-[11px] flex',
-        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
-      )}
-    >
-      <span>
-        1 - {transactions.length} of {transactions.length} lines
-      </span>
-      <span>Total Valuation: {totalCost.toFixed(2)} €</span>
-    </div>
+  const dispatch = useDispatch();
+  const { data, loading } = useMaterialTransactionSelector();
+  const { data: setupsData } = useSetupsSelector();
+  const [filtering, setFiltering] = useState<{ inventoryType: InventoryType; warehouseId: string }>(
+    {
+      inventoryType: INVENTORY_TYPE_OPTIONS[0].value as InventoryType,
+      warehouseId: '-1',
+    }
   );
+
+  useEffect(() => {
+    dispatch(fetchSetupsWarehouseRequest());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(fetchMaterialTransactionRequest({ ...filtering }));
+  }, [dispatch, filtering]);
+
+  const tableProps: DataTableProps<MaterialTransaction, unknown> = {
+    columns,
+    data: data.materialTransactions,
+  };
 
   return (
     <PageOverview>
@@ -151,25 +106,27 @@ const MaterialTransactionReportPage: React.FC = () => {
       />
       <Toolbar>
         <FilterSelect
-          defaultValue="all-types"
-          placeholder="All transaction types"
+          defaultValue={INVENTORY_TYPE_OPTIONS[0].value.toString()}
+          onValueChange={(value) => {
+            setFiltering((prev) => ({ ...prev, inventoryType: value as unknown as InventoryType }));
+          }}
+          placeholder={INVENTORY_TYPE_OPTIONS[0].label}
           triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
-          options={[
-            { value: 'all-types', label: 'All transaction types' },
-            { value: 'receipt', label: 'Receipt' },
-            { value: 'shipment', label: 'Shipment' },
-            { value: 'movement', label: 'Movement' },
-            { value: 'inventory', label: 'Inventory' },
-          ]}
+          options={INVENTORY_TYPE_OPTIONS}
         />
         <FilterSelect
-          defaultValue="all-warehouses"
+          defaultValue="-1"
+          onValueChange={(value) => {
+            setFiltering((prev) => ({ ...prev, warehouseId: value }));
+          }}
           placeholder="All warehouses"
           triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
           options={[
-            { value: 'all-warehouses', label: 'All warehouses' },
-            { value: 'main-dc', label: 'Main DC' },
-            { value: 'store-01', label: 'Store 01' },
+            { value: '-1', label: 'All warehouses' },
+            ...(setupsData.warehouses?.map((warehouse: Warehouse) => ({
+              value: warehouse.id,
+              label: warehouse.name,
+            })) || []),
           ]}
         />
         <ToolbarInput type="date" defaultValue="2025-11-15" />
@@ -178,10 +135,10 @@ const MaterialTransactionReportPage: React.FC = () => {
       </Toolbar>
       <PageContent>
         <div className={cn(isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-          <DataTable {...tableProps} />
+          <DataTable {...tableProps} isLoadingData={loading} />
         </div>
       </PageContent>
-      <Footer />
+      <AppPagination />
     </PageOverview>
   );
 };

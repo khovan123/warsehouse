@@ -12,5 +12,7 @@ export const RESERVATION_REQUEST_PATH = '/reservations';
 export const UNAUTHORIZED_STATUS_CODE = 401;
 export const SUMMARY_PATH = 'summary';
 export const REPORT_PATH = 'report';
+export const MATERIAL_TRANSACTION_PATH = 'material-transaction';
 export const MOVEMENT_SUMMARY_PATH = `${MOVEMENT_REQUEST_PATH}/${SUMMARY_PATH}`;
 export const MOVEMENT_REPORT_PATH = `${MOVEMENT_REQUEST_PATH}/${REPORT_PATH}`;
+export const MOVEMENT_MATERIAL_TRANSACTION_PATH = `${MOVEMENT_REQUEST_PATH}/${MATERIAL_TRANSACTION_PATH}`;

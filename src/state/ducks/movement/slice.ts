@@ -39,17 +39,6 @@ export const movementSlice = createSlice({
       state.loading = false;
       state.error = action.payload.error;
     },
-    // fetchMovementSummaryRequest: (state) => {
-    //   state.summaryLoading = true;
-    // },
-    // fetchMovementSummarySuccess: (state, action: PayloadAction<Pick<MovementState, 'data'>>) => {
-    //   state.summaryLoading = false;
-    //   state.data.movementSummaries = action.payload.data.movementSummaries;
-    // },
-    // fetchMovementSummaryFailure: (state, action: PayloadAction<Pick<MovementState, 'error'>>) => {
-    //   state.summaryLoading = false;
-    //   state.error = action.payload.error;
-    // },
   },
 });
 
@@ -60,9 +49,6 @@ export const {
   fetchMovementReportRequest,
   fetchMovementReportSuccess,
   fetchMovementReportFailure,
-  // fetchMovementSummaryRequest,
-  // fetchMovementSummarySuccess,
-  // fetchMovementSummaryFailure,
 } = movementSlice.actions;
 
 export default movementSlice.reducer;

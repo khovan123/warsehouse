@@ -114,7 +114,7 @@ const ProductMovementsReportPage: React.FC = () => {
         <FilterSelect
           defaultValue={INVENTORY_TYPE_OPTIONS[0].value.toString()}
           onValueChange={(value) => {
-            setFiltering((prev) => ({ ...prev, inventoryType: value as unknown as Period }));
+            setFiltering((prev) => ({ ...prev, inventoryType: value as unknown as InventoryType }));
           }}
           placeholder={INVENTORY_TYPE_OPTIONS[0].label}
           triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}

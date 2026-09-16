@@ -28,7 +28,11 @@ function* fetchMovementFlow() {
     const res: Unwrap<FetchMovementResponse> = yield call(fetchMovementApi);
     yield put(
       fetchMovementSuccess({
-        data: { movements: res.movements, movementReports: [], movementSummaries: [] },
+        data: {
+          movements: res.movements,
+          movementReports: [],
+          movementSummaries: [],
+        },
       })
     );
   } catch (error) {

@@ -8,6 +8,7 @@ import { authPersistFilter } from './ducks/auth/persist-filter';
 import authReducer from './ducks/auth/slice';
 import goodTransactionReducer from './ducks/good-transaction/slice';
 import inventoryReducer from './ducks/inventory/slice';
+import materialTransactionReducer from './ducks/material-transaction/slice';
 import movementReducer from './ducks/movement/slice';
 import paretoReducer from './ducks/pareto/slice';
 import productReducer from './ducks/product/slice';
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   stock: stockReducer,
   pareto: paretoReducer,
   movement: movementReducer,
+  materialTransaction: materialTransactionReducer,
   goodTransaction: goodTransactionReducer,
   reservation: reservationReducer,
 });
