@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 
-import { PRODUCT_MANAGEMENT_PATH } from '../../../routers/route.constants';
+import { PRODUCT_MANAGEMENT_PATH } from '@/routers/route.constants';
 
 export const NotFoundPage: React.FC = () => {
   return (

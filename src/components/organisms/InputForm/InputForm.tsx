@@ -1,6 +1,6 @@
 import type { FieldValues } from 'react-hook-form';
 
-import type { InputFormContainerProps } from '../../../@types/input';
+import type { InputFormContainerProps } from '@/@types/input';
 
 import InputFormContainer from './InputFormContainer';
 

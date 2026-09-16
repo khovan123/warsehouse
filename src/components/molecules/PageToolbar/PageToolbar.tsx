@@ -1,6 +1,6 @@
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import type { UIComponentProps } from '../../ui/type';
+import type { UIComponentProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 const PageToolbar = ({ children, className }: UIComponentProps) => {
   const isMobile = useIsMobile();

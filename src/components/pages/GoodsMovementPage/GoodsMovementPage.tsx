@@ -2,22 +2,22 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Minus, Plus } from 'lucide-react';
 import React from 'react';
 
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { DataTable } from '@/components/ui/data-table';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../../../components/ui/select';
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { Badge } from '../../ui/badge';
-import { Button } from '../../ui/button';
-import { Checkbox } from '../../ui/checkbox';
-import { DataTable } from '../../ui/data-table';
-import { Input } from '../../ui/input';
-import type { DataTableProps } from '../../ui/type';
+} from '@/components/ui/select';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type Movement = {
   docNo: string;
@@ -126,13 +126,13 @@ const GoodsMovementPage: React.FC = () => {
     <div
       className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
     >
-      <Button size={isMobile ? 'default' : 'sm'}>
+      <Button size={isMobile ? 'default' : 'sm'} className="rounded-full">
         <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New Movement
       </Button>
 
       <Input
         type="text"
-        placeholder="Search by document, warehouse..."
+        placeholder="Search by document, warehouse"
         className={cn(
           'h-8 rounded-full border border-border bg-background px-3 text-xs focus:outline-none focus:ring-2 focus:ring-primary/40 placeholder:text-xs',
           isMobile ? 'w-full' : 'flex-1 min-w-40'
@@ -166,11 +166,11 @@ const GoodsMovementPage: React.FC = () => {
   const footer = (
     <div
       className={cn(
-        'border-t border-border bg-card text-[11px] flex',
+        'border-t border-border bg-card text-[11px] flex items-center',
         isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
       )}
     >
-      <span>
+      <span className="flex items-center">
         1 <Minus /> {movements.length} of {movements.length} movements
       </span>
       <span>Items per page: 50</span>

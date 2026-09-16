@@ -1,6 +1,6 @@
-import { cn } from '../../../lib/utils';
-import PageDescription from '../../atoms/PageDescription/PageDescription';
-import PageTitle from '../../atoms/PageTitle/PageTitle';
+import PageDescription from '@/components/atoms/PageDescription/PageDescription';
+import PageTitle from '@/components/atoms/PageTitle/PageTitle';
+import { cn } from '@/lib/utils';
 
 import type { PageHeaderProps } from './type';
 

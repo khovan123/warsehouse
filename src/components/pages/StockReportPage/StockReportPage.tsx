@@ -2,13 +2,13 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import { FilterSelect } from '../../molecules/FilterSelect';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { DataTable } from '../../ui/data-table';
-import { Input } from '../../ui/input';
-import type { DataTableProps } from '../../ui/type';
+import { FilterSelect } from '@/components/molecules/FilterSelect';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { DataTable } from '@/components/ui/data-table';
+import { Input } from '@/components/ui/input';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type StockRow = {
   product: string;
@@ -109,7 +109,10 @@ const StockReportPage: React.FC = () => {
       <Input
         type="text"
         placeholder="Search product..."
-        className={cn('rounded-full h-8', isMobile ? 'w-full' : 'flex-1 min-w-40')}
+        className={cn(
+          'rounded-full text-xs h-8 placeholder:text-xs',
+          isMobile ? 'w-full' : 'flex-1 min-w-40'
+        )}
       />
     </div>
   );

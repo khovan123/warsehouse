@@ -1,14 +1,14 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import { FilterSelect } from '../../molecules/FilterSelect';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { Badge } from '../../ui/badge';
-import { Button } from '../../ui/button';
-import { DataTable } from '../../ui/data-table';
-import type { DataTableProps } from '../../ui/type';
+import { FilterSelect } from '@/components/molecules/FilterSelect';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type ParetoRow = {
   product: string;
@@ -158,9 +158,9 @@ const ParetoProductReportPage: React.FC = () => {
               key={item.label}
               className={`rounded-xl border border-border bg-card px-4 py-3 text-xs ${item.color}`}
             >
-              <p className="text-[12px] font-semibold">{item.label}</p>
+              <p className="text-xs font-semibold">{item.label}</p>
               <p className="mt-2 text-2xl font-bold">{item.percentage}%</p>
-              <p className="text-[11px]">
+              <p className="text-xs">
                 Value share: <span className="font-semibold">{item.valueShare}%</span>
               </p>
             </div>

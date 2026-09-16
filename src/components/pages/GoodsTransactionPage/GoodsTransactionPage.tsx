@@ -1,13 +1,20 @@
 import { type ColumnDef } from '@tanstack/react-table';
+import { Minus } from 'lucide-react';
 import React from 'react';
 
-import { useIsMobile } from '../../../hooks/use-mobile';
-import { cn } from '../../../lib/utils';
-import PageLayout from '../../organisms/PageLayout/PageLayout';
-import { DataTable } from '../../ui/data-table';
-import { Input } from '../../ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
-import type { DataTableProps } from '../../ui/type';
+import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import { DataTable } from '@/components/ui/data-table';
+import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import type { DataTableProps } from '@/components/ui/type';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 
 type Transaction = {
   docNo: string;
@@ -142,9 +149,9 @@ const GoodsTransactionPage: React.FC = () => {
       </Select>
       <Input
         type="text"
-        placeholder="Filter by product, doc, business partner..."
+        placeholder="Filter by product, doc, business partner"
         className={cn(
-          'h-8 rounded-full focus:outline-none',
+          'h-8 rounded-full focus:outline-none placeholder:text-xs',
           isMobile ? 'w-full' : 'flex-1 min-w-40'
         )}
       />
@@ -154,12 +161,12 @@ const GoodsTransactionPage: React.FC = () => {
   const footer = (
     <div
       className={cn(
-        'border-t border-border bg-card text-[11px] flex',
+        'border-t border-border bg-card text-[11px] flex items-center',
         isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
       )}
     >
-      <span>
-        1 - {transactions.length} of {transactions.length} transactions
+      <span className="flex items-center">
+        1 <Minus /> {transactions.length} of {transactions.length} transactions
       </span>
       <span>Items per page: 100</span>
     </div>
