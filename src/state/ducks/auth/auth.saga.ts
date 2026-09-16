@@ -6,6 +6,7 @@ import { loginApi } from '@/apis/auth/auth';
 import type { ApiError } from '@/apis/type';
 import { showToast } from '@/state/ducks/toast/slice';
 
+import type { Unwrap } from './../../../apis/type';
 import { loginFailure, loginRequest, loginSuccess } from './slice';
 
 function* loginFlow(action: PayloadAction<LoginCredentials>) {
@@ -21,7 +22,7 @@ function* loginFlow(action: PayloadAction<LoginCredentials>) {
     //   return;
     // }
 
-    const user: LoginResponse = yield call(loginApi, action.payload);
+    const user: Unwrap<LoginResponse> = yield call(loginApi, action.payload);
     yield put(loginSuccess(user));
     yield put(showToast({ type: 'success', message: 'Login successfully!' }));
   } catch (error) {

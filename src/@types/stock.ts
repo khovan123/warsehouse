@@ -1,5 +1,5 @@
 import type { Stock } from '@/state/ducks/stock/type';
 
-export type StockResponse = {
+export type FetchStockResponse = {
   stocks: Stock[];
 };
