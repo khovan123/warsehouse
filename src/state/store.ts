@@ -10,6 +10,7 @@ import goodTransactionReducer from './ducks/good-transaction/slice';
 import inventoryReducer from './ducks/inventory/slice';
 import movementReducer from './ducks/movement/slice';
 import productReducer from './ducks/product/slice';
+import reservationReducer from './ducks/reservation/slice';
 import setupsReducer from './ducks/setups-warehouse/slice';
 import stockReducer from './ducks/stock/slice';
 import toastReducer from './ducks/toast/slice';
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   stock: stockReducer,
   movement: movementReducer,
   goodTransaction: goodTransactionReducer,
+  reservation: reservationReducer,
 });
 
 const persistConfig = {
