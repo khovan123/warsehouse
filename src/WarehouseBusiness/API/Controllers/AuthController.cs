@@ -28,13 +28,13 @@ namespace API.Controllers
                 var rawRefreshToken = res.Result.Data.RefreshToken ?? "";
                 var data = res.Result.Data.Response;
 
-                Response.Cookies.Append("refresh_token", rawRefreshToken, new CookieOptions
+                Response.Cookies.Append(Constants.REFRESH_TOKEN_HEADER, rawRefreshToken, new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.None,
                     Expires = DateTime.Now.AddDays(1),
-                    Path = "/api/v1/auth"
+                    Path = Constants.AUTH_PATH
                 });
 
                 var newApiRes = new ApiResponse<LoginDTO.Response>(data, res.Result.Message, res.StatusCode);
@@ -48,7 +48,7 @@ namespace API.Controllers
         [HttpPost("refresh-token")]
         public async Task<IActionResult> Refresh(CancellationToken ct)
         {
-            if (!Request.Cookies.TryGetValue("refresh_token", out var rawRefreshToken) || string.IsNullOrEmpty(rawRefreshToken))
+            if (!Request.Cookies.TryGetValue(Constants.REFRESH_TOKEN_HEADER, out var rawRefreshToken) || string.IsNullOrEmpty(rawRefreshToken))
                 return await Task.FromResult<IActionResult>(new UnauthorizedResult());
 
             var tokenHash = Hash.Sha256(rawRefreshToken);
@@ -60,13 +60,13 @@ namespace API.Controllers
                 var newRefreshToken = res.Result.Data.RefreshToken;
                 var data = res.Result.Data.Response;
 
-                Response.Cookies.Append("refresh_token", newRefreshToken, new CookieOptions
+                Response.Cookies.Append(Constants.REFRESH_TOKEN_HEADER, newRefreshToken, new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.None,
                     Expires = DateTime.Now.AddDays(1),
-                    Path = "/api/v1/auth"
+                    Path = Constants.AUTH_PATH
                 });
 
 
