@@ -76,9 +76,15 @@ if (app.Environment.IsDevelopment())
         options.RoutePrefix = "swagger";
     });
 }
+else if (app.Environment.IsProduction())
+{
+    app.UseHsts();
+}
 
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<CorrelationCheckMiddleware>();
+
+app.AddAppHeaders();
 
 app.UseHttpsRedirection();
 
