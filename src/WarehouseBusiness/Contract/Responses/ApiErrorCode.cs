@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Contract.Responses
+{
+    public static class ApiErrorCode
+    {
+        public const string ValidationFailed = "VALIDATION_FAILED";
+        public const string AuthenticationFailed = "AUTHENTICATION_FAILED";
+        public const string Unauthorized = "UNAUTHORIZED";
+        public const string Forbidden = "FORBIDDEN";
+        public const string NotFound = "NOT_FOUND";
+        public const string Conflict = "CONFLICT";
+        public const string BadRequest = "BAD_REQUEST";
+        public const string InternalError = "INTERNAL_ERROR";
+    }
+}
