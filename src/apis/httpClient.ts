@@ -1,12 +1,12 @@
 import axios, { AxiosError } from 'axios';
 
 import type { RefreshTokenResponse } from '@/@types/refresh-token';
-import type { HttpClientInstance, RequestConfig } from '@/@types/request';
-import { setToken } from '@/state/ducks/auth/slice';
+import type { HttpClientInstance, HttpResponse, RequestConfig } from '@/@types/request';
+import { logout, setToken } from '@/state/ducks/auth/slice';
 import store from '@/state/store';
 
 import { REFRESH_TOKEN_PATH, UNAUTHORIZED_STATUS_CODE } from './constants';
-import { ApiError, type GraphqlError } from './type';
+import { ApiError } from './type';
 
 class HttpClient {
   private config: RequestConfig;
@@ -36,72 +36,84 @@ class HttpClient {
   // }
 
   private buildApiError(error: unknown): ApiError {
-    let errorCode;
-    let errorMessage;
-    let errorDetail;
-    let errorPath;
+    // let errorCode;
+    // let errorMessage;
+    // let errorDetail;
+    // let errorPath;
 
-    if ((error as GraphqlError).errors) {
-      const refinedData = error as Record<string, unknown>;
-      if (Array.isArray(refinedData.errors) && refinedData.errors.length > 0) {
-        const gqlError = refinedData.errors[0];
-        const extensions = gqlError.extensions || {};
+    // if ((error as GraphqlError).errors) {
+    //   const refinedData = error as Record<string, unknown>;
+    //   if (Array.isArray(refinedData.errors) && refinedData.errors.length > 0) {
+    //     const gqlError = refinedData.errors[0];
+    //     const extensions = gqlError.extensions || {};
 
-        errorMessage = gqlError.message;
+    //     errorMessage = gqlError.message;
 
-        errorCode = extensions.code;
+    //     errorCode = extensions.code;
 
-        errorDetail =
-          extensions.stacktrace ||
-          (Array.isArray(extensions.stacktrace)
-            ? extensions.stacktrace.join(',')
-            : extensions.stacktrace) ||
-          gqlError.message;
+    //     errorDetail =
+    //       extensions.stacktrace ||
+    //       (Array.isArray(extensions.stacktrace)
+    //         ? extensions.stacktrace.join(',')
+    //         : extensions.stacktrace) ||
+    //       gqlError.message;
 
-        errorPath = gqlError.path;
+    //     errorPath = gqlError.path;
 
-        return new ApiError(
-          errorCode as string,
-          errorMessage as string,
-          errorDetail as string,
-          errorPath as string
-        );
-      }
-    }
+    //     return new ApiError(
+    //       errorCode as string,
+    //       errorMessage as string,
+    //       errorDetail as string,
+    //       errorPath as string,
+    //       errorDetail as string,
+    //       extensions
+    //     );
+    //   }
+    // }
     if (error as AxiosError) {
-      const { code, config, message, stack } = error as AxiosError;
+      const { status, code, message, config, stack, response } = error as AxiosError;
 
-      errorCode = code;
-      errorMessage = message;
-      errorDetail = stack;
-      errorPath = [config?.baseURL, config?.url].join('');
+      const { data } = response as HttpResponse;
+
+      if (data as ApiError) {
+        return data as ApiError;
+      }
 
       return new ApiError(
-        (errorCode as string) || 'UNKNOWN_ERROR',
-        (errorMessage as string) || 'UNKNOWN_ERROR',
-        (errorDetail as string) || 'UNKNOWN_ERROR',
-        (errorPath as string) || 'UNKNOW_ERROR_PATH'
+        status ?? 500,
+        code ?? 'UNKNOWN_ERROR_TILTLE',
+        message ?? 'UNKNOWN_ERROR_DETAIL',
+        [config?.baseURL, config?.url].join('') ?? 'UNKNOW_ERROR_PATH',
+        stack ?? 'UNKNOWN_ERROR_TRACEID',
+        {}
       );
     }
 
     return new ApiError(
-      'UNKNOWN_ERROR_CODE',
-      'UNKNOWN_ERROR_MESSAGE',
+      500,
+      'UNKNOWN_ERROR_TILTLE',
       'UNKNOWN_ERROR_DETAIL',
-      'UNKNOW_ERROR_PATH'
+      'UNKNOW_ERROR_PATH',
+      'UNKNOWN_ERROR_TRACEID',
+      {}
     );
   }
 
   private processApiError = (error: unknown): Promise<unknown> => {
     let apiError = null;
-    if ((error as GraphqlError).errors || (error as AxiosError)) {
+    if (
+      // (error as GraphqlError).errors ||
+      error as AxiosError
+    ) {
       apiError = this.buildApiError(error);
     } else {
       apiError = new ApiError(
-        'UNKNOWN_ERROR_CODE',
-        'UNKNOWN_ERROR_MESSAGE',
+        500,
+        'UNKNOWN_ERROR_TILTLE',
         'UNKNOWN_ERROR_DETAIL',
-        'UNKNOW_ERROR_PATH'
+        'UNKNOW_ERROR_PATH',
+        'UNKNOWN_ERROR_TRACEID',
+        {}
       );
     }
     if (!apiError) {
@@ -213,7 +225,7 @@ class HttpClient {
           originalConfig.headers.Authorization = `Bearer ${newToken}`;
           return client.request(originalConfig);
         } catch (_err) {
-          store.dispatch({ type: 'auth/logout' });
+          store.dispatch({ type: logout.type });
           return this.processApiError(error);
         }
       }
