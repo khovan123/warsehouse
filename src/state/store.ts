@@ -6,6 +6,7 @@ import createSagaMiddleware from 'redux-saga';
 import rootSaga from './ducks';
 import { authPersistFilter } from './ducks/auth/persist-filter';
 import authReducer from './ducks/auth/slice';
+import goodTransactionReducer from './ducks/good-transaction/slice';
 import inventoryReducer from './ducks/inventory/slice';
 import movementReducer from './ducks/movement/slice';
 import productReducer from './ducks/product/slice';
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   inventory: inventoryReducer,
   stock: stockReducer,
   movement: movementReducer,
+  goodTransaction: goodTransactionReducer,
 });
 
 const persistConfig = {
