@@ -65,9 +65,15 @@ namespace Infrastructure.Repositories
                 }))
                 .AppendStage<BsonDocument>(new BsonDocument("$project", new BsonDocument
                 {
+                    { "productId", 1 },
+                    { "warehouseId", 1 },
+                    { "binId", 1 },
+                    { "categoryId", 1 },
                     { "onHand", 1 },
                     { "reserved", 1 },
                     { "available", 1 },
+                    { "averageCost", 1 },
+                    { "inventoryValue", 1 },
                     { "product", new BsonDocument("$arrayElemAt", new BsonArray { "$products", 0 }) },
                     { "warehouse", new BsonDocument("$arrayElemAt", new BsonArray { "$warehouses", 0 }) },
                     { "bin", new BsonDocument("$arrayElemAt", new BsonArray { "$bins", 0 }) },
