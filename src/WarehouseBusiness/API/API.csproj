@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-	
+
   <PropertyGroup>
     <OpenApiGenerateDocuments>false</OpenApiGenerateDocuments>
     <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
@@ -29,8 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
-	<Folder Include="Middlewares\" />
-	<Folder Include="Common\" />
+    <Folder Include="Middlewares\" />
+    <Folder Include="Common\" />
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,36 @@
 stages:
+  - build
+  - docker
   - test
+
+variables:
+  API_PATH: 'src/WarehouseBusiness/API/API.csproj'
+  SECRET_DETECTION_ENABLED: 'true'
+  ROLLUP_DISABLE_NATIVE: 'true'
+  AST_ENABLE_MR_PIPELINES: 'true'
+
+dotnet-build:
+  stage: build
+  image: mcr.microsoft.com/dotnet/sdk:9.0
+  script:
+    - dotnet restore $API_PATH
+    - dotnet build $API_PATH -c Release --no-restore
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
+
+docker-build:
+  stage: docker
+  needs: [dotnet-build]
+  image: docker:27.1.1
+  services:
+    - docker:27.1.1-dind
+  script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+    - docker build -t "$CI_REGISTRY_IMAGE:latest" -f Dockerfile .
+    - docker push "$CI_REGISTRY_IMAGE:latest"
+  rules:
+    # - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
+    - if: '$CI_COMMIT_BRANCH =~ /^(main|master)$/'
 
 test:
   stage: test
@@ -11,8 +42,3 @@ test:
 include:
   - template: Jobs/SAST.gitlab-ci.yml
   - template: Jobs/Secret-Detection.gitlab-ci.yml
-
-variables:
-  SECRET_DETECTION_ENABLED: 'true'
-  ROLLUP_DISABLE_NATIVE: 'true'
-  AST_ENABLE_MR_PIPELINES: 'true'
