@@ -14,4 +14,8 @@
   <ItemGroup>
 	<Folder Include="Responses\" />
   </ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
 </Project>
