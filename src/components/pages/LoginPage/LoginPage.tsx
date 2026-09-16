@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { cn } from '@/lib/utils';
 import { LANDING_PATH, PRODUCT_MANAGEMENT_PATH } from '@/routers/route.constants';
 import { useAuthSelector } from '@/state/ducks/auth/selectors';
 import { loginRequest } from '@/state/ducks/auth/slice';
@@ -17,6 +19,7 @@ const LoginPage: React.FC = () => {
   const dispatch = useDispatch();
   const authSelector = useAuthSelector();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleLogin = (data: LoginData) => {
     dispatch(loginRequest(data));
@@ -35,52 +38,56 @@ const LoginPage: React.FC = () => {
 
   return (
     <main className="min-h-screen flex text-foreground">
-      <section className="hidden lg:flex lg:flex-1 flex-col justify-between px-12 py-10 bg-linear-to-br from-secondary via-primary-foreground to-black text-secondary-foreground">
-        <header className="flex items-center gap-3">
-          <Link to={LANDING_PATH}>
-            <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </Link>
-          <div className="leading-tight">
-            <p className="text-lg font-semibold tracking-wide">Openbravo</p>
-            <p className="text-[11px] uppercase text-muted">Commerce &amp; ERP Platform</p>
-          </div>
-        </header>
-
-        <div className="space-y-6">
-          <h1 className="text-4xl font-semibold tracking-tight">
-            Unified commerce
-            <span className="text-primary">. Simplified.</span>
-          </h1>
-          <p className="text-sm text-muted-foreground max-w-md">
-            Log in to access the Openbravo platform – where you manage POS, orders, inventory and
-            retail data in a modern web experience.
-          </p>
-
-          <div className="mt-10 grid grid-cols-2 gap-4 max-w-md text-sm">
-            <div className="rounded-2xl border border-border bg-card/80 p-4 backdrop-blur">
-              <p className="text-[11px] font-medium text-muted-foreground mb-1 uppercase tracking-[0.18em]">
-                Real-time
-              </p>
-              <p className="font-semibold text-foreground">Inventory visibility</p>
+      {!isMobile && (
+        <section className="flex flex-1 flex-col justify-between px-12 py-10 bg-linear-to-br from-secondary via-primary-foreground to-black text-secondary-foreground">
+          <header className="flex items-center gap-3">
+            <Link to={LANDING_PATH}>
+              <Avatar>
+                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                <AvatarFallback>CN</AvatarFallback>
+              </Avatar>
+            </Link>
+            <div className="leading-tight">
+              <p className="text-lg font-semibold tracking-wide">Openbravo</p>
+              <p className="text-[11px] uppercase text-muted">Commerce &amp; ERP Platform</p>
             </div>
-            <div className="rounded-2xl border border-border bg-card/80 p-4 backdrop-blur">
-              <p className="text-[11px] font-medium text-muted-foreground mb-1 uppercase tracking-[0.18em]">
-                Omnichannel
-              </p>
-              <p className="font-semibold text-foreground">Retail experiences</p>
+          </header>
+
+          <div className="space-y-6">
+            <h1 className="text-4xl font-semibold tracking-tight">
+              Unified commerce
+              <span className="text-primary">. Simplified.</span>
+            </h1>
+            <p className="text-sm text-muted-foreground max-w-md">
+              Log in to access the Openbravo platform – where you manage POS, orders, inventory and
+              retail data in a modern web experience.
+            </p>
+
+            <div className="mt-10 grid grid-cols-2 gap-4 max-w-md text-sm">
+              <div className="rounded-2xl border border-border bg-card/80 p-4 backdrop-blur">
+                <p className="text-[11px] font-medium text-muted-foreground mb-1 uppercase tracking-[0.18em]">
+                  Real-time
+                </p>
+                <p className="font-semibold text-foreground">Inventory visibility</p>
+              </div>
+              <div className="rounded-2xl border border-border bg-card/80 p-4 backdrop-blur">
+                <p className="text-[11px] font-medium text-muted-foreground mb-1 uppercase tracking-[0.18em]">
+                  Omnichannel
+                </p>
+                <p className="font-semibold text-foreground">Retail experiences</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <footer className="text-[11px] text-muted-foreground">
-          © {new Date().getFullYear()} Openbravo. All rights reserved.
-        </footer>
-      </section>
+          <footer className="text-[11px] text-muted-foreground">
+            © {new Date().getFullYear()} Openbravo. All rights reserved.
+          </footer>
+        </section>
+      )}
 
-      <section className="flex-1 flex items-center justify-center px-4 py-10 lg:px-10">
+      <section
+        className={cn('flex-1 flex items-center justify-center py-10', isMobile ? 'px-4' : 'px-10')}
+      >
         <InputForm<LoginData> defaultValues={defaultValues} onSubmit={handleLogin}>
           <>
             <div className="flex items-center justify-between gap-4 mb-2">
@@ -88,10 +95,12 @@ const LoginPage: React.FC = () => {
                 <p className="text-xs font-medium text-muted-foreground">Welcome to</p>
                 <h2 className="text-2xl font-semibold tracking-tight">Openbravo</h2>
               </div>
-              <Avatar className="lg:hidden">
-                <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+              {isMobile && (
+                <Avatar>
+                  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              )}
             </div>
 
             <p className="text-xs text-muted-foreground">
