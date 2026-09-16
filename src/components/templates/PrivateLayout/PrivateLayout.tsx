@@ -1,8 +1,6 @@
-type LayoutTemplateProps = {
-  children: React.ReactNode;
-};
+import type { PropsWithChildren } from 'react';
 
-const PrivateLayout: React.FC<LayoutTemplateProps> = ({ children }) => {
+const PrivateLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <div>
       <header>
