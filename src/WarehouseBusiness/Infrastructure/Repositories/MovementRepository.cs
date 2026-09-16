@@ -122,7 +122,7 @@ namespace Infrastructure.Repositories
       var endDate = DateOnly.FromDateTime(endUtc);
 
       var pipeline = new MongoAggregationPipeline<Movement>(_movement)
-        .Match(m => m.MovementDate >= startDate && m.MovementDate < endDate)
+        .Match(m => m.PostedAt >= startDate && m.PostedAt < endDate)
         .Unwind("lines", false)
         .Lookup(MongoCollections.Products, "lines.product", $"tmp_{MongoCollections.Products}")
         .Lookup(MongoCollections.Warehouses, "fromWarehouse", "tmp_fromWarehouses")
@@ -132,8 +132,7 @@ namespace Infrastructure.Repositories
         .Optional(matchTypeDoc)
         .Project(new BsonDocument
         {
-          { "docNo", 1 },
-          { "movementDate", 1 },
+
           { "productEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}") },
           { "fromWarehouse", BsonDocumentExpression.GetField("code",BsonDocumentExpression.ArrayElemAt("tmp_fromWarehouses")) },
           { "toWarehouse", BsonDocumentExpression.GetField("code",BsonDocumentExpression.ArrayElemAt("tmp_toWarehouses")) },
@@ -170,7 +169,7 @@ namespace Infrastructure.Repositories
       var endDate = DateOnly.FromDateTime(endUtc);
 
       var result = new MongoAggregationPipeline<Movement>(_movement)
-        .Match(m => m.MovementDate >= startDate && m.MovementDate < endDate)
+        .Match(m => m.PostedAt >= startDate && m.PostedAt < endDate)
         .Unwind("$lines", false)
         .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId")
         .Project(calculatedQtyDoc)
@@ -197,6 +196,31 @@ namespace Infrastructure.Repositories
         .As<MovementSummary>();
 
       return await result.ToListAsync(ct);
+    }
+
+
+    public async Task InsertAsync(Domain.Entities.Movement mv, CancellationToken ct)
+    {
+      await _movement.InsertOneAsync(mv, cancellationToken: ct);
+    }
+
+    public async Task<Domain.Entities.Movement?> GetRawByIdAsync(string id, CancellationToken ct)
+    {
+      var filter = Builders<Domain.Entities.Movement>.Filter.Eq(x => x.Id, id);
+      return await _movement.Find(filter).FirstOrDefaultAsync(ct);
+    }
+
+    public async Task UpdateStatusAsync(string id, FlowStatus status, CancellationToken ct)
+    {
+      var filter = Builders<Domain.Entities.Movement>.Filter.Eq(x => x.Id, id);
+      var update = Builders<Domain.Entities.Movement>.Update.Set(x => x.Status, status);
+      await _movement.UpdateOneAsync(filter, update, cancellationToken: ct);
+    }
+
+    public async Task UpdateAsync(Domain.Entities.Movement mv, CancellationToken ct)
+    {
+      var filter = Builders<Domain.Entities.Movement>.Filter.Eq(x => x.Id, mv.Id);
+      await _movement.ReplaceOneAsync(filter, mv, new ReplaceOptions { IsUpsert = false }, ct);
     }
   }
 }

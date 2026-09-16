@@ -1,4 +1,5 @@
-﻿using API.DependencyInjection;
+using Infrastructure.DB;
+using API.DependencyInjection;
 using API.Extensions;
 using API.Middlewares;
 
@@ -49,6 +50,12 @@ builder.Services.AddAuthenticationByJwtBearer(builder.Configuration);
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var ctx = scope.ServiceProvider.GetRequiredService<MongoDbContext>();
+    await MongoIndexInitializer.EnsureIndexesAsync(ctx, CancellationToken.None);
+}
 
 if (app.Environment.IsDevelopment())
 {

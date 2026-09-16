@@ -1,0 +1,33 @@
+[{
+  "_id": {
+    "$oid": "692efc6750984629c7fe600a"
+  },
+  "name": "Apparel",
+  "code": "CAT-APP",
+  "description": "Clothing",
+  "group": "Wearables",
+  "active": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692efc6750984629c7fe600b"
+  },
+  "name": "Footwear",
+  "code": "CAT-FOOT",
+  "description": "Shoes and boots",
+  "group": "Wearables",
+  "active": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692efc6750984629c7fe600c"
+  },
+  "name": "Accessories",
+  "code": "CAT-ACC",
+  "description": "Belts, hats, etc.",
+  "group": "Wearables",
+  "active": true,
+  "__v": 0
+}]

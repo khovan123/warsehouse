@@ -1,0 +1,326 @@
+[
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e781"
+    },
+    "document": "INV-0001",
+    "line": 1,
+    "type": 0,
+    "postedAt": {
+      "$date": "2026-01-10T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6101"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "binId": {
+      "$oid": "692efc6750984629c7fe6011"
+    },
+    "qty": 27,
+    "uom": "EA",
+    "unitCost": 7.5,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6015"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e782"
+    },
+    "document": "INV-0002",
+    "line": 1,
+    "type": 0,
+    "postedAt": {
+      "$date": "2026-01-10T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6102"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "binId": {
+      "$oid": "692efc6750984629c7fe6012"
+    },
+    "qty": 35,
+    "uom": "EA",
+    "unitCost": 10.0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6014"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e783"
+    },
+    "document": "INV-0003",
+    "line": 1,
+    "type": 0,
+    "postedAt": {
+      "$date": "2026-01-10T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6103"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "binId": {
+      "$oid": "692efc6750984629c7fe6011"
+    },
+    "qty": 11,
+    "uom": "EA",
+    "unitCost": 12.5,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6015"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e784"
+    },
+    "document": "INV-0004",
+    "line": 1,
+    "type": 0,
+    "postedAt": {
+      "$date": "2026-01-10T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6104"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "binId": {
+      "$oid": "692efc6750984629c7fe6012"
+    },
+    "qty": 48,
+    "uom": "EA",
+    "unitCost": 15.0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6014"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e785"
+    },
+    "document": "INV-0005",
+    "line": 1,
+    "type": 0,
+    "postedAt": {
+      "$date": "2026-01-10T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6105"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "binId": {
+      "$oid": "692efc6750984629c7fe6011"
+    },
+    "qty": 20,
+    "uom": "EA",
+    "unitCost": 5.0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6015"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e786"
+    },
+    "document": "INV-0006",
+    "line": 1,
+    "type": 0,
+    "postedAt": {
+      "$date": "2026-01-10T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6106"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "binId": {
+      "$oid": "692efc6750984629c7fe6012"
+    },
+    "qty": 16,
+    "uom": "EA",
+    "unitCost": 7.5,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6014"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e787"
+    },
+    "document": "INV-0007",
+    "line": 1,
+    "type": 0,
+    "postedAt": {
+      "$date": "2026-01-10T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6107"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "binId": {
+      "$oid": "692efc6750984629c7fe6011"
+    },
+    "qty": 37,
+    "uom": "EA",
+    "unitCost": 10.0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6015"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e788"
+    },
+    "document": "INV-0008",
+    "line": 1,
+    "type": 1,
+    "postedAt": {
+      "$date": "2026-01-10T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6108"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600e"
+    },
+    "binId": {
+      "$oid": "692efc6750984629c7fe6012"
+    },
+    "qty": 3,
+    "uom": "EA",
+    "unitCost": 0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6014"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e789"
+    },
+    "document": "INV-0009",
+    "line": 1,
+    "type": 1,
+    "postedAt": {
+      "$date": "2026-01-11T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6109"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "binId": {
+      "$oid": "69621ad155fd5b64813ef465"
+    },
+    "qty": 5,
+    "uom": "EA",
+    "unitCost": 0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6015"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e790"
+    },
+    "document": "INV-0010",
+    "line": 1,
+    "type": 1,
+    "postedAt": {
+      "$date": "2026-01-11T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6110"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "binId": {
+      "$oid": "6963614e080c92b3372b8985"
+    },
+    "qty": 5,
+    "uom": "EA",
+    "unitCost": 0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6014"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e791"
+    },
+    "document": "INV-0011",
+    "line": 1,
+    "type": 2,
+    "postedAt": {
+      "$date": "2026-01-11T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6101"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "binId": {
+      "$oid": "69621ad155fd5b64813ef465"
+    },
+    "qty": -3,
+    "uom": "EA",
+    "unitCost": 0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6015"
+    },
+    "__v": 0
+  },
+  {
+    "_id": {
+      "$oid": "69620d3e02184b3630a4e792"
+    },
+    "document": "INV-0012",
+    "line": 1,
+    "type": 2,
+    "postedAt": {
+      "$date": "2026-01-11T00:00:00.000Z"
+    },
+    "productId": {
+      "$oid": "692efc6750984629c7fe6102"
+    },
+    "warehouseId": {
+      "$oid": "692efc6750984629c7fe600f"
+    },
+    "binId": {
+      "$oid": "6963614e080c92b3372b8985"
+    },
+    "qty": -3,
+    "uom": "EA",
+    "unitCost": 0,
+    "bpartnerId": {
+      "$oid": "692efc6750984629c7fe6014"
+    },
+    "__v": 0
+  }
+]

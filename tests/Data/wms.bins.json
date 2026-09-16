@@ -1,0 +1,42 @@
+[{
+  "_id": {
+    "$oid": "692efc6750984629c7fe6011"
+  },
+  "warehouseId": {
+    "$oid": "692efc6750984629c7fe600e"
+  },
+  "code": "A-01-01",
+  "description": "Aisle A / Rack 01 / Level 01",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692efc6750984629c7fe6012"
+  },
+  "warehouseId": {
+    "$oid": "692efc6750984629c7fe600e"
+  },
+  "code": "B-01-03",
+  "description": "Aisle B / Rack 01 / Level 03",
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "69621ad155fd5b64813ef465"
+  },
+  "warehouseId": {
+    "$oid": "692efc6750984629c7fe600f"
+  },
+  "code": "C-01-01",
+  "description": "Test Bin C-01-01"
+},
+{
+  "_id": {
+    "$oid": "6963614e080c92b3372b8985"
+  },
+  "warehouseId": {
+    "$oid": "692efc6750984629c7fe600f"
+  },
+  "code": "D-01-01",
+  "description": "Test Bin D-01-01"
+}]
