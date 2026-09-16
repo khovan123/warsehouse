@@ -1,6 +1,5 @@
 ﻿using API.Common;
 using Application.Dtos;
-using Application.DTOs;
 using Application.Helper;
 using Application.Interfaces;
 using Contract.Responses;

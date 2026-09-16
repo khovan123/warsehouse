@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.Dtos;
 using Contract.Responses;
 
 namespace Application.Interfaces

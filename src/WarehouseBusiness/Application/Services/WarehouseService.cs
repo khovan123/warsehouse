@@ -1,5 +1,4 @@
 ﻿using Application.Dtos;
-using Application.DTOs;
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
@@ -7,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
-    public class WarehouseService: IWarehouseService
+    public class WarehouseService : IWarehouseService
     {
         private readonly IWarehouseRepository _warehouseRepository;
 
