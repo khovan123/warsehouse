@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -19,11 +18,12 @@ namespace Application.Services
             _binRepository = binRepository;
         }
 
-        public async Task<ApiResponse<SetupsDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<SetupsDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var warehouses = await _warehouseRepository.GetAll(ct);
-            var bins = await _binRepository.GetAll(ct);
-            var data = new SetupsDTO.Response(warehouses, bins);
+            var warehouses = _warehouseRepository.GetAllAsync(ct);
+            var bins = _binRepository.GetAllAsync(ct);
+            await Task.WhenAll(warehouses, bins);
+            var data = new SetupsDTO.Response(warehouses.Result, bins.Result);
             return new ApiResponse<SetupsDTO.Response>(data);
         }
     }

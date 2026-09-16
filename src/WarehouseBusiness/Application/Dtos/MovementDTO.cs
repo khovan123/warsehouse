@@ -3,21 +3,12 @@ using Domain.Entities.Weak.Movement;
 
 namespace Application.Dtos
 {
-  public record MovementDTO
+  public sealed record MovementDTO
   {
-    public record Response(List<MovementDetails>? Movements = default!)
-    {
-      public List<MovementDetails>? Movements { get; set; } = Movements;
-    }
+    public sealed record Response(List<MovementDetails>? Movements = default!);
 
-    public record ReportResponse(List<MovementReport>? MovementReports = default!)
-    {
-      public List<MovementReport>? MovementReports { get; set; } = MovementReports;
-    }
+    public sealed record ReportResponse(List<MovementReport>? MovementReports = default!);
 
-    public record SummaryResponse(List<MovementSummary>? MovementSummaries = default!)
-    {
-      public List<MovementSummary>? MovementSummaries { get; set; } = MovementSummaries;
-    }
+    public sealed record SummaryResponse(List<MovementSummary>? MovementSummaries = default!);
   }
 }

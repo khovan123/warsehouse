@@ -3,8 +3,8 @@ using Domain.Entities.Weak;
 
 namespace Domain.Repositories
 {
-    public interface IParetoRepository: IBaseRepository<Pareto>
+    public interface IParetoRepository : IBaseRepository<ParetoDetails>
     {
-        Task<List<ParetoReport>> GetAllWithDetails(CancellationToken ct);
+
     }
 }

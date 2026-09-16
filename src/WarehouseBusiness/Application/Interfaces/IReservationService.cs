@@ -5,7 +5,7 @@ namespace Application.Interfaces
 {
   public interface IReservationService
   {
-    Task<ApiResponse<ReservationDTO.Response>> GetAll(CancellationToken ct);
+    Task<ApiResponse<ReservationDTO.Response>?> GetAllAsync(CancellationToken ct);
 
   }
 }

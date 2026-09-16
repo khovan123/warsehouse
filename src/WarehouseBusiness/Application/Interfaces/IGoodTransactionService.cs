@@ -5,7 +5,7 @@ namespace Application.Interfaces
 {
   public interface IGoodTransactionService
   {
-    Task<ApiResponse<GoodTransactionDTO.Response>> GetAll(CancellationToken ct);
+    Task<ApiResponse<GoodTransactionDTO.Response>?> GetAllAsync(CancellationToken ct);
 
   }
 }

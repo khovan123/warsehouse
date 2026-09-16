@@ -2,6 +2,6 @@ namespace Application.Interfaces
 {
   public interface IValidationRunner
   {
-    Task RunValidation<TRequest>(TRequest request, CancellationToken ct);
+    Task RunValidationAsync<TRequest>(TRequest request, CancellationToken ct);
   }
 }

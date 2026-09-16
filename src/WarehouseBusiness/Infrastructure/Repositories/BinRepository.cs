@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
             _bin = context.Bins;
         }
 
-        public async Task<List<BinDetails>> GetAll(CancellationToken ct)
+        public async Task<List<BinDetails>> GetAllAsync(CancellationToken ct)
         {
             var pipeline = new MongoAggregationPipeline<Bin>(_bin)
                 .Match(b => true)
@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
             return await pipeline.ToListAsync(ct);
         }
 
-        public async Task<BinDetails> GetById(string id, CancellationToken ct)
+        public async Task<BinDetails> GetByIdAsync(string id, CancellationToken ct)
         {
             var pipeline = new MongoAggregationPipeline<Bin>(_bin)
                .Match(b => string.Equals(b.Id, id, StringComparison.OrdinalIgnoreCase))

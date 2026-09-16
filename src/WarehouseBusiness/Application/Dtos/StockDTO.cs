@@ -2,11 +2,8 @@ using Domain.Entities.Weak;
 
 namespace Application.Dtos
 {
-    public record StockDTO
+    public sealed record StockDTO
     {
-        public record Response(List<StockReport>? Stocks = default!)
-        {
-            public List<StockReport>? Stocks { get; set; } = Stocks;
-        }
+        public sealed record Response(List<StockDetails>? Stocks = default!);
     }
 }

@@ -16,9 +16,9 @@ namespace API.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetAllStock(CancellationToken ct)
+        public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            return ApiBuilder.Result(await _stockService.GetAll(ct));
+            return ApiBuilder.Result(await _stockService.GetAllAsync(ct));
         }
     }
 }

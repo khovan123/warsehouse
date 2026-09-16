@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -15,9 +14,9 @@ namespace Application.Services
             _inventoryRepository = inventoryRepository;
         }
 
-        public async Task<ApiResponse<InventoryDTO.ResponseDetails>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<InventoryDTO.ResponseDetails>?> GetAllAsync(CancellationToken ct)
         {
-            var inventories = await _inventoryRepository.GetAll(ct);
+            var inventories = await _inventoryRepository.GetAllAsync(ct);
             var data = new InventoryDTO.ResponseDetails(inventories);
             return new ApiResponse<InventoryDTO.ResponseDetails>(data);
         }

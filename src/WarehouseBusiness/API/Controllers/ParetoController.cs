@@ -16,9 +16,9 @@ namespace API.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetAllParetos(CancellationToken ct)
+        public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            return ApiBuilder.Result(await _paretoService.GetAll(ct));
+            return ApiBuilder.Result(await _paretoService.GetAllAsync(ct));
         }
     }
 }

@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -15,9 +14,9 @@ namespace Application.Services
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<ApiResponse<CategoryDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<CategoryDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var categories = await _categoryRepository.GetAll(ct);
+            var categories = await _categoryRepository.GetAllAsync(ct);
             var data = new CategoryDTO.Response(categories);
             return new ApiResponse<CategoryDTO.Response>(data);
         }

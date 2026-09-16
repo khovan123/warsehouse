@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
       _goodTransaction = context.GoodTransactions;
     }
 
-    public async Task<List<GoodTransactionDetails>> GetAll(CancellationToken ct)
+    public async Task<List<GoodTransactionDetails>> GetAllAsync(CancellationToken ct)
     {
       var pipeline = new MongoAggregationPipeline<GoodTransaction>(_goodTransaction)
          .Match(m => true)
@@ -53,10 +53,10 @@ namespace Infrastructure.Repositories
       return await pipeline.ToListAsync(ct);
     }
 
-    public async Task<GoodTransactionDetails> GetById(string id, CancellationToken ct)
+    public async Task<GoodTransactionDetails> GetByIdAsync(string id, CancellationToken ct)
     {
       var pipeline = new MongoAggregationPipeline<GoodTransaction>(_goodTransaction)
-         .Match(m => true)
+         .Match(m => string.Equals(m.Id, id, StringComparison.OrdinalIgnoreCase))
          .Unwind("$lines", false)
          .LookupAndUnwind(MongoCollections.Warehouses, "warehouseId", $"tmp_{MongoCollections.Warehouses}")
          .LookupAndUnwind(MongoCollections.Products, "lines.productId", $"tmp_{MongoCollections.Products}")

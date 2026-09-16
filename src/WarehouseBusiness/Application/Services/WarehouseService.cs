@@ -15,9 +15,9 @@ namespace Application.Services
             _warehouseRepository = warehouseRepository;
         }
 
-        public async Task<ApiResponse<WarehouseDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<WarehouseDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var warehouses = await _warehouseRepository.GetAll(ct);
+            var warehouses = await _warehouseRepository.GetAllAsync(ct);
             var data = new WarehouseDTO.Response(warehouses);
             return new ApiResponse<WarehouseDTO.Response>(data);
         }

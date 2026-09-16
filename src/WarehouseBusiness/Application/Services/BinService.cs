@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Contract.Responses;
 using Domain.Repositories;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -15,9 +14,9 @@ namespace Application.Services
             _binRepository = binRepository;
         }
 
-        public async Task<ApiResponse<BinDTO.Response>> GetAll(CancellationToken ct)
+        public async Task<ApiResponse<BinDTO.Response>?> GetAllAsync(CancellationToken ct)
         {
-            var bins = await _binRepository.GetAll(ct);
+            var bins = await _binRepository.GetAllAsync(ct);
             var data = new BinDTO.Response(bins);
             return new ApiResponse<BinDTO.Response>(data);
         }

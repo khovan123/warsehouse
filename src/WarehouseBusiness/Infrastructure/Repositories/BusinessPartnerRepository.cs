@@ -13,13 +13,13 @@ namespace Infrastructure.Repositories
         {
             _businessPartners = context.BusinessPartnets;
         }
-        public async Task<List<BusinessPartner>> GetAll(CancellationToken ct)
+        public async Task<List<BusinessPartner>> GetAllAsync(CancellationToken ct)
         {
             var filter = Builders<BusinessPartner>.Filter.Empty;
             return await _businessPartners.Find(filter).ToListAsync(ct);
         }
 
-        public async Task<BusinessPartner> GetById(string id, CancellationToken ct)
+        public async Task<BusinessPartner> GetByIdAsync(string id, CancellationToken ct)
         {
             var filter = Builders<BusinessPartner>.Filter.Eq(b => b.Id, id);
             return await _businessPartners.Find(filter).FirstOrDefaultAsync(ct);

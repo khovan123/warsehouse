@@ -12,7 +12,7 @@ namespace Application.Services
       _validation = validation;
     }
 
-    public async Task DoCheckValidation<TRequest>(TRequest request, CancellationToken ct) => await _validation.RunValidation(request, ct);
+    public async Task DoCheckValidationAsync<TRequest>(TRequest request, CancellationToken ct) => await _validation.RunValidationAsync(request, ct);
 
   }
 }

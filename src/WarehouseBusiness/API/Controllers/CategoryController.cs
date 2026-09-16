@@ -6,7 +6,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/v1/categories")]
-    public class CategoryController:ControllerBase
+    public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _categoryService;
 
@@ -16,9 +16,9 @@ namespace API.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> GetAllCategories(CancellationToken ct)
+        public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            return ApiBuilder.Result(await _categoryService.GetAll(ct));
+            return ApiBuilder.Result(await _categoryService.GetAllAsync(ct));
         }
 
     }

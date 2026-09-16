@@ -6,7 +6,7 @@ namespace Domain.Repositories
 {
   public interface IMovementRepository : IBaseRepository<MovementDetails>
   {
-    Task<List<MovementReport>> GetAllWithDetails(InventoryType? type, SummaryPeriod period, CancellationToken ct);
-    Task<List<MovementSummary>> GetSummary(SummaryPeriod period, CancellationToken ct);
+    Task<List<MovementReport>> GetAllWithDetailsAsync(InventoryType? type, SummaryPeriod period, CancellationToken ct);
+    Task<List<MovementSummary>> GetSummaryAsync(SummaryPeriod period, CancellationToken ct);
   }
 }

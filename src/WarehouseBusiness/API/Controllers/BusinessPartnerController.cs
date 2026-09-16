@@ -6,7 +6,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("/api/v1/businessPartners")]
-    public class BusinessPartnerController: ControllerBase
+    public class BusinessPartnerController : ControllerBase
     {
         private readonly IBusinessPartnerService _businessPartnerService;
 
@@ -15,9 +15,9 @@ namespace API.Controllers
             _businessPartnerService = businessPartnerService;
         }
         [HttpGet("")]
-        public async Task<IActionResult> GetAllBins(CancellationToken ct)
+        public async Task<IActionResult> GetAll(CancellationToken ct)
         {
-            return ApiBuilder.Result(await _businessPartnerService.GetAll(ct));
+            return ApiBuilder.Result(await _businessPartnerService.GetAllAsync(ct));
         }
     }
 }

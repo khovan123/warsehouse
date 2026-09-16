@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace Infrastructure.Repositories
 {
-    public class WarehouseRepository: IWarehouseRepository
+    public class WarehouseRepository : IWarehouseRepository
     {
         private readonly IMongoCollection<Warehouse> _warehouses;
 
@@ -14,13 +14,13 @@ namespace Infrastructure.Repositories
             _warehouses = context.Warehouses;
         }
 
-        public async Task<List<Warehouse>> GetAll(CancellationToken ct)
+        public async Task<List<Warehouse>> GetAllAsync(CancellationToken ct)
         {
-            var filter = Builders<Warehouse>.Filter.Eq(w=>w.IsActive,true);
+            var filter = Builders<Warehouse>.Filter.Eq(w => w.IsActive, true);
             return await _warehouses.Find(filter).ToListAsync(ct);
         }
 
-        public async Task<Warehouse> GetById(string id, CancellationToken ct)
+        public async Task<Warehouse> GetByIdAsync(string id, CancellationToken ct)
         {
             var exp = Builders<Warehouse>.Filter;
             var filter = exp.And(

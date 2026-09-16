@@ -1,16 +1,13 @@
 ﻿namespace Application.Dtos
 {
-    public record RefreshTokenDTO
+    public sealed record RefreshTokenDTO
     {
-        public record Response
-        {
-            public string AccessToken { get; set; } = default!;
-        }
+        public sealed record Response(string AccessToken = default!);
 
-        public record ResponseWithRefreshToken: Response
+        public sealed record ResponseWithRefreshToken(string AccessToken = default!, string RefreshToken = default!)
         {
-            public Response Response { get; set; } = default!;
-            public string RefreshToken { get; set; } = default!;
+            public Response Response { get; set; } = new Response(AccessToken);
+            public string RefreshToken { get; set; } = RefreshToken;
         }
     }
 }

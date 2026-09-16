@@ -5,6 +5,6 @@ namespace Application.Interfaces
 {
     public interface IStockService
     {
-        Task<ApiResponse<StockDTO.Response>> GetAll(CancellationToken ct);
+        Task<ApiResponse<StockDTO.Response>?> GetAllAsync(CancellationToken ct);
     }
 }

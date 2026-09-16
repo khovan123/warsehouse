@@ -2,11 +2,8 @@
 
 namespace Application.Dtos
 {
-    public record WarehouseDTO
+    public sealed record WarehouseDTO
     {
-        public record Response(List<Warehouse>? Warehouses = default!)
-        {
-            public List<Warehouse>? Warehouses { get; set; } = Warehouses;
-        }
+        public sealed record Response(List<Warehouse>? Warehouses = default!);
     }
 }
