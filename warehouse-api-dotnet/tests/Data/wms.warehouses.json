@@ -1,0 +1,20 @@
+[{
+  "_id": {
+    "$oid": "692efc6750984629c7fe600e"
+  },
+  "code": "MAIN-DC",
+  "name": "Main Distribution Center",
+  "organization": "Org 1",
+  "active": true,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692efc6750984629c7fe600f"
+  },
+  "code": "STORE-01",
+  "name": "Store 01 Backroom",
+  "organization": "Org 1",
+  "active": true,
+  "__v": 0
+}]

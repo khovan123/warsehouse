@@ -1,0 +1,21 @@
+[{
+  "_id": {
+    "$oid": "69270372384f60e34ba40fb3"
+  },
+  "email": "openbravo@gmail.com",
+  "username": "openbravo",
+  "password": "$2b$12$JC9fTMcpZSfZZNg1by4vmeaJaWFJoix0MsvDJCAlsd06o3khD.5cy",
+  "passwordConfirm": null,
+  "token": null,
+  "active": true,
+  "signUpAt": {
+    "$date": "2025-11-26T13:41:06.504Z"
+  },
+  "createdAt": {
+    "$date": "2025-11-26T13:41:06.507Z"
+  },
+  "updatedAt": {
+    "$date": "2025-11-26T13:41:06.507Z"
+  },
+  "__v": 0
+}]

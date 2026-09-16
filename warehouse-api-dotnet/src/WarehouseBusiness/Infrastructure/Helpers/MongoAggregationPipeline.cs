@@ -1,0 +1,114 @@
+using System.Linq.Expressions;
+using MongoDB.Bson;
+using MongoDB.Driver;
+
+namespace Infrastructure.Helpers
+{
+  public class MongoAggregationPipeline<TCollection>
+  {
+    private readonly IMongoCollection<TCollection> _mongoCollection;
+    private IAggregateFluent<TCollection> _aggregate;
+
+    public MongoAggregationPipeline(IMongoCollection<TCollection> mongoCollection)
+    {
+      _mongoCollection = mongoCollection;
+      _aggregate = _mongoCollection.Aggregate();
+    }
+
+    public IAggregateFluent<TCollection> GetCurrentAggregate() => _aggregate;
+
+    public MongoAggregationPipeline<TCollection> Reset(AggregateOptions? options = null)
+    {
+      _aggregate = _mongoCollection.Aggregate(options);
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Match(Expression<Func<TCollection, bool>> filter)
+    {
+      _aggregate = _aggregate.Match(filter);
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Lookup(string fromCollection, string localField, string asAlias, string foreignField = "_id")
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(
+          new BsonDocument("$lookup", new BsonDocument
+          {
+            { "from", fromCollection },
+            { "localField", localField },
+            { "foreignField", foreignField },
+            { "as", asAlias }
+          })
+      );
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Unwind(string path, bool preserveNullAndEmptyArrays = true)
+    {
+
+      _aggregate = _aggregate.AppendStage<TCollection>(
+          new BsonDocument("$unwind", new BsonDocument
+          {
+            { "path", $"${path.Replace("$","")}" },
+            { "preserveNullAndEmptyArrays", preserveNullAndEmptyArrays }
+          })
+      );
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> LookupAndUnwind(string fromCollection, string localField, string asAlias, string foreignField = "_id", bool preserveNullAndEmptyArrays = true)
+        => Lookup(fromCollection, localField, asAlias, foreignField)
+           .Unwind(asAlias, preserveNullAndEmptyArrays);
+
+    public MongoAggregationPipeline<TCollection> Project(BsonDocument projectSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$project", projectSpec));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> SetFields(BsonDocument projectSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$set", projectSpec));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> AddFields(BsonDocument projectSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$addFields", projectSpec));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Group(BsonDocument groupSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$group", groupSpec));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Sort(BsonDocument sortSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$sort", sortSpec));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Match(BsonDocument matchSpec)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$match", matchSpec));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Unset(BsonArray array)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$unset", array));
+      return this;
+    }
+
+    public MongoAggregationPipeline<TCollection> Optional(BsonDocument? bsons, bool condition = true)
+    {
+      if (condition && bsons is not null)
+        _aggregate = _aggregate.AppendStage<TCollection>(bsons);
+      return this;
+    }
+
+    public IAggregateFluent<TResult> As<TResult>() => _aggregate.As<TResult>();
+  }
+}

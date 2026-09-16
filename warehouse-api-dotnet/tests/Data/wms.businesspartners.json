@@ -1,0 +1,37 @@
+[{
+  "_id": {
+    "$oid": "692efc6750984629c7fe6014"
+  },
+  "name": "Supplier A",
+  "type": "Supplier",
+  "organization": "Org 1",
+  "active": true,
+  "contact": {
+    "person": "Alice",
+    "phone": "0123456789",
+    "email": "alice@supplier.com"
+  },
+  "address": {
+    "city": "HCM",
+    "country": "Vietnam"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "692efc6750984629c7fe6015"
+  },
+  "name": "Store 01",
+  "type": "Internal",
+  "organization": "Org 1",
+  "active": true,
+  "contact": {
+    "person": "Store Manager",
+    "phone": "0987654321"
+  },
+  "address": {
+    "city": "HCM",
+    "country": "Vietnam"
+  },
+  "__v": 0
+}]
