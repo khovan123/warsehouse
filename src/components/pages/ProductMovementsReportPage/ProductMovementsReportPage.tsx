@@ -1,11 +1,13 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { FilterSelect } from '@/components/molecules/FilterSelect';
-import { MetricCard } from '@/components/molecules/MetricCard';
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import MetricCard from '@/components/molecules/MetricCard/MetricCard';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { DataTable } from '@/components/ui/data-table';
-import { Input } from '@/components/ui/input';
+import { Toolbar, ToolbarInput } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -105,44 +107,7 @@ const ProductMovementsReportPage: React.FC = () => {
     data: movements,
   };
 
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <FilterSelect
-        defaultValue="today"
-        placeholder="Period: Today"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
-        options={[
-          { value: 'today', label: 'Period: Today' },
-          { value: 'week', label: 'This week' },
-          { value: 'month', label: 'This month' },
-        ]}
-      />
-      <FilterSelect
-        defaultValue="all"
-        placeholder="Movement type: All"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
-        options={[
-          { value: 'all', label: 'Movement type: All' },
-          { value: 'receipt', label: 'Receipt' },
-          { value: 'shipment', label: 'Shipment' },
-          { value: 'movement', label: 'Movement' },
-          { value: 'inventory', label: 'Inventory' },
-        ]}
-      />
-      <Input
-        type="text"
-        placeholder="Product / Document / Bin"
-        className={cn(
-          'rounded-full text-xs h-8 placeholder:text-xs',
-          isMobile ? 'w-full' : 'flex-1 min-w-40'
-        )}
-      />
-    </div>
-  );
-
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card text-[11px] flex',
@@ -157,28 +122,55 @@ const ProductMovementsReportPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="PRODUCT MOVEMENTS REPORT"
-      description="Goods Tracking view that lists movements and their bins to verify the history of each item."
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
-          {movementSummary.map((card) => (
-            <MetricCard
-              key={card.label}
-              label={card.label}
-              value={card.value}
-              description={card.detail}
-              valueClassName={card.value.includes('-') ? 'text-destructive' : 'text-primary'}
-            />
-          ))}
-        </div>
+    <PageOverview>
+      <PageHeader
+        title="PRODUCT MOVEMENTS REPORT"
+        description="Goods Tracking view that lists movements and their bins to verify the history of each item."
+      />
+      <Toolbar>
+        <FilterSelect
+          defaultValue="today"
+          placeholder="Period: Today"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
+          options={[
+            { value: 'today', label: 'Period: Today' },
+            { value: 'week', label: 'This week' },
+            { value: 'month', label: 'This month' },
+          ]}
+        />
+        <FilterSelect
+          defaultValue="all"
+          placeholder="Movement type: All"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
+          options={[
+            { value: 'all', label: 'Movement type: All' },
+            { value: 'receipt', label: 'Receipt' },
+            { value: 'shipment', label: 'Shipment' },
+            { value: 'movement', label: 'Movement' },
+            { value: 'inventory', label: 'Inventory' },
+          ]}
+        />
+        <ToolbarInput type="text" placeholder="Search by criteria" />
+      </Toolbar>
+      <PageContent>
+        <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
+            {movementSummary.map((card) => (
+              <MetricCard
+                key={card.label}
+                label={card.label}
+                value={card.value}
+                description={card.detail}
+                valueClassName={card.value.includes('-') ? 'text-destructive' : 'text-primary'}
+              />
+            ))}
+          </div>
 
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 

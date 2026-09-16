@@ -3,10 +3,12 @@ import { type ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
 import React from 'react';
 
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -86,56 +88,55 @@ const WarehousesSetupPage: React.FC = () => {
     data: bins,
   };
 
-  const toolbar = (
-    <div className={isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2'}>
-      <Button className="rounded-full" size={isMobile ? 'default' : 'sm'}>
-        <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New warehouse
-      </Button>
-      <Button className="rounded-full" size={isMobile ? 'default' : 'sm'}>
-        <Plus className={isMobile ? 'mr-2 h-4 w-4' : 'mr-1 h-3 w-3'} /> New bin
-      </Button>
-    </div>
-  );
-
   return (
-    <PageLayout
-      title="WAREHOUSES & STORAGE BINS"
-      description="Define warehouses and storage bins before executing Warehouse Management transactions."
-      toolbar={toolbar}
-    >
-      <div className="flex-1 overflow-auto bg-background">
-        <div
-          className={cn(
-            'grid gap-4',
-            isMobile ? 'px-3 py-2 grid-cols-1' : 'px-6 py-3 md:grid-cols-2'
-          )}
-        >
-          <div className="border border-border rounded bg-card overflow-hidden">
-            <header
-              className={cn(
-                'border-b border-border bg-background text-xs font-semibold',
-                isMobile ? 'px-2 py-1.5' : 'px-3 py-2'
-              )}
-            >
-              Warehouses
-            </header>
-            <DataTable {...warehouseTableProps} className="border-0 rounded-none" />
-          </div>
+    <PageOverview>
+      <PageHeader
+        title="WAREHOUSES & STORAGE BINS"
+        description="Define warehouses and storage bins before executing Warehouse Management transactions."
+      />
+      <Toolbar>
+        <ToolbarButton>
+          <Plus size={isMobile ? 16 : 12} /> New warehouse
+        </ToolbarButton>
+        <ToolbarButton>
+          <Plus size={isMobile ? 16 : 12} /> New bin
+        </ToolbarButton>
+      </Toolbar>
+      <PageContent>
+        <div className="flex-1 overflow-auto">
+          <div
+            className={cn(
+              'grid gap-4',
+              isMobile ? 'px-3 py-2 grid-cols-1' : 'px-6 py-3 md:grid-cols-2'
+            )}
+          >
+            <div className="border border-border rounded bg-card overflow-hidden">
+              <header
+                className={cn(
+                  'border-b border-border text-xs font-semibold',
+                  isMobile ? 'px-2 py-1.5' : 'px-3 py-2'
+                )}
+              >
+                Warehouses
+              </header>
+              <DataTable {...warehouseTableProps} className="border-0 rounded-none" />
+            </div>
 
-          <div className="border border-border rounded bg-card overflow-hidden">
-            <header
-              className={cn(
-                'border-b border-border bg-background text-xs font-semibold',
-                isMobile ? 'px-2 py-1.5' : 'px-3 py-2'
-              )}
-            >
-              Storage Bins
-            </header>
-            <DataTable {...binTableProps} className="border-0 rounded-none" />
+            <div className="border border-border rounded bg-card overflow-hidden">
+              <header
+                className={cn(
+                  'border-b border-border  text-xs font-semibold',
+                  isMobile ? 'px-2 py-1.5' : 'px-3 py-2'
+                )}
+              >
+                Storage Bins
+              </header>
+              <DataTable {...binTableProps} className="border-0 rounded-none" />
+            </div>
           </div>
         </div>
-      </div>
-    </PageLayout>
+      </PageContent>
+    </PageOverview>
   );
 };
 

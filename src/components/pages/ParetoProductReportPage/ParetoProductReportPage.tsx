@@ -1,11 +1,13 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
-import { FilterSelect } from '@/components/molecules/FilterSelect';
-import PageLayout from '@/components/organisms/PageLayout/PageLayout';
+import FilterSelect from '@/components/molecules/FilterSelect/FilterSelect';
+import PageContent from '@/components/molecules/PageContent/PageContent';
+import PageHeader from '@/components/molecules/PageHeader/PageHeader';
+import PageOverview from '@/components/organisms/PageOverview/PageOverview';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
+import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -100,37 +102,7 @@ const ParetoProductReportPage: React.FC = () => {
     data: paretoRows,
   };
 
-  const toolbar = (
-    <div
-      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
-    >
-      <FilterSelect
-        defaultValue="all-warehouses"
-        placeholder="Warehouse: All"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
-        options={[
-          { value: 'all-warehouses', label: 'Warehouse: All' },
-          { value: 'main-dc', label: 'Main DC' },
-          { value: 'store-01', label: 'Store 01' },
-        ]}
-      />
-      <FilterSelect
-        defaultValue="last-12-months"
-        placeholder="Period: Last 12 months"
-        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
-        options={[
-          { value: 'last-12-months', label: 'Period: Last 12 months' },
-          { value: 'ytd', label: 'Year to date' },
-          { value: 'quarter', label: 'Quarter' },
-        ]}
-      />
-      <Button className="rounded-full" size={isMobile ? 'default' : 'sm'}>
-        Recalculate ABC
-      </Button>
-    </div>
-  );
-
-  const footer = (
+  const Footer = () => (
     <div
       className={cn(
         'border-t border-border bg-card text-[11px] flex',
@@ -145,31 +117,56 @@ const ParetoProductReportPage: React.FC = () => {
   );
 
   return (
-    <PageLayout
-      title="PARETO PRODUCT REPORT"
-      description="Classify products using ABC analysis to prioritize counting and replenishment cycles."
-      toolbar={toolbar}
-      footer={footer}
-    >
-      <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
-        <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
-          {classification.map((item) => (
-            <div
-              key={item.label}
-              className={`rounded-xl border border-border bg-card px-4 py-3 text-xs ${item.color}`}
-            >
-              <p className="text-xs font-semibold">{item.label}</p>
-              <p className="mt-2 text-2xl font-bold">{item.percentage}%</p>
-              <p className="text-xs">
-                Value share: <span className="font-semibold">{item.valueShare}%</span>
-              </p>
-            </div>
-          ))}
-        </div>
+    <PageOverview>
+      <PageHeader
+        title="PARETO PRODUCT REPORT"
+        description="Classify products using ABC analysis to prioritize counting and replenishment cycles."
+      />
+      <Toolbar>
+        <ToolbarButton>Recalculate ABC</ToolbarButton>
+        <FilterSelect
+          defaultValue="all-warehouses"
+          placeholder="Warehouse: All"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
+          options={[
+            { value: 'all-warehouses', label: 'Warehouse: All' },
+            { value: 'main-dc', label: 'Main DC' },
+            { value: 'store-01', label: 'Store 01' },
+          ]}
+        />
+        <FilterSelect
+          defaultValue="last-12-months"
+          placeholder="Period: Last 12 months"
+          triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
+          options={[
+            { value: 'last-12-months', label: 'Period: Last 12 months' },
+            { value: 'ytd', label: 'Year to date' },
+            { value: 'quarter', label: 'Quarter' },
+          ]}
+        />
+      </Toolbar>
+      <PageContent>
+        <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+          <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
+            {classification.map((item) => (
+              <div
+                key={item.label}
+                className={`rounded-xl border border-border bg-card px-4 py-3 text-xs ${item.color}`}
+              >
+                <p className="text-xs font-semibold">{item.label}</p>
+                <p className="mt-2 text-2xl font-bold">{item.percentage}%</p>
+                <p className="text-xs">
+                  Value share: <span className="font-semibold">{item.valueShare}%</span>
+                </p>
+              </div>
+            ))}
+          </div>
 
-        <DataTable {...tableProps} />
-      </div>
-    </PageLayout>
+          <DataTable {...tableProps} />
+        </div>
+      </PageContent>
+      <Footer />
+    </PageOverview>
   );
 };
 
