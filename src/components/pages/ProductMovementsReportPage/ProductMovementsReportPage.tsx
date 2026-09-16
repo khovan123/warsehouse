@@ -14,10 +14,7 @@ import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 import { useMovementSelector } from '@/state/ducks/movement/selectors';
-import {
-  fetchMovementReportRequest,
-  fetchMovementSummaryRequest,
-} from '@/state/ducks/movement/slice';
+import { fetchMovementReportRequest } from '@/state/ducks/movement/slice';
 import type { MovementReport } from '@/state/ducks/movement/type';
 import type { InventoryType, Period } from '@/utils/constants';
 import { INVENTORY_TYPE_OPTIONS, PERIOD_OPTIONS } from '@/utils/constants';
@@ -62,20 +59,15 @@ const columns: ColumnDef<MovementReport>[] = [
 const ProductMovementsReportPage: React.FC = () => {
   const isMobile = useIsMobile();
   const dispatch = useDispatch();
-  const { data, reportLoading } = useMovementSelector();
-
-  const [period, setPeriod] = useState<Period>(PERIOD_OPTIONS[0].value as Period);
-  const [inventoryType, setInventoryType] = useState<InventoryType>(
-    INVENTORY_TYPE_OPTIONS[0].value as InventoryType
-  );
-
-  useEffect(() => {
-    dispatch(fetchMovementSummaryRequest({ period }));
-  }, [dispatch, period]);
+  const { data, loading } = useMovementSelector();
+  const [filtering, setFiltering] = useState<{ period: Period; inventoryType: InventoryType }>({
+    period: PERIOD_OPTIONS[0].value as Period,
+    inventoryType: INVENTORY_TYPE_OPTIONS[0].value as InventoryType,
+  });
 
   useEffect(() => {
-    dispatch(fetchMovementReportRequest({ inventoryType, period }));
-  }, [dispatch, inventoryType, period]);
+    dispatch(fetchMovementReportRequest({ ...filtering }));
+  }, [dispatch, filtering]);
 
   const summary = data.movementSummaries[0];
   const movementSummary = summary
@@ -112,16 +104,18 @@ const ProductMovementsReportPage: React.FC = () => {
       <Toolbar>
         <FilterSelect
           defaultValue={PERIOD_OPTIONS[0].value.toString()}
-          value={String(period)}
-          onValueChange={(value) => setPeriod(Number(value) as Period)}
+          onValueChange={(value) => {
+            setFiltering((prev) => ({ ...prev, period: value as unknown as Period }));
+          }}
           placeholder={PERIOD_OPTIONS[0].label}
           triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
           options={PERIOD_OPTIONS}
         />
         <FilterSelect
           defaultValue={INVENTORY_TYPE_OPTIONS[0].value.toString()}
-          value={String(inventoryType)}
-          onValueChange={(value) => setInventoryType(Number(value) as InventoryType)}
+          onValueChange={(value) => {
+            setFiltering((prev) => ({ ...prev, inventoryType: value as unknown as Period }));
+          }}
           placeholder={INVENTORY_TYPE_OPTIONS[0].label}
           triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
           options={INVENTORY_TYPE_OPTIONS}
@@ -142,7 +136,7 @@ const ProductMovementsReportPage: React.FC = () => {
             ))}
           </div>
 
-          <DataTable {...tableProps} isLoadingData={reportLoading} />
+          <DataTable {...tableProps} isLoadingData={loading} />
         </div>
       </PageContent>
       <AppPagination />
