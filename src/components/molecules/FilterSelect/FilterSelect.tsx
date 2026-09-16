@@ -10,9 +10,9 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
-type FilterOption = {
+export type FilterOption = {
   label: string;
-  value: string;
+  value: string | number;
   disabled?: boolean;
 };
 
@@ -52,7 +52,7 @@ const FilterSelect = ({
         {options.map((option) => (
           <SelectItem
             key={option.value}
-            value={option.value}
+            value={option.value.toString()}
             disabled={option.disabled}
             className="text-xs"
           >
