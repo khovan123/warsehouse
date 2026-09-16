@@ -1,6 +1,8 @@
 import { type ColumnDef } from '@tanstack/react-table';
 import React from 'react';
 
+import { useIsMobile } from '../../../hooks/use-mobile';
+import { cn } from '../../../lib/utils';
 import { FilterSelect } from '../../molecules/FilterSelect';
 import PageLayout from '../../organisms/PageLayout/PageLayout';
 import { Badge } from '../../ui/badge';
@@ -91,17 +93,21 @@ const columns: ColumnDef<ParetoRow>[] = [
 ];
 
 const ParetoProductReportPage: React.FC = () => {
+  const isMobile = useIsMobile();
+
   const tableProps: DataTableProps<ParetoRow, unknown> = {
     columns,
     data: paretoRows,
   };
 
   const toolbar = (
-    <>
+    <div
+      className={cn(isMobile ? 'flex flex-col gap-2 w-full' : 'flex flex-wrap items-center gap-2')}
+    >
       <FilterSelect
         defaultValue="all-warehouses"
         placeholder="Warehouse: All"
-        triggerClassName="w-40"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-40')}
         options={[
           { value: 'all-warehouses', label: 'Warehouse: All' },
           { value: 'main-dc', label: 'Main DC' },
@@ -111,21 +117,26 @@ const ParetoProductReportPage: React.FC = () => {
       <FilterSelect
         defaultValue="last-12-months"
         placeholder="Period: Last 12 months"
-        triggerClassName="w-48"
+        triggerClassName={cn(isMobile ? 'w-full' : 'w-48')}
         options={[
           { value: 'last-12-months', label: 'Period: Last 12 months' },
           { value: 'ytd', label: 'Year to date' },
           { value: 'quarter', label: 'Quarter' },
         ]}
       />
-      <Button className="rounded-full" size={'sm'}>
+      <Button className="rounded-full" size={isMobile ? 'default' : 'sm'}>
         Recalculate ABC
       </Button>
-    </>
+    </div>
   );
 
   const footer = (
-    <div className="border-t border-border bg-card px-6 py-2 text-[11px] flex justify-between">
+    <div
+      className={cn(
+        'border-t border-border bg-card text-[11px] flex',
+        isMobile ? 'px-3 py-2 flex-col gap-2' : 'px-6 py-2 justify-between'
+      )}
+    >
       <span>
         1 - {paretoRows.length} of {paretoRows.length} SKUs
       </span>
@@ -140,8 +151,8 @@ const ParetoProductReportPage: React.FC = () => {
       toolbar={toolbar}
       footer={footer}
     >
-      <div className="px-6 py-3 space-y-4">
-        <div className="grid gap-3 sm:grid-cols-3">
+      <div className={cn('space-y-4', isMobile ? 'px-3 py-2' : 'px-6 py-3')}>
+        <div className={cn('grid gap-3', isMobile ? 'grid-cols-1' : 'sm:grid-cols-3')}>
           {classification.map((item) => (
             <div
               key={item.label}
