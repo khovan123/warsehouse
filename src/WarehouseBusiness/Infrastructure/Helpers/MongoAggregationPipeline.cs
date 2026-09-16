@@ -96,6 +96,12 @@ namespace Infrastructure.Helpers
       return this;
     }
 
+    public MongoAggregationPipeline<TCollection> Unset(BsonArray array)
+    {
+      _aggregate = _aggregate.AppendStage<TCollection>(new BsonDocument("$unset", array));
+      return this;
+    }
+
     public IAggregateFluent<TResult> As<TResult>() => _aggregate.As<TResult>();
   }
 }
