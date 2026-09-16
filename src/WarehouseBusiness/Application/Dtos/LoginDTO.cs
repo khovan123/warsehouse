@@ -1,4 +1,6 @@
-﻿namespace Application.DTOs
+﻿using Domain.Entities;
+
+namespace Application.DTOs
 {
     public class LoginDTO
     {
@@ -12,6 +14,12 @@
         {
             public UserDTO User { get; set; } = userDTO;
             public string Token { get; set; } = token;
+        }
+
+        public class ResponseWithRefreshToken(UserDTO userDTO, string token, string refreshToken) : Response
+        {
+            public Response Response { get; set; } = new Response(userDTO, token);
+            public string RefreshToken { get; set; } = refreshToken;
         }
 
         public class UserDTO(string id = default!, string username = default!, string email = default!)
