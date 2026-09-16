@@ -36,5 +36,14 @@ namespace API.Controllers
     {
       return ApiBuilder.Result(await _movementService.GetSummaryAsync(period, ct));
     }
+
+    [HttpGet("material-transaction")]
+    public async Task<IActionResult> GetMaterialTransaction(
+      [FromQuery] InventoryType? type,
+      [FromQuery] string? warehouseId,
+      CancellationToken ct)
+    {
+      return ApiBuilder.Result(await _movementService.GetMaterialTransactionAsync(type, warehouseId, ct));
+    }
   }
 }

@@ -10,5 +10,9 @@ namespace Application.Dtos
     public sealed record ReportResponse(List<MovementReport>? MovementReports = default!);
 
     public sealed record SummaryResponse(List<MovementSummary>? MovementSummaries = default!);
+    public record MaterialTransactionResponse(List<MaterialTransaction>? MaterialTransactions = default!)
+    {
+      public List<MaterialTransaction>? MaterialTransactions { get; set; } = MaterialTransactions;
+    }
   }
 }

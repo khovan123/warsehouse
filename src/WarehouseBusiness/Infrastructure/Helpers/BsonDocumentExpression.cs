@@ -61,11 +61,27 @@ namespace Infrastructure.Helpers
         public static BsonDocument Eq(BsonValue ref__value_document, BsonValue value)
             => new("$eq", new BsonArray { ref__value_document, value });
 
+        public static BsonDocument Let(string name, BsonValue value)
+            => new() { { name, value } };
+
+        public static BsonArray LookupMatchById(string varName, bool is_variable = false)
+            => new BsonArray
+            {
+                new BsonDocument("$match", new BsonDocument("$expr",
+                    new BsonDocument("$eq", new BsonArray
+                    {
+                        "$_id",
+                        $"{varName.Replace("$",(is_variable ? "$$" : "$"))}"
+                    })
+                ))
+            };
+
+
         public static BsonDocument? MatchInArrayField<TValue>(
-            TValue? value,
-            string arrayField,
-            string fieldName,
-            int arrayIndex = 0) where TValue : struct, Enum
+                    TValue? value,
+                    string arrayField,
+                    string fieldName,
+                    int arrayIndex = 0) where TValue : struct, Enum
         {
             if (!value.HasValue)
                 return null;
@@ -73,10 +89,7 @@ namespace Infrastructure.Helpers
             var enumString = value.Value.ToString();
             var targetField = GetField(fieldName, ArrayElemAt(arrayField, arrayIndex));
 
-            return new BsonDocument
-            {
-                { "$expr", Eq(targetField, enumString) }
-            };
+            return Match(Expr(Eq(targetField, enumString)));
         }
 
         public static BsonDocument? MatchEnumField<TEnum>(
@@ -93,6 +106,25 @@ namespace Infrastructure.Helpers
                 { fieldName, enumString }
             };
         }
+
+        public static BsonDocument? MatchObjectIdField(
+            string? objectIdValue,
+            string fieldName)
+        {
+            if (string.IsNullOrEmpty(objectIdValue))
+                return null;
+
+            if (!ObjectId.TryParse(objectIdValue, out var objectId))
+                return null;
+
+            return Match(new BsonDocument
+            {
+                { fieldName, new BsonObjectId(objectId) }
+            });
+        }
+
+        public static BsonDocument Match(BsonDocument matchSpec)
+            => new("$match", matchSpec);
 
         public static BsonDocument And(BsonArray array)
             => new("$and", array);

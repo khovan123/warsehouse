@@ -198,5 +198,70 @@ namespace Infrastructure.Repositories
 
       return await result.ToListAsync(ct);
     }
+
+    public async Task<List<MaterialTransaction>> GetMaterialTransactionAsync(InventoryType? type, string? warehouseId, CancellationToken ct)
+    {
+      static BsonDocument BuildProjection()
+      {
+        return new BsonDocument
+        {
+          { "document", "$docNo" },
+          { "movementDate", 1 },
+          { "type", BsonDocumentExpression.GetField("type", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}")) },
+          { "productEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}") },
+          { "fromWarehouse", BsonDocumentExpression.GetField("code", BsonDocumentExpression.ArrayElemAt("tmp_fromWarehouses")) },
+          { "binEntity", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Bins}") },
+          { "qty", "$lines.qty" },
+          { "cost", BsonDocumentExpression.GetField("cost", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}")) },
+          { "uom", BsonDocumentExpression.GetField("baseUom", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Products}")) },
+          { "businessPartner", BsonDocumentExpression.GetField("name", BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.BusinessPartners}")) }
+        };
+      }
+
+      var warehouseMatchFilter = BsonDocumentExpression.MatchObjectIdField(warehouseId, "fromWarehouse");
+      var inventoryTypeMatchFilter = BsonDocumentExpression.MatchInArrayField(
+        type,
+        $"tmp_{MongoCollections.Inventory}",
+        "type"
+      );
+
+      var result = new MongoAggregationPipeline<Movement>(_movement)
+        .Match(m => true)
+        .Optional(warehouseMatchFilter)
+        .Unwind("lines", false, "lineIndex")
+        .Lookup(MongoCollections.Products, "lines.product", $"tmp_{MongoCollections.Products}")
+        .Lookup(MongoCollections.Warehouses, "fromWarehouse", "tmp_fromWarehouses")
+        .Lookup(MongoCollections.Bins, "lines.fromBin", $"tmp_{MongoCollections.Bins}")
+        .Lookup(MongoCollections.Inventory, "lines.product", $"tmp_{MongoCollections.Inventory}", "productId")
+        .Optional(inventoryTypeMatchFilter)
+        .LookupWithPipeline(
+          MongoCollections.BusinessPartners,
+          BsonDocumentExpression.Let(
+            "bpId",
+            BsonDocumentExpression.GetField(
+              "bpartnerId",
+              BsonDocumentExpression.ArrayElemAt($"tmp_{MongoCollections.Inventory}")
+            )
+          ),
+          BsonDocumentExpression.LookupMatchById("$bpId", true),
+          $"tmp_{MongoCollections.BusinessPartners}"
+        )
+        .Project(BuildProjection())
+        .Sort(new BsonDocument("movementDate", 1))
+        .SetWindowFields(
+          new BsonDocument
+          {
+            { "sortBy", new BsonDocument("movementDate", 1) },
+            { "output", new BsonDocument
+              {
+                { "line", new BsonDocument("$documentNumber", new BsonDocument()) }
+              }
+            }
+          }
+        )
+        .As<MaterialTransaction>();
+
+      return await result.ToListAsync(ct);
+    }
   }
 }
