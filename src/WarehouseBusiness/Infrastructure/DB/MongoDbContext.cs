@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Infrastructure.Constants;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 namespace Infrastructure.DB
@@ -14,7 +15,17 @@ namespace Infrastructure.DB
             _database = client.GetDatabase(config.DatabaseName);
         }
 
-        public IMongoCollection<User> Users => _database.GetCollection<User>("users");
+        public IMongoCollection<User> Users => _database.GetCollection<User>(MongoCollections.Users);
+
+        public IMongoCollection<Category> Categories => _database.GetCollection<Category>(MongoCollections.Categories);
+
+        public IMongoCollection<Warehouse> Warehouses => _database.GetCollection<Warehouse>(MongoCollections.Warehouses);
+
+        public IMongoCollection<Bin> Bins => _database.GetCollection<Bin>(MongoCollections.Bins);
+
+        public IMongoCollection<Product> Products => _database.GetCollection<Product>(MongoCollections.Products);
+
+        public IMongoCollection<BusinessPartner> BusinessPartnets => _database.GetCollection<BusinessPartner>(MongoCollections.BusinessPartners);
 
     }
 }
