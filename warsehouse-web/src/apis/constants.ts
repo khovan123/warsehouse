@@ -1,0 +1,16 @@
+export const GRAPHQL = '/graphql/v1';
+export const LOGIN_PATH = '/auth/login';
+export const PRODUCT_REQUEST_PATH = '/products';
+export const SETUPS_REQUEST_PATH = '/setups';
+export const INVENTORY_REQUEST_PATH = '/inventories';
+export const STOCK_REQUEST_PATH = '/stocks';
+export const PARETO_REQUEST_PATH = '/paretos';
+export const REFRESH_TOKEN_PATH = '/auth/refresh-token';
+export const MOVEMENT_REQUEST_PATH = '/movements';
+export const GOODTRANSACTION_REQUEST_PATH = '/good-transactions';
+export const RESERVATION_REQUEST_PATH = '/reservations';
+export const UNAUTHORIZED_STATUS_CODE = 401;
+export const SUMMARY_PATH = 'summary';
+export const REPORT_PATH = 'report';
+export const MOVEMENT_SUMMARY_PATH = `${MOVEMENT_REQUEST_PATH}/${SUMMARY_PATH}`;
+export const MOVEMENT_REPORT_PATH = `${MOVEMENT_REQUEST_PATH}/${REPORT_PATH}`;

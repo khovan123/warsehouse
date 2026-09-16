@@ -1,0 +1,60 @@
+image: node:22.17.1
+
+stages:
+  - lint
+  - build
+  - test
+
+default:
+  tags:
+    - openbravo-group-runner
+
+variables:
+  NPM_CONFIG_CACHE: '$CI_PROJECT_DIR/.npm'
+  NPM_CONFIG_FETCH_RETRIES: '5'
+  NPM_CONFIG_FETCH_RETRY_MINTIMEOUT: '20000'
+  NPM_CONFIG_FETCH_RETRY_MAXTIMEOUT: '120000'
+  NPM_CONFIG_AUDIT: 'false'
+  NPM_CONFIG_FUND: 'false'
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+    - node_modules/
+  policy: pull-push
+
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+# -----------------------------
+# LINT: ESLint + Prettier
+# -----------------------------
+lint:
+  stage: lint
+  variables:
+    NODE_ENV: development
+  before_script:
+    - '[ -d node_modules ] || npm ci --silent'
+  script:
+    - npm run lint
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
+
+# -----------------------------
+# BUILD: tsc + Vite build
+# -----------------------------
+build:
+  stage: build
+  needs: [lint]
+  variables:
+    NODE_ENV: development
+  before_script:
+    - '[ -d node_modules ] || npm ci --silent'
+  script:
+    - npm run build
+  rules:
+    - if: '$CI_MERGE_REQUEST_ID || $CI_COMMIT_BRANCH =~ /^(main|master)$/'
