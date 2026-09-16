@@ -1,6 +1,7 @@
 import type { LoginCredentials, LoginResponse } from '@/@types/auth';
 
-import { callGraphQL } from '../request';
+import { LOGIN_PATH } from '../constants';
+import { callGraphQL, getClient } from '../request';
 
 const LOGIN_MUTATION = `
   mutation Login($username: String!, $password: String!) {
@@ -15,7 +16,7 @@ const LOGIN_MUTATION = `
   }
 `;
 
-export const loginApi = async (credentials: LoginCredentials) => {
+export const loginGraphApi = async (credentials: LoginCredentials) => {
   type Response = { login: LoginResponse };
 
   const data = await callGraphQL<Response>(LOGIN_MUTATION, {
@@ -25,3 +26,6 @@ export const loginApi = async (credentials: LoginCredentials) => {
 
   return data.login;
 };
+
+export const loginApi = async (credentials: LoginCredentials) =>
+  await getClient().post<LoginCredentials>(LOGIN_PATH, credentials);

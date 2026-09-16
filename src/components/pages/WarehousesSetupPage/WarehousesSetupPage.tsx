@@ -1,7 +1,7 @@
-// src/components/pages/Setup/WarehousesSetupPage.tsx
 import { type ColumnDef } from '@tanstack/react-table';
 import { Plus } from 'lucide-react';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 import PageContent from '@/components/molecules/PageContent/PageContent';
 import PageHeader from '@/components/molecules/PageHeader/PageHeader';
@@ -12,32 +12,15 @@ import { Toolbar, ToolbarButton } from '@/components/ui/toolbar';
 import type { DataTableProps } from '@/components/ui/type';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
-
-type Warehouse = {
-  code: string;
-  name: string;
-  active: boolean;
-  organization: string;
-};
-
-type Bin = {
-  warehouse: string;
-  bin: string;
-  description: string;
-};
-
-const warehouses: Warehouse[] = [
-  { code: 'MAIN-DC', name: 'Main Distribution Center', active: true, organization: 'Org 1' },
-  { code: 'STORE-01', name: 'Store 01 Backroom', active: true, organization: 'Org 1' },
-];
-
-const bins: Bin[] = [
-  { warehouse: 'MAIN-DC', bin: 'A-01-01', description: 'Aisle A / Rack 01 / Level 01' },
-  { warehouse: 'MAIN-DC', bin: 'A-01-02', description: 'Aisle A / Rack 01 / Level 02' },
-  { warehouse: 'STORE-01', bin: 'B-02-01', description: 'Backroom shelf B-02' },
-];
+import { useSetupsSelectopr } from '@/state/ducks/setups-warehouse/selectors';
+import { fetchSetupsWarehouseRequest } from '@/state/ducks/setups-warehouse/slice';
+import type { Bin, Warehouse } from '@/state/ducks/setups-warehouse/type';
 
 const warehouseColumns: ColumnDef<Warehouse>[] = [
+  {
+    accessorKey: 'id',
+    header: 'Warehouse',
+  },
   {
     accessorKey: 'code',
     header: 'Code',
@@ -51,10 +34,10 @@ const warehouseColumns: ColumnDef<Warehouse>[] = [
     header: 'Organization',
   },
   {
-    accessorKey: 'active',
+    accessorKey: 'isActive',
     header: 'Active',
     cell: ({ row }) => {
-      const active = row.getValue<boolean>('active');
+      const active = row.getValue<boolean>('isActive');
       return <Badge variant={active ? 'default' : 'destructive'}>{active ? 'Yes' : 'No'}</Badge>;
     },
   },
@@ -62,11 +45,15 @@ const warehouseColumns: ColumnDef<Warehouse>[] = [
 
 const binColumns: ColumnDef<Bin>[] = [
   {
-    accessorKey: 'warehouse',
+    accessorKey: 'id',
+    header: 'BinId',
+  },
+  {
+    accessorKey: 'warehouseId',
     header: 'Warehouse',
   },
   {
-    accessorKey: 'bin',
+    accessorKey: 'code',
     header: 'Bin',
   },
   {
@@ -76,17 +63,23 @@ const binColumns: ColumnDef<Bin>[] = [
 ];
 
 const WarehousesSetupPage: React.FC = () => {
+  const dispatch = useDispatch();
   const isMobile = useIsMobile();
+  const setupsSelector = useSetupsSelectopr();
 
   const warehouseTableProps: DataTableProps<Warehouse, unknown> = {
     columns: warehouseColumns,
-    data: warehouses,
+    data: setupsSelector.data.warehouses ?? [],
   };
 
   const binTableProps: DataTableProps<Bin, unknown> = {
     columns: binColumns,
-    data: bins,
+    data: setupsSelector.data.bins ?? [],
   };
+
+  useEffect(() => {
+    dispatch(fetchSetupsWarehouseRequest());
+  }, [dispatch]);
 
   return (
     <PageOverview>

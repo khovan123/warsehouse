@@ -6,11 +6,19 @@ import createSagaMiddleware from 'redux-saga';
 import rootSaga from './ducks';
 import { authPersistFilter } from './ducks/auth/persist-filter';
 import authReducer from './ducks/auth/slice';
+import inventoryReducer from './ducks/inventory/slice';
+import productReducer from './ducks/product/slice';
+import setupsReducer from './ducks/setups-warehouse/slice';
+import stockReducer from './ducks/stock/slice';
 import toastReducer from './ducks/toast/slice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   toast: toastReducer,
+  product: productReducer,
+  setups: setupsReducer,
+  inventory: inventoryReducer,
+  stock: stockReducer,
 });
 
 const persistConfig = {
